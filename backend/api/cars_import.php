@@ -33,8 +33,8 @@ if ($handle === false) {
   exit;
 }
 
-// Read first row (header) and handle BOM
-$firstRow = fgetcsv($handle);
+// Read first row (header) and handle BOM (PHP 8.4+ requires explicit escape for fgetcsv)
+$firstRow = fgetcsv($handle, 0, ',', '"', '');
 if ($firstRow === false) {
   fclose($handle);
   http_response_code(400);
@@ -73,7 +73,7 @@ try {
   $lineNum = 1;
 
   $maxIdx = max($nameIdx, $fuelIdx, $engineIdx, $priceIdx, $inspectionIdx);
-  while (($row = fgetcsv($handle)) !== false) {
+  while (($row = fgetcsv($handle, 0, ',', '"', '')) !== false) {
     $lineNum++;
     if (count($row) <= $maxIdx) {
       if (trim(implode('', $row)) === '') {
@@ -144,7 +144,9 @@ try {
   if (isset($pdo) && $pdo->inTransaction()) {
     $pdo->rollBack();
   }
-  fclose($handle);
+  if (isset($handle) && is_resource($handle)) {
+    fclose($handle);
+  }
   http_response_code(500);
   ob_end_clean();
   echo json_encode(['error' => 'データベースエラー']);
