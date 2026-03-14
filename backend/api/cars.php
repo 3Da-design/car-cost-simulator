@@ -19,7 +19,7 @@ require_once __DIR__ . '/../config/database.php';
 
 try {
   $pdo = getPdo();
-  $stmt = $pdo->query('SELECT id, name, fuel, engine, price, inspection FROM cars ORDER BY name');
+  $stmt = $pdo->query('SELECT id, maker, model, fuel, engine, price, inspection FROM cars ORDER BY maker, model');
   $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
   echo json_encode($cars);
 } catch (PDOException $e) {

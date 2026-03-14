@@ -46,18 +46,19 @@ $header = array_map('trim', $firstRow);
 if (isset($header[0]) && substr($header[0], 0, 3) === "\xEF\xBB\xBF") {
   $header[0] = ltrim($header[0], "\xEF\xBB\xBF");
 }
-$expected = ['name', 'fuel', 'engine', 'price', 'inspection'];
+$expected = ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'];
 $headerLower = array_map('strtolower', $header);
 foreach ($expected as $col) {
   if (!in_array($col, $headerLower, true)) {
     fclose($handle);
     http_response_code(400);
     ob_end_clean();
-    echo json_encode(['error' => 'CSVの1行目は name,fuel,engine,price,inspection である必要があります']);
+    echo json_encode(['error' => 'CSVの1行目は maker,model,fuel,engine,price,inspection である必要があります']);
     exit;
   }
 }
-$nameIdx = array_search('name', $headerLower, true);
+$makerIdx = array_search('maker', $headerLower, true);
+$modelIdx = array_search('model', $headerLower, true);
 $fuelIdx = array_search('fuel', $headerLower, true);
 $engineIdx = array_search('engine', $headerLower, true);
 $priceIdx = array_search('price', $headerLower, true);
@@ -68,11 +69,11 @@ require_once __DIR__ . '/../config/database.php';
 try {
   $pdo = getPdo();
   $pdo->beginTransaction();
-  $stmt = $pdo->prepare('INSERT INTO cars (name, fuel, engine, price, inspection) VALUES (?, ?, ?, ?, ?)');
+  $stmt = $pdo->prepare('INSERT INTO cars (maker, model, fuel, engine, price, inspection) VALUES (?, ?, ?, ?, ?, ?)');
   $imported = 0;
   $lineNum = 1;
 
-  $maxIdx = max($nameIdx, $fuelIdx, $engineIdx, $priceIdx, $inspectionIdx);
+  $maxIdx = max($makerIdx, $modelIdx, $fuelIdx, $engineIdx, $priceIdx, $inspectionIdx);
   while (($row = fgetcsv($handle, 0, ',', '"', '')) !== false) {
     $lineNum++;
     if (count($row) <= $maxIdx) {
@@ -86,8 +87,9 @@ try {
       echo json_encode(['error' => "{$lineNum}行目: 列数が不足しています"]);
       exit;
     }
-    $name = trim($row[$nameIdx] ?? '');
-    if ($name === '' && trim(implode('', $row)) === '') {
+    $maker = trim($row[$makerIdx] ?? '');
+    $model = trim($row[$modelIdx] ?? '');
+    if ($maker === '' && $model === '' && trim(implode('', $row)) === '') {
       continue;
     }
     $fuelRaw = trim($row[$fuelIdx] ?? '');
@@ -95,11 +97,18 @@ try {
     $priceRaw = trim($row[$priceIdx] ?? '');
     $inspectionRaw = isset($row[$inspectionIdx]) ? trim($row[$inspectionIdx]) : '';
 
-    if ($name === '') {
+    if ($maker === '') {
       $pdo->rollBack();
       fclose($handle);
       ob_end_clean();
-      echo json_encode(['error' => "{$lineNum}行目: 車名が空です"]);
+      echo json_encode(['error' => "{$lineNum}行目: メーカー名が空です"]);
+      exit;
+    }
+    if ($model === '') {
+      $pdo->rollBack();
+      fclose($handle);
+      ob_end_clean();
+      echo json_encode(['error' => "{$lineNum}行目: 車種名が空です"]);
       exit;
     }
     if ($fuelRaw === '' || !is_numeric($fuelRaw) || (float)$fuelRaw < 0) {
@@ -132,7 +141,7 @@ try {
       $inspection = null;
     }
 
-    $stmt->execute([$name, $fuel, $engine, $price, $inspection]);
+    $stmt->execute([$maker, $model, $fuel, $engine, $price, $inspection]);
     $imported++;
   }
 
@@ -149,5 +158,5 @@ try {
   }
   http_response_code(500);
   ob_end_clean();
-  echo json_encode(['error' => 'データベースエラー']);
+  echo json_encode(['error' => 'データベースエラー', 'detail' => $e->getMessage()]);
 }

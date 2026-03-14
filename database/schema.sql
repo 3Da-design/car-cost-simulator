@@ -3,7 +3,8 @@ USE car_cost_simulator;
 
 CREATE TABLE IF NOT EXISTS cars (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL COMMENT '車名（例: Raize, Corolla, Fit）',
+  maker VARCHAR(50) NOT NULL COMMENT 'メーカー名（例: Toyota, Honda）',
+  model VARCHAR(100) NOT NULL COMMENT '車種名・グレード（例: Aqua X, N-BOX Base）',
   fuel DECIMAL(4,1) NOT NULL COMMENT '燃費 km/L',
   engine INT NOT NULL COMMENT '排気量 cc',
   price INT NOT NULL COMMENT '車両価格 円',

@@ -6,7 +6,7 @@ import './App.css'
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const API_BASE = '/api'
-const CAR_SEARCH_PLACEHOLDER = '車名で検索（例: Raize）'
+const CAR_SEARCH_PLACEHOLDER = 'メーカー・車種で検索（例: Toyota Aqua）'
 
 function getChartColors() {
   const style = getComputedStyle(document.documentElement)
@@ -66,7 +66,7 @@ function App() {
       setEngine(String(car.engine))
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
-      setCarSearchText(car.name)
+      setCarSearchText(car.maker && car.model ? `${car.maker} ${car.model}` : (car.name || ''))
     }
   }, [selectedCarId, cars])
 
@@ -76,19 +76,20 @@ function App() {
 
   const isInitialSearch = carSearchText === CAR_SEARCH_PLACEHOLDER
   const hasSearchText = carSearchText.trim().length > 0
+  const carDisplayName = (c) => (c.maker && c.model ? `${c.maker} ${c.model}` : (c.name || ''))
   const carFiltered =
     isInitialSearch || !hasSearchText
       ? []
       : cars
           .filter((c) =>
-            c.name.toLowerCase().includes(carSearchText.trim().toLowerCase())
+            carDisplayName(c).toLowerCase().includes(carSearchText.trim().toLowerCase())
           )
           .slice(0, 10)
   const carHighlightedSafe = carFiltered.length ? Math.min(carHighlightedIndex, carFiltered.length - 1) : 0
 
   const handleCarSelect = (car) => {
     setSelectedCarId(String(car.id))
-    setCarSearchText(car.name)
+    setCarSearchText(car.maker && car.model ? `${car.maker} ${car.model}` : (car.name || ''))
     setCarDropdownOpen(false)
   }
 
@@ -144,7 +145,21 @@ function App() {
   }
 
   const handleExportCsv = () => {
-    window.open(`${API_BASE}/cars_export.php`, '_blank')
+    fetch(`${API_BASE}/cars_export.php`)
+      .then((res) => {
+        if (!res.ok) throw new Error(res.statusText)
+        return res.text()
+      })
+      .then((text) => {
+        const blob = new Blob(['\uFEFF' + text], { type: 'text/csv; charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'cars.csv'
+        a.click()
+        URL.revokeObjectURL(url)
+      })
+      .catch(() => setError('エクスポートに失敗しました。バックエンドが起動しているか確認してください（npm run dev）。'))
   }
 
   const handleImportCsv = (e) => {
@@ -161,7 +176,8 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
-          setImportMessage({ type: 'error', text: data.error })
+          const text = data.detail ? `${data.error}: ${data.detail}` : data.error
+          setImportMessage({ type: 'error', text })
           return
         }
         setImportMessage({ type: 'success', text: `${data.imported} 件インポートしました` })
@@ -249,7 +265,7 @@ function App() {
                             handleCarSelect(c)
                           }}
                         >
-                          {c.name}
+                          {carDisplayName(c)}
                         </li>
                       ))
                     )}

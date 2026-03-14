@@ -28,14 +28,14 @@ fprintf($out, "\xEF\xBB\xBF");
 
 try {
   $pdo = getPdo();
-  $stmt = $pdo->query('SELECT name, fuel, engine, price, inspection FROM cars ORDER BY name');
+  $stmt = $pdo->query('SELECT maker, model, fuel, engine, price, inspection FROM cars ORDER BY maker, model');
   $rows = $stmt->fetchAll(PDO::FETCH_NUM);
 
   // Header
-  fputcsv($out, ['name', 'fuel', 'engine', 'price', 'inspection']);
+  fputcsv($out, ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'], ',', '"', '');
 
   foreach ($rows as $row) {
-    fputcsv($out, $row);
+    fputcsv($out, $row, ',', '"', '');
   }
 } catch (PDOException $e) {
   fclose($out);
