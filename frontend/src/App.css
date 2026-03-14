@@ -52,6 +52,53 @@
   font-size: 1rem;
 }
 
+.car-combobox-wrap {
+  position: relative;
+}
+
+.car-combobox-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.car-combobox-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 10;
+  margin-top: 2px;
+}
+
+.car-combobox-item {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.car-combobox-item:hover,
+.car-combobox-item--highlight {
+  background: #eff6ff;
+}
+
+.car-combobox-item--empty {
+  cursor: default;
+  color: #6b7280;
+}
+
+.car-combobox-item--empty:hover {
+  background: transparent;
+}
+
 .form-grid input.readonly {
   background: #f3f4f6;
   color: #6b7280;
@@ -75,6 +122,42 @@
 .calc-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.csv-tools {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.csv-export-button,
+.csv-import-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.csv-export-button:hover,
+.csv-import-label:hover .csv-import-button {
+  background: #e5e7eb;
+}
+
+.csv-import-label {
+  cursor: pointer;
+  margin: 0;
+}
+
+.import-success {
+  color: #059669;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
 }
 
 .error {

@@ -6,6 +6,7 @@ import './App.css'
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const API_BASE = '/api'
+const CAR_SEARCH_PLACEHOLDER = '車名で検索（例: Raize）'
 
 function App() {
   const [cars, setCars] = useState([])
@@ -21,28 +22,33 @@ function App() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [importMessage, setImportMessage] = useState(null)
+  const [importLoading, setImportLoading] = useState(false)
+  const [carSearchText, setCarSearchText] = useState(CAR_SEARCH_PLACEHOLDER)
+  const [carDropdownOpen, setCarDropdownOpen] = useState(false)
+  const [carHighlightedIndex, setCarHighlightedIndex] = useState(0)
 
-  useEffect(() => {
-    fetch(`${API_BASE}/cars.php`)
+  const fetchCars = () => {
+    return fetch(`${API_BASE}/cars.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.error) {
           setError(data.error)
-          return
+          return []
         }
         const list = Array.isArray(data) ? data : []
         setCars(list)
         setError(null)
-        if (list.length > 0 && !selectedCarId) {
-          const first = list[0]
-          setSelectedCarId(String(first.id))
-          setFuel(String(first.fuel))
-          setEngine(String(first.engine))
-          setPrice(String(first.price))
-          setInspection(first.inspection ?? 100000)
-        }
+        return list
       })
-      .catch(() => setError('車一覧の取得に失敗しました'))
+      .catch(() => {
+        setError('車一覧の取得に失敗しました')
+        return []
+      })
+  }
+
+  useEffect(() => {
+    fetchCars()
   }, [])
 
   useEffect(() => {
@@ -53,8 +59,56 @@ function App() {
       setEngine(String(car.engine))
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
+      setCarSearchText(car.name)
     }
   }, [selectedCarId, cars])
+
+  useEffect(() => {
+    setCarHighlightedIndex(0)
+  }, [carSearchText])
+
+  const isInitialSearch = carSearchText === CAR_SEARCH_PLACEHOLDER
+  const hasSearchText = carSearchText.trim().length > 0
+  const carFiltered =
+    isInitialSearch || !hasSearchText
+      ? []
+      : cars
+          .filter((c) =>
+            c.name.toLowerCase().includes(carSearchText.trim().toLowerCase())
+          )
+          .slice(0, 10)
+  const carHighlightedSafe = carFiltered.length ? Math.min(carHighlightedIndex, carFiltered.length - 1) : 0
+
+  const handleCarSelect = (car) => {
+    setSelectedCarId(String(car.id))
+    setCarSearchText(car.name)
+    setCarDropdownOpen(false)
+  }
+
+  const handleCarKeyDown = (e) => {
+    if (!carDropdownOpen) {
+      if (e.key === 'ArrowDown' || e.key === 'Enter') {
+        e.preventDefault()
+        setCarDropdownOpen(true)
+        setCarHighlightedIndex(0)
+      }
+      return
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setCarHighlightedIndex((i) => (i < carFiltered.length - 1 ? i + 1 : i))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setCarHighlightedIndex((i) => (i > 0 ? i - 1 : 0))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      if (carFiltered[carHighlightedSafe]) {
+        handleCarSelect(carFiltered[carHighlightedSafe])
+      }
+    } else if (e.key === 'Escape') {
+      setCarDropdownOpen(false)
+    }
+  }
 
   const handleCalculate = () => {
     setError(null)
@@ -80,6 +134,37 @@ function App() {
       })
       .catch(() => setError('計算に失敗しました'))
       .finally(() => setLoading(false))
+  }
+
+  const handleExportCsv = () => {
+    window.open(`${API_BASE}/cars_export.php`, '_blank')
+  }
+
+  const handleImportCsv = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImportMessage(null)
+    setImportLoading(true)
+    const formData = new FormData()
+    formData.append('csv', file)
+    fetch(`${API_BASE}/cars_import.php`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setImportMessage({ type: 'error', text: data.error })
+          return
+        }
+        setImportMessage({ type: 'success', text: `${data.imported} 件インポートしました` })
+        fetchCars()
+      })
+      .catch(() => setImportMessage({ type: 'error', text: 'インポートに失敗しました' }))
+      .finally(() => {
+        setImportLoading(false)
+        e.target.value = ''
+      })
   }
 
   const chartData = result
@@ -119,17 +204,57 @@ function App() {
           <div className="form-grid">
             <label>
               車種
-              <select
-                value={selectedCarId}
-                onChange={(e) => setSelectedCarId(e.target.value)}
-              >
-                <option value="">選択してください</option>
-                {cars.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              <div className="car-combobox-wrap">
+                <input
+                  type="text"
+                  className="car-combobox-input"
+                  placeholder={CAR_SEARCH_PLACEHOLDER}
+                  value={carSearchText}
+                  onChange={(e) => setCarSearchText(e.target.value)}
+                  onFocus={() => {
+                    if (carSearchText === CAR_SEARCH_PLACEHOLDER) {
+                      setCarSearchText('')
+                    }
+                    setCarDropdownOpen(true)
+                  }}
+                  onBlur={() => setTimeout(() => setCarDropdownOpen(false), 150)}
+                  onKeyDown={handleCarKeyDown}
+                  aria-autocomplete="list"
+                  aria-expanded={carDropdownOpen}
+                  aria-controls="car-listbox"
+                  aria-activedescendant={carFiltered[carHighlightedSafe] ? `car-option-${carFiltered[carHighlightedSafe].id}` : undefined}
+                />
+                {carDropdownOpen && (
+                  <ul
+                    id="car-listbox"
+                    className="car-combobox-list"
+                    role="listbox"
+                    aria-label="車種候補"
+                  >
+                    {carFiltered.length === 0 ? (
+                      <li className="car-combobox-item car-combobox-item--empty" role="option">
+                        該当する車種がありません
+                      </li>
+                    ) : (
+                      carFiltered.map((c, i) => (
+                        <li
+                          key={c.id}
+                          id={`car-option-${c.id}`}
+                          role="option"
+                          aria-selected={String(c.id) === selectedCarId}
+                          className={`car-combobox-item ${i === carHighlightedSafe ? 'car-combobox-item--highlight' : ''}`}
+                          onMouseDown={(e) => {
+                            e.preventDefault()
+                            handleCarSelect(c)
+                          }}
+                        >
+                          {c.name}
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                )}
+              </div>
             </label>
             <label>
               年間走行距離（km）
@@ -215,6 +340,30 @@ function App() {
           >
             {loading ? '計算中…' : '計算'}
           </button>
+          <div className="csv-tools">
+            <button
+              type="button"
+              className="csv-export-button"
+              onClick={handleExportCsv}
+            >
+              CSVでダウンロード
+            </button>
+            <label className="csv-import-label">
+              <span className="csv-import-button">CSVをインポート</span>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleImportCsv}
+                disabled={importLoading}
+                style={{ display: 'none' }}
+              />
+            </label>
+          </div>
+          {importMessage && (
+            <p className={importMessage.type === 'success' ? 'import-success' : 'error'}>
+              {importMessage.text}
+            </p>
+          )}
         </section>
 
         {error && <p className="error">{error}</p>}
