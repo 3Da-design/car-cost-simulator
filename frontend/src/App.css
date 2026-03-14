@@ -2,24 +2,32 @@
   min-height: 100vh;
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 0;
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  padding: 1.5rem 1rem;
+  margin-bottom: 0;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg);
 }
 
 .header h1 {
-  font-size: 1.75rem;
   font-weight: 700;
   margin: 0;
+  color: var(--text-h);
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
 }
 
 .main {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding: 2rem 1rem;
 }
 
 .form-section h2,
@@ -42,14 +50,23 @@
   gap: 0.25rem;
   font-size: 0.875rem;
   font-weight: 500;
+  color: var(--text);
 }
 
 .form-grid input,
 .form-grid select {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 1rem;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+  outline: none;
+  border-color: var(--accent-border);
 }
 
 .car-combobox-wrap {
@@ -69,10 +86,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--bg);
+  box-shadow: var(--shadow);
   max-height: 240px;
   overflow-y: auto;
   z-index: 10;
@@ -87,12 +104,12 @@
 
 .car-combobox-item:hover,
 .car-combobox-item--highlight {
-  background: #eff6ff;
+  background: var(--accent-bg);
 }
 
 .car-combobox-item--empty {
   cursor: default;
-  color: #6b7280;
+  color: var(--text);
 }
 
 .car-combobox-item--empty:hover {
@@ -100,23 +117,25 @@
 }
 
 .form-grid input.readonly {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .calc-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.875rem 2rem;
+  font-size: 1.0625rem;
   font-weight: 600;
-  color: #fff;
-  background: #2563eb;
+  color: var(--text-on-accent);
+  background: var(--accent);
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(170, 59, 255, 0.35);
 }
 
 .calc-button:hover:not(:disabled) {
-  background: #1d4ed8;
+  filter: brightness(1.05);
+  box-shadow: 0 4px 12px rgba(170, 59, 255, 0.4);
 }
 
 .calc-button:disabled {
@@ -136,16 +155,16 @@
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
 }
 
 .csv-export-button:hover,
 .csv-import-label:hover .csv-import-button {
-  background: #e5e7eb;
+  background: var(--border);
 }
 
 .csv-import-label {
@@ -154,24 +173,26 @@
 }
 
 .import-success {
-  color: #059669;
+  color: var(--success);
   margin: 0.5rem 0 0;
   padding: 0.5rem 0;
   font-size: 0.875rem;
 }
 
 .error {
-  color: #dc2626;
+  color: var(--error);
   margin: 0;
   padding: 0.75rem;
-  background: #fef2f2;
+  background: var(--error-bg);
   border-radius: 8px;
 }
 
 .result-section {
-  padding: 1.5rem;
-  background: #f9fafb;
+  padding: 1.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 12px;
+  box-shadow: var(--shadow);
 }
 
 .result-summary {
@@ -189,12 +210,13 @@
 
 .result-label {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text);
 }
 
 .result-value {
   font-size: 1.5rem;
   font-weight: 700;
+  color: var(--text-h);
 }
 
 .breakdown {
@@ -205,6 +227,7 @@
   font-size: 1rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
+  color: var(--text-h);
 }
 
 .breakdown ul {
@@ -225,8 +248,17 @@
   margin: 0 auto;
 }
 
+@media (prefers-color-scheme: dark) {
+  .calc-button {
+    box-shadow: 0 2px 12px rgba(192, 132, 252, 0.3);
+  }
+  .calc-button:hover:not(:disabled) {
+    box-shadow: 0 4px 16px rgba(192, 132, 252, 0.4);
+  }
+}
+
 @media (max-width: 640px) {
-  .app {
+  .main {
     padding: 1rem 0.75rem;
   }
 

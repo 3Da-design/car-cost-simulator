@@ -8,6 +8,13 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 const API_BASE = '/api'
 const CAR_SEARCH_PLACEHOLDER = '車名で検索（例: Raize）'
 
+function getChartColors() {
+  const style = getComputedStyle(document.documentElement)
+  return ['--chart-1', '--chart-2', '--chart-3', '--chart-4', '--chart-5'].map(
+    (v) => style.getPropertyValue(v).trim()
+  )
+}
+
 function App() {
   const [cars, setCars] = useState([])
   const [selectedCarId, setSelectedCarId] = useState('')
@@ -179,13 +186,7 @@ function App() {
               result.insurance,
               result.parking_annual,
             ],
-            backgroundColor: [
-              '#3b82f6',
-              '#10b981',
-              '#f59e0b',
-              '#8b5cf6',
-              '#ec4899',
-            ],
+            backgroundColor: getChartColors(),
             borderWidth: 0,
           },
         ],
@@ -366,7 +367,11 @@ function App() {
           )}
         </section>
 
-        {error && <p className="error">{error}</p>}
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
 
         {result && (
           <section className="result-section">
