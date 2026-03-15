@@ -191,6 +191,60 @@ function App() {
       })
   }
 
+  const escapeCsvCell = (v) => {
+    const s = String(v ?? '')
+    if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`
+    return s
+  }
+
+  const handleDownloadResult = () => {
+    if (!result) return
+    const headers = [
+      '車種',
+      '年間走行距離(km)',
+      '燃費(km/L)',
+      'ガソリン価格(円/L)',
+      '車両価格(円)',
+      '排気量(cc)',
+      '任意保険(円/年)',
+      '駐車場(円/月)',
+      '車検費用(2年分・円)',
+      '年間維持費(円)',
+      '月間維持費(円)',
+      'ガソリン(円)',
+      '税金(円)',
+      '車検(円)',
+      '保険(円)',
+      '駐車場(円)',
+    ]
+    const row = [
+      carSearchText,
+      distance,
+      fuel,
+      gasPrice,
+      price,
+      engine,
+      insurance,
+      parking,
+      inspection,
+      result.total,
+      result.monthly,
+      result.gas_cost,
+      result.tax,
+      result.inspection_annual,
+      result.insurance,
+      result.parking_annual,
+    ].map(escapeCsvCell)
+    const csv = '\uFEFF' + headers.join(',') + '\n' + row.join(',')
+    const blob = new Blob([csv], { type: 'text/csv; charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `維持費シミュレーション結果_${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const chartData = result
     ? {
         labels: ['ガソリン', '税金', '車検', '保険', '駐車場'],
@@ -218,7 +272,33 @@ function App() {
 
       <main className="main">
         <section className="form-section">
-          <h2>入力</h2>
+          <div className="form-section-header">
+            <h2>入力</h2>
+            <div className="csv-tools">
+              <button
+                type="button"
+                className="csv-export-button"
+                onClick={handleExportCsv}
+              >
+                CSVでダウンロード
+              </button>
+              <button
+                type="button"
+                className="csv-import-button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importLoading}
+              >
+                CSVをインポート
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv"
+                onChange={handleImportCsv}
+                style={{ display: 'none' }}
+              />
+            </div>
+          </div>
           <div className="form-grid">
             <label>
               車種
@@ -359,30 +439,6 @@ function App() {
             >
               {loading ? '計算中…' : '計算'}
             </button>
-            <div className="csv-tools">
-              <button
-                type="button"
-                className="csv-export-button"
-                onClick={handleExportCsv}
-              >
-                CSVでダウンロード
-              </button>
-              <button
-                type="button"
-                className="csv-import-button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={importLoading}
-              >
-                CSVをインポート
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv"
-                onChange={handleImportCsv}
-                style={{ display: 'none' }}
-              />
-            </div>
           </div>
           {importMessage && (
             <p className={importMessage.type === 'success' ? 'import-success' : 'error'}>
@@ -399,7 +455,16 @@ function App() {
 
         {result && (
           <section className="result-section">
-            <h2>結果</h2>
+            <div className="result-section-header">
+              <h2>結果</h2>
+              <button
+                type="button"
+                className="result-download-button"
+                onClick={handleDownloadResult}
+              >
+                入力・結果をダウンロード
+              </button>
+            </div>
             <div className="result-summary">
               <div className="result-block">
                 <span className="result-label">年間維持費</span>
