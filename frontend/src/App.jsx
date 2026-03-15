@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import './App.css'
@@ -34,6 +34,7 @@ function App() {
   const [carSearchText, setCarSearchText] = useState(CAR_SEARCH_PLACEHOLDER)
   const [carDropdownOpen, setCarDropdownOpen] = useState(false)
   const [carHighlightedIndex, setCarHighlightedIndex] = useState(0)
+  const fileInputRef = useRef(null)
 
   const fetchCars = () => {
     return fetch(`${API_BASE}/cars.php`)
@@ -349,32 +350,39 @@ function App() {
               />
             </label>
           </div>
-          <button
-            type="button"
-            className="calc-button"
-            onClick={handleCalculate}
-            disabled={loading}
-          >
-            {loading ? '計算中…' : '計算'}
-          </button>
-          <div className="csv-tools">
+          <div className="form-actions">
             <button
               type="button"
-              className="csv-export-button"
-              onClick={handleExportCsv}
+              className="calc-button"
+              onClick={handleCalculate}
+              disabled={loading}
             >
-              CSVでダウンロード
+              {loading ? '計算中…' : '計算'}
             </button>
-            <label className="csv-import-label">
-              <span className="csv-import-button">CSVをインポート</span>
+            <div className="csv-tools">
+              <button
+                type="button"
+                className="csv-export-button"
+                onClick={handleExportCsv}
+              >
+                CSVでダウンロード
+              </button>
+              <button
+                type="button"
+                className="csv-import-button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importLoading}
+              >
+                CSVをインポート
+              </button>
               <input
+                ref={fileInputRef}
                 type="file"
                 accept=".csv"
                 onChange={handleImportCsv}
-                disabled={importLoading}
                 style={{ display: 'none' }}
               />
-            </label>
+            </div>
           </div>
           {importMessage && (
             <p className={importMessage.type === 'success' ? 'import-success' : 'error'}>

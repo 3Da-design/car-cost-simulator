@@ -1,20 +1,21 @@
+/* ===== グローバル変数・ベース ===== */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #f5f4f6;
-  --border: #e5e4e7;
+  --text: #5c5466;
+  --text-h: #1a1625;
+  --bg: #f8f7fa;
+  --border: #e8e6ec;
   --surface: #fff;
-  --code-bg: #f4f3ec;
+  --code-bg: #f0eef4;
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --text-on-accent: #fff;
-  --error: #dc2626;
-  --error-bg: #fef2f2;
-  --success: #059669;
+  --error: #c62828;
+  --error-bg: #ffebee;
+  --success: #2e7d32;
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 8px 28px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
 
   --chart-1: #6366f1;
   --chart-2: #10b981;
@@ -22,12 +23,17 @@
   --chart-4: #8b5cf6;
   --chart-5: #ec4899;
 
-  --sans: 'Noto Sans JP', system-ui, sans-serif;
-  --heading: 'Noto Sans JP', system-ui, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --heading: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --mono: 'SF Mono', ui-monospace, Consolas, 'Liberation Mono', monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --transition: 0.2s ease;
+
+  font: 18px/1.6 var(--sans);
+  letter-spacing: 0.02em;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -43,28 +49,22 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --surface: #1e1f26;
-    --code-bg: #1f2028;
+    --text: #a8a4b2;
+    --text-h: #f0eef4;
+    --bg: #141318;
+    --border: #2c2a32;
+    --surface: #1c1a22;
+    --code-bg: #242228;
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
     --text-on-accent: #fff;
-    --error: #f87171;
-    --error-bg: #450a0a;
-    --success: #34d399;
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-
-    --chart-1: #818cf8;
-    --chart-2: #34d399;
-    --chart-3: #fbbf24;
-    --chart-4: #a78bfa;
-    --chart-5: #f472b6;
+    --error: #ef5350;
+    --error-bg: #3d1c1c;
+    --success: #66bb6a;
+    --social-bg: rgba(44, 42, 50, 0.6);
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.35), 0 1px 4px rgba(0, 0, 0, 0.2);
+    --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
   }
 
   #social .button-icon {
@@ -72,8 +72,20 @@
   }
 }
 
+/* ===== ベース・レイアウト ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
+  min-height: 100svh;
 }
 
 #root {
@@ -82,38 +94,42 @@ body {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
 }
 
+/* ===== タイポグラフィ ===== */
 h1,
-h2 {
+h2,
+h3 {
   font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-h);
+  letter-spacing: 0.02em;
 }
 
 h1 {
-  font-size: 34px;
-  letter-spacing: -0.5px;
-  margin: 24px 0;
-  @media (max-width: 1024px) {
-    font-size: 28px;
-    margin: 20px 0;
-  }
+  font-size: clamp(1.5rem, 4vw, 2.125rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
 }
+
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  line-height: 1.35;
+  margin: 0 0 0.5rem;
 }
+
+h3 {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 0 0 0.25rem;
+}
+
 p {
   margin: 0;
 }
 
+/* ===== コード・等幅 ===== */
 code,
 .counter {
   font-family: var(--mono);
@@ -123,8 +139,26 @@ code,
 }
 
 code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
+  font-size: 0.9em;
+  line-height: 1.4;
+  padding: 0.2em 0.5em;
   background: var(--code-bg);
+}
+
+/* ===== ユーザビリティ・アクセシビリティ ===== */
+:focus-visible {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent-bg);
+  color: var(--text-h);
+}
+
+/* タッチデバイスでホバーが残らないように */
+@media (hover: none) {
+  *:hover {
+    transition: none;
+  }
 }
