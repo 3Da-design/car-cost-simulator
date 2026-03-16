@@ -389,8 +389,6 @@ function App() {
                 min="0"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                readOnly
-                className="readonly"
               />
             </label>
             <label>
