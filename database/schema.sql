@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS cars (
   maker VARCHAR(50) NOT NULL COMMENT 'メーカー名（例: Toyota, Honda）',
   model VARCHAR(100) NOT NULL COMMENT '車種名・グレード（例: Aqua X, N-BOX Base）',
   fuel DECIMAL(4,1) NOT NULL COMMENT '燃費 km/L',
-  engine INT NOT NULL COMMENT '排気量 cc',
+  engine DECIMAL(4,2) NOT NULL COMMENT '排気量 L',
   price INT NOT NULL COMMENT '車両価格 円',
   inspection INT DEFAULT NULL COMMENT '車検費用目安（2年分）円'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

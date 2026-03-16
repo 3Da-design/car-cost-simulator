@@ -33,7 +33,6 @@ if ($handle === false) {
   exit;
 }
 
-// Read first row (header) and handle BOM (PHP 8.4+ requires explicit escape for fgetcsv)
 $firstRow = fgetcsv($handle, 0, ',', '"', '');
 if ($firstRow === false) {
   fclose($handle);
@@ -118,11 +117,11 @@ try {
       echo json_encode(['error' => "{$lineNum}行目: 燃費は0以上の数で入力してください"]);
       exit;
     }
-    if ($engineRaw === '' || !is_numeric($engineRaw) || (int)$engineRaw < 0) {
+    if ($engineRaw === '' || !is_numeric($engineRaw) || (float)$engineRaw < 0 || (float)$engineRaw > 20) {
       $pdo->rollBack();
       fclose($handle);
       ob_end_clean();
-      echo json_encode(['error' => "{$lineNum}行目: 排気量は0以上の整数で入力してください"]);
+      echo json_encode(['error' => "{$lineNum}行目: 排気量は0以上20以下の数（L）で入力してください"]);
       exit;
     }
     if ($priceRaw === '' || !is_numeric($priceRaw) || (int)$priceRaw < 0) {
@@ -134,7 +133,7 @@ try {
     }
 
     $fuel = (float)$fuelRaw;
-    $engine = (int)$engineRaw;
+    $engine = round((float)$engineRaw, 2);
     $price = (int)$priceRaw;
     $inspection = $inspectionRaw === '' ? null : (int)$inspectionRaw;
     if ($inspection !== null && $inspection < 0) {

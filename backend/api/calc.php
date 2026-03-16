@@ -21,20 +21,21 @@ $fuel = (float) ($input['fuel'] ?? 0);
 $gas_price = (int) ($input['gas_price'] ?? 0);
 $insurance = (int) ($input['insurance'] ?? 0);
 $parking = (int) ($input['parking'] ?? 0);
-$engine = (int) ($input['engine'] ?? 0);
+$engine_l = (float) ($input['engine'] ?? 0);
 $inspection = (int) ($input['inspection'] ?? 0);
 
-function getVehicleTax(int $engine): int {
-  if ($engine <= 1000) return 25000;
-  if ($engine <= 1500) return 30500;
-  if ($engine <= 2000) return 36000;
-  if ($engine <= 2500) return 43500;
-  if ($engine <= 3000) return 50000;
+function getVehicleTax(int $engine_cc): int {
+  if ($engine_cc <= 1000) return 25000;
+  if ($engine_cc <= 1500) return 30500;
+  if ($engine_cc <= 2000) return 36000;
+  if ($engine_cc <= 2500) return 43500;
+  if ($engine_cc <= 3000) return 50000;
   return 57000;
 }
 
+$engine_cc = (int) round($engine_l * 1000);
 $gas_cost = $fuel > 0 ? (int) round($distance / $fuel * $gas_price) : 0;
-$tax = getVehicleTax($engine);
+$tax = getVehicleTax($engine_cc);
 $inspection_annual = (int) ($inspection / 2);
 $parking_annual = $parking * 12;
 

@@ -1,15 +1,33 @@
 maker,model,fuel,engine,price,inspection
-Toyota,Aqua X,28,1500,2146000,100000
-Toyota,Aqua X E-Four,26.8,1500,2344000,100000
-Toyota,Aqua G,28,1500,2294000,100000
-Toyota,Aqua G E-Four,26.8,1500,2492000,100000
-Toyota,Aqua Z,28,1500,2565000,100000
-Toyota,Aqua Z E-Four,26.8,1500,2763000,100000
-Toyota,Yaris X,22,1500,1470000,95000
-Toyota,Yaris G,22,1500,1850000,95000
-Toyota,Yaris Z,22,1500,2150000,95000
-Toyota,Yaris Cross X,24.2,1500,2190000,105000
-Toyota,Yaris Cross Z,27.8,1500,2490000,105000
+Toyota,Aqua X,34.3,1.49,2486000,100000
+Toyota,Aqua X E-Four,30,1.49,2684000,100000
+Toyota,Aqua G,33.6,1.49,2654300,100000
+Toyota,Aqua G E-Four,30,1.49,2852300,100000
+Toyota,Aqua Z,33.6,1.49,2824800,100000
+Toyota,Aqua Z E-Four,30,1.49,3022800,100000
+Toyota,Yaris X,22,1.49,1470000,95000
+Toyota,Yaris G,22,1.49,1850000,95000
+Toyota,Yaris Z ,35.4,1.49,2669700,95000
+Toyota,Yaris Z E-Four,30.2,1.49,2884200,95000
+Toyota,Yaris Z 2WD,20.3,1.49,2301200,95000
+Toyota,Yaris Z 4WD,18.6,1.49,2515700,95000
+Toyota,Yaris Z 6MT,19.1,1.49,2197800,95000
+Toyota,Yaris Cross X,30.8,1.49,2510200,105000
+Toyota,Yaris Cross X E-Four,28.6,1.49,2757700,105000
+Toyota,Yaris Cross X 2WD,18.9,1.49,2126300,105000
+Toyota,Yaris Cross X 4WD,17.6,1.49,2373800,105000
+Toyota,Yaris Cross G,30.2,1.49,2712600,105000
+Toyota,Yaris Cross G E-Four,28.1,1.49,2960100,105000
+Toyota,Yaris Cross G 2WD,18.8,1.49,2341900,105000
+Toyota,Yaris Cross G 4WD,17.6,1.49,2589400,105000
+Toyota,Yaris Cross Z,27.8,1.49,2992000,105000
+Toyota,Yaris Cross Z E-Four,26,1.49,3239500,105000
+Toyota,Yaris Cross Z 2WD,17.9,1.49,2621300,105000
+Toyota,Yaris Cross Z 4WD,16.7,1.49,2868800,105000
+Toyota,Yaris Cross Z Adventure,27.8,1.49,3107500,105000
+Toyota,Yaris Cross Z Adventure E-Four,26,1.49,3355000,105000
+Toyota,Yaris Cross Z Adventure 2WD,17.9,1.49,2736800,105000
+Toyota,Yaris Cross Z Adventure 4WD,16.7,1.49,2984300,105000
 Toyota,Raize X,20.7,1000,1700000,100000
 Toyota,Raize G,20.7,1000,1850000,100000
 Toyota,Raize Z,19.8,1200,1990000,100000

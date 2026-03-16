@@ -394,10 +394,11 @@ function App() {
               />
             </label>
             <label>
-              排気量（cc）
+              排気量（L）
               <input
                 type="number"
                 min="0"
+                step="0.01"
                 value={engine}
                 onChange={(e) => setEngine(e.target.value)}
               />
