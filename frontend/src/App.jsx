@@ -21,7 +21,7 @@ function App() {
   const [distance, setDistance] = useState(10000)
   const [gasPrice, setGasPrice] = useState(170)
   const [insurance, setInsurance] = useState(80000)
-  const [parking, setParking] = useState(20000)
+  const [parking, setParking] = useState(5000)
   const [inspection, setInspection] = useState(100000)
   const [fuel, setFuel] = useState('')
   const [engine, setEngine] = useState('')
@@ -398,7 +398,7 @@ function App() {
               <input
                 type="number"
                 min="0"
-                step="0.01"
+                step="0.001"
                 value={engine}
                 onChange={(e) => setEngine(e.target.value)}
               />

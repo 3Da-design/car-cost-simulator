@@ -23,7 +23,6 @@ if ($out === false) {
   exit;
 }
 
-// UTF-8 BOM for Excel
 fprintf($out, "\xEF\xBB\xBF");
 
 try {
@@ -31,7 +30,6 @@ try {
   $stmt = $pdo->query('SELECT maker, model, fuel, engine, price, inspection FROM cars ORDER BY maker, model');
   $rows = $stmt->fetchAll(PDO::FETCH_NUM);
 
-  // Header
   fputcsv($out, ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'], ',', '"', '');
 
   foreach ($rows as $row) {

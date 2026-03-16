@@ -68,6 +68,7 @@ require_once __DIR__ . '/../config/database.php';
 try {
   $pdo = getPdo();
   $pdo->beginTransaction();
+  $pdo->exec('DELETE FROM cars');
   $stmt = $pdo->prepare('INSERT INTO cars (maker, model, fuel, engine, price, inspection) VALUES (?, ?, ?, ?, ?, ?)');
   $imported = 0;
   $lineNum = 1;
@@ -133,7 +134,7 @@ try {
     }
 
     $fuel = (float)$fuelRaw;
-    $engine = round((float)$engineRaw, 2);
+    $engine = round((float)$engineRaw, 3);
     $price = (int)$priceRaw;
     $inspection = $inspectionRaw === '' ? null : (int)$inspectionRaw;
     if ($inspection !== null && $inspection < 0) {
