@@ -491,8 +491,16 @@ function App() {
                   options={{
                     responsive: true,
                     maintainAspectRatio: true,
+                    cutout: '60%',
                     plugins: {
-                      legend: { position: 'bottom' },
+                      legend: {
+                        position: 'bottom',
+                        labels: {
+                          usePointStyle: true,
+                          padding: 16,
+                          font: { size: 11 },
+                        },
+                      },
                     },
                   }}
                 />
