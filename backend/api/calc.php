@@ -23,6 +23,8 @@ $insurance = (int) ($input['insurance'] ?? 0);
 $parking = (int) ($input['parking'] ?? 0);
 $engine_l = (float) ($input['engine'] ?? 0);
 $inspection = (int) ($input['inspection'] ?? 0);
+$price = (int) ($input['price'] ?? 0);
+$ownership_years = (int) ($input['ownership_years'] ?? 10);
 
 function getVehicleTax(int $engine_cc): int {
   if ($engine_cc <= 1000) return 25000;
@@ -41,6 +43,10 @@ $parking_annual = $parking * 12;
 
 $total = $gas_cost + $tax + $inspection_annual + $insurance + $parking_annual;
 $monthly = (int) round($total / 12);
+$ownership_years = $ownership_years > 0 ? $ownership_years : 1;
+$vehicle_annual = (int) round($price / $ownership_years);
+$total_with_vehicle = $total + $vehicle_annual;
+$monthly_with_vehicle = (int) round($total_with_vehicle / 12);
 
 echo json_encode([
   'gas_cost' => $gas_cost,
@@ -50,4 +56,7 @@ echo json_encode([
   'parking_annual' => $parking_annual,
   'total' => $total,
   'monthly' => $monthly,
+  'vehicle_annual' => $vehicle_annual,
+  'total_with_vehicle' => $total_with_vehicle,
+  'monthly_with_vehicle' => $monthly_with_vehicle,
 ]);

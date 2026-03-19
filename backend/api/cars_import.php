@@ -67,6 +67,7 @@ require_once __DIR__ . '/../config/database.php';
 
 try {
   $pdo = getPdo();
+  $pdo->exec("ALTER TABLE cars MODIFY engine DECIMAL(5,3) NOT NULL COMMENT '排気量 L（小数点以下3桁）'");
   $pdo->beginTransaction();
   $pdo->exec('DELETE FROM cars');
   $stmt = $pdo->prepare('INSERT INTO cars (maker, model, fuel, engine, price, inspection) VALUES (?, ?, ?, ?, ?, ?)');

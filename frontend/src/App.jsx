@@ -23,6 +23,7 @@ function App() {
   const [insurance, setInsurance] = useState(80000)
   const [parking, setParking] = useState(5000)
   const [inspection, setInspection] = useState(100000)
+  const [ownershipYears, setOwnershipYears] = useState(5)
   const [fuel, setFuel] = useState('')
   const [engine, setEngine] = useState('')
   const [price, setPrice] = useState('')
@@ -35,6 +36,11 @@ function App() {
   const [carDropdownOpen, setCarDropdownOpen] = useState(false)
   const [carHighlightedIndex, setCarHighlightedIndex] = useState(0)
   const fileInputRef = useRef(null)
+  const formatEngineToThreeDecimals = (value) => {
+    const numeric = Number(value)
+    if (!Number.isFinite(numeric)) return ''
+    return numeric.toFixed(3)
+  }
 
   const fetchCars = () => {
     return fetch(`${API_BASE}/cars.php`)
@@ -64,7 +70,7 @@ function App() {
     const car = cars.find((c) => String(c.id) === selectedCarId)
     if (car) {
       setFuel(String(car.fuel))
-      setEngine(String(car.engine))
+      setEngine(formatEngineToThreeDecimals(car.engine))
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
       setCarSearchText(car.maker && car.model ? `${car.maker} ${car.model}` : (car.name || ''))
@@ -134,6 +140,8 @@ function App() {
         parking: Number(parking) || 0,
         engine: Number(engine) || 0,
         inspection: Number(inspection) || 0,
+        price: Number(price) || 0,
+        ownership_years: Number(ownershipYears) || 1,
       }),
     })
       .then((res) => res.json())
@@ -209,8 +217,12 @@ function App() {
       '任意保険(円/年)',
       '駐車場(円/月)',
       '車検費用(2年分・円)',
+      '保有年数(年)',
       '年間維持費(円)',
       '月間維持費(円)',
+      '車両価格年換算(円)',
+      '年間合計(維持費+車両価格)(円)',
+      '月間合計(維持費+車両価格)(円)',
       'ガソリン(円)',
       '税金(円)',
       '車検(円)',
@@ -227,8 +239,12 @@ function App() {
       insurance,
       parking,
       inspection,
+      ownershipYears,
       result.total,
       result.monthly,
+      result.vehicle_annual,
+      result.total_with_vehicle,
+      result.monthly_with_vehicle,
       result.gas_cost,
       result.tax,
       result.inspection_annual,
@@ -399,6 +415,10 @@ function App() {
                 step="0.001"
                 value={engine}
                 onChange={(e) => setEngine(e.target.value)}
+                onBlur={() => {
+                  if (engine === '') return
+                  setEngine(formatEngineToThreeDecimals(engine))
+                }}
               />
             </label>
             <label>
@@ -426,6 +446,16 @@ function App() {
                 min="0"
                 value={inspection}
                 onChange={(e) => setInspection(e.target.value)}
+              />
+            </label>
+            <label>
+              保有年数（年）
+              <input
+                type="number"
+                min="1"
+                step="1"
+                value={ownershipYears}
+                onChange={(e) => setOwnershipYears(e.target.value)}
               />
             </label>
           </div>
@@ -473,15 +503,42 @@ function App() {
                 <span className="result-label">月間維持費</span>
                 <span className="result-value">{result.monthly.toLocaleString()}円</span>
               </div>
+              <div className="result-block">
+                <span className="result-label">年間合計（維持費+車両価格）</span>
+                <span className="result-value">{result.total_with_vehicle.toLocaleString()}円</span>
+              </div>
+              <div className="result-block">
+                <span className="result-label">月間合計（維持費+車両価格）</span>
+                <span className="result-value">{result.monthly_with_vehicle.toLocaleString()}円</span>
+              </div>
             </div>
             <div className="breakdown">
               <h3>内訳</h3>
               <ul>
-                <li>ガソリン: {result.gas_cost.toLocaleString()}円</li>
-                <li>税金: {result.tax.toLocaleString()}円</li>
-                <li>車検: {result.inspection_annual.toLocaleString()}円</li>
-                <li>保険: {result.insurance.toLocaleString()}円</li>
-                <li>駐車場: {result.parking_annual.toLocaleString()}円</li>
+                <li className="breakdown-item breakdown-item--gas">
+                  <span className="breakdown-item-label">ガソリン</span>
+                  <span className="breakdown-item-value">{result.gas_cost.toLocaleString()}円</span>
+                </li>
+                <li className="breakdown-item breakdown-item--tax">
+                  <span className="breakdown-item-label">税金</span>
+                  <span className="breakdown-item-value">{result.tax.toLocaleString()}円</span>
+                </li>
+                <li className="breakdown-item breakdown-item--inspection">
+                  <span className="breakdown-item-label">車検</span>
+                  <span className="breakdown-item-value">{result.inspection_annual.toLocaleString()}円</span>
+                </li>
+                <li className="breakdown-item breakdown-item--insurance">
+                  <span className="breakdown-item-label">保険</span>
+                  <span className="breakdown-item-value">{result.insurance.toLocaleString()}円</span>
+                </li>
+                <li className="breakdown-item breakdown-item--parking">
+                  <span className="breakdown-item-label">駐車場</span>
+                  <span className="breakdown-item-value">{result.parking_annual.toLocaleString()}円</span>
+                </li>
+                <li className="breakdown-item breakdown-item--vehicle">
+                  <span className="breakdown-item-label">車両価格（年換算）</span>
+                  <span className="breakdown-item-value">{result.vehicle_annual.toLocaleString()}円</span>
+                </li>
               </ul>
             </div>
             {chartData && (
