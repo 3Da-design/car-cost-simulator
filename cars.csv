@@ -85,20 +85,37 @@ Toyota,Harrier "Z" E-Four,21.7,2.487,4990700,130000
 Toyota,Harrier "Z" 2WD,15.6,1.986,4180000,130000
 Toyota,Harrier "Z" 4WD,14.8,1.986,4700300,130000
 Toyota,Harrier "Z PHEV",20.5,2.487,6260100,130000
-Toyota,Land Cruiser ZX,8.5,0,5500000,180000
-Toyota,Land Cruiser GR Sport,8.5,0,6500000,180000
-Toyota,Land Cruiser Prado TX,10.2,0,4690000,150000
-Toyota,Land Cruiser Prado VX,10.2,0,5390000,150000
-Toyota,bZ4X X,6.2,0,6300000,100000
-Toyota,bZ4X Z,6.2,0,7200000,100000
-Toyota,Alphard X,11.2,0,4590000,150000
-Toyota,Alphard G,11.2,0,5390000,150000
-Toyota,Alphard Hybrid X,15.6,0,5390000,155000
-Toyota,Alphard Hybrid G,15.6,0,6190000,155000
-Toyota,Vellfire X,11,0,4690000,150000
-Toyota,Vellfire G,11,0,5490000,150000
-Toyota,Vellfire Hybrid X,15.2,0,5490000,155000
-Toyota,Vellfire Hybrid G,15.2,0,6290000,155000
+Toyota,Land Cruiser 70 "AX",10.1,2.754,4800000,180000
+Toyota,Land Cruiser 250 "GX",11.0,2.754,5200000,180000
+Toyota,Land Cruiser 250 "VX" Diesel,11.0,2.754,6300000,180000
+Toyota,Land Cruiser 250 "VX" Gasoline,7.5,2.693,5450000,180000
+Toyota,Land Cruiser 250 "ZX",11.0,2.754,7350000,180000
+Toyota,Land Cruiser 300 "GX",8.0,3.444,5252500,180000
+Toyota,Land Cruiser 300 "AX",8.0,3.444,5630900,180000
+Toyota,Land Cruiser 300 "VX",7.9,3.444,6436100,180000
+Toyota,Land Cruiser 300 "ZX" Diesel,9.7,3.345,7736300,180000
+Toyota,Land Cruiser 300 "ZX" Gasoline,7.9,3.444,7436000,180000
+Toyota,Land Cruiser 300 "GR SPORT" Diesel,9.7,3.345,8136700,180000
+Toyota,Land Cruiser 300 "GR SPORT" Gasoline,7.9,3.444,7836400,180000
+Toyota,bZ4X "G",0,0,4800000,100000
+Toyota,bZ4X "Z" FWD,0,0,5500000,100000
+Toyota,bZ4X "Z" 4WD,0,0,6000000,100000
+Toyota,Alphard "X",18.9,2.487,5100000,150000
+Toyota,Alphard "X" E-Four,17.5,2.487,5320000,150000
+Toyota,Alphard "Z",18.6,2.487,6350000,150000
+Toyota,Alphard "Z" E-Four,17.2,2.487,6570000,150000
+Toyota,Alphard "Z" 2WD,10.9,2.493,5550000,150000
+Toyota,Alphard "Z" 4WD,10.4,2.493,5748000,150000
+Toyota,Alphard "Executive Lounge",17.5,2.487,8600000,150000
+Toyota,Alphard "Executive Lounge" E-Four,16.5,2.487,8820000,150000
+Toyota,Alphard "Executive Lounge PLUG-IN HYBRID",16.7,2.487,10650000,150000
+Toyota,Vellfire "Z Premier",18.6,2.487,7050000,150000
+Toyota,Vellfire "Z Premier" E-Four,17.2,2.487,7270000,150000
+Toyota,Vellfire "Z Premier" 2WD,10.9,2.393,6700000,150000
+Toyota,Vellfire "Z Premier" 4WD,10.4,2.393,6898000,150000
+Toyota,Vellfire "Executive Lounge",17.5,2.487,8800000,150000
+Toyota,Vellfire "Executive Lounge" E-Four,16.5,2.487,9020000,150000
+Toyota,Vellfire "Executive Lounge PLUG-IN HYBRID",16.7,2.487,10850000,150000
 Toyota,Noah X,16.8,0,3490000,120000
 Toyota,Noah G,16.8,0,4190000,120000
 Toyota,Noah Hybrid X,22.4,0,4190000,125000
