@@ -504,11 +504,41 @@ function App() {
                 <span className="result-value">{result.monthly.toLocaleString()}円</span>
               </div>
               <div className="result-block">
-                <span className="result-label">年間合計（維持費+車両価格）</span>
+                <span className="result-label">
+                  年間合計（総額
+                  <span className="result-info">
+                    <button
+                      type="button"
+                      className="result-info-mark"
+                      aria-label="総額*の内訳を表示"
+                    >
+                      ※
+                    </button>
+                    <span className="result-info-body" role="tooltip">
+                      維持費 + 車両価格（年換算）
+                    </span>
+                  </span>
+                  ）
+                </span>
                 <span className="result-value">{result.total_with_vehicle.toLocaleString()}円</span>
               </div>
               <div className="result-block">
-                <span className="result-label">月間合計（維持費+車両価格）</span>
+                <span className="result-label">
+                  月間合計（総額
+                  <span className="result-info">
+                    <button
+                      type="button"
+                      className="result-info-mark"
+                      aria-label="総額*の内訳を表示"
+                    >
+                      ※
+                    </button>
+                    <span className="result-info-body" role="tooltip">
+                      維持費 + 車両価格（年換算）÷12
+                    </span>
+                  </span>
+                  ）
+                </span>
                 <span className="result-value">{result.monthly_with_vehicle.toLocaleString()}円</span>
               </div>
             </div>
