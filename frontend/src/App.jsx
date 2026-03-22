@@ -1,19 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Doughnut } from 'react-chartjs-2'
 import './App.css'
-
-ChartJS.register(ArcElement, Tooltip, Legend)
-
-const API_BASE = '/api'
-const CAR_SEARCH_PLACEHOLDER = 'メーカー・車種で検索（例: Toyota Aqua）'
-
-function getChartColors() {
-  const style = getComputedStyle(document.documentElement)
-  return ['--chart-1', '--chart-2', '--chart-3', '--chart-4', '--chart-5'].map(
-    (v) => style.getPropertyValue(v).trim()
-  )
-}
+import { API_BASE, CAR_SEARCH_PLACEHOLDER } from './constants.js'
+import AppHeader from './components/AppHeader.jsx'
+import SimulatorInput from './components/SimulatorInput.jsx'
+import ResultSection from './components/ResultSection.jsx'
 
 function App() {
   const [cars, setCars] = useState([])
@@ -69,16 +59,20 @@ function App() {
     if (!selectedCarId || !cars.length) return
     const car = cars.find((c) => String(c.id) === selectedCarId)
     if (car) {
+      /* eslint-disable react-hooks/set-state-in-effect */
       setFuel(String(car.fuel))
       setEngine(formatEngineToThreeDecimals(car.engine))
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
       setCarSearchText(car.maker && car.model ? `${car.maker} ${car.model}` : (car.name || ''))
+      /* eslint-enable react-hooks/set-state-in-effect */
     }
   }, [selectedCarId, cars])
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     setCarHighlightedIndex(0)
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [carSearchText])
 
   const isInitialSearch = carSearchText === CAR_SEARCH_PLACEHOLDER
@@ -261,220 +255,54 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
-  const chartData = result
-    ? {
-        labels: ['ガソリン', '税金', '車検', '保険', '駐車場'],
-        datasets: [
-          {
-            data: [
-              result.gas_cost,
-              result.tax,
-              result.inspection_annual,
-              result.insurance,
-              result.parking_annual,
-            ],
-            backgroundColor: getChartColors(),
-            borderWidth: 0,
-          },
-        ],
-      }
-    : null
+  const handleEngineBlur = () => {
+    if (engine === '') return
+    setEngine(formatEngineToThreeDecimals(engine))
+  }
 
   return (
     <div className="app">
-      <header className="header">
-        <h1>車の維持費シミュレーター</h1>
-      </header>
+      <AppHeader />
 
       <main className="main">
-        <section className="form-section">
-          <div className="form-section-header">
-            <h2>入力</h2>
-            <div className="csv-tools">
-              <button
-                type="button"
-                className="csv-export-button"
-                onClick={handleExportCsv}
-              >
-                CSVでダウンロード
-              </button>
-              <button
-                type="button"
-                className="csv-import-button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={importLoading}
-              >
-                CSVをインポート
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv"
-                onChange={handleImportCsv}
-                style={{ display: 'none' }}
-              />
-            </div>
-          </div>
-          <div className="form-grid">
-            <label>
-              車種
-              <div className="car-combobox-wrap">
-                <input
-                  type="text"
-                  className="car-combobox-input"
-                  placeholder={CAR_SEARCH_PLACEHOLDER}
-                  value={carSearchText}
-                  onChange={(e) => setCarSearchText(e.target.value)}
-                  onFocus={() => {
-                    if (carSearchText === CAR_SEARCH_PLACEHOLDER) {
-                      setCarSearchText('')
-                    }
-                    setCarDropdownOpen(true)
-                  }}
-                  onBlur={() => setTimeout(() => setCarDropdownOpen(false), 150)}
-                  onKeyDown={handleCarKeyDown}
-                  aria-autocomplete="list"
-                  aria-expanded={carDropdownOpen}
-                  aria-controls="car-listbox"
-                  aria-activedescendant={carFiltered[carHighlightedSafe] ? `car-option-${carFiltered[carHighlightedSafe].id}` : undefined}
-                />
-                {carDropdownOpen && (
-                  <ul
-                    id="car-listbox"
-                    className="car-combobox-list"
-                    role="listbox"
-                    aria-label="車種候補"
-                  >
-                    {carFiltered.length === 0 ? (
-                      <li className="car-combobox-item car-combobox-item--empty" role="option">
-                        該当する車種がありません
-                      </li>
-                    ) : (
-                      carFiltered.map((c, i) => (
-                        <li
-                          key={c.id}
-                          id={`car-option-${c.id}`}
-                          role="option"
-                          aria-selected={String(c.id) === selectedCarId}
-                          className={`car-combobox-item ${i === carHighlightedSafe ? 'car-combobox-item--highlight' : ''}`}
-                          onMouseDown={(e) => {
-                            e.preventDefault()
-                            handleCarSelect(c)
-                          }}
-                        >
-                          {carDisplayName(c)}
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                )}
-              </div>
-            </label>
-            <label>
-              年間走行距離（km）
-              <input
-                type="number"
-                min="0"
-                value={distance}
-                onChange={(e) => setDistance(e.target.value)}
-              />
-            </label>
-            <label>
-              燃費（km/L）
-              <input
-                type="number"
-                step="0.1"
-                min="0"
-                value={fuel}
-                onChange={(e) => setFuel(e.target.value)}
-              />
-            </label>
-            <label>
-              ガソリン価格（円/L）
-              <input
-                type="number"
-                min="0"
-                value={gasPrice}
-                onChange={(e) => setGasPrice(e.target.value)}
-              />
-            </label>
-            <label>
-              車両価格（円）
-              <input
-                type="number"
-                min="0"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </label>
-            <label>
-              排気量（L）
-              <input
-                type="number"
-                min="0"
-                step="0.001"
-                value={engine}
-                onChange={(e) => setEngine(e.target.value)}
-                onBlur={() => {
-                  if (engine === '') return
-                  setEngine(formatEngineToThreeDecimals(engine))
-                }}
-              />
-            </label>
-            <label>
-              任意保険（円/年）
-              <input
-                type="number"
-                min="0"
-                value={insurance}
-                onChange={(e) => setInsurance(e.target.value)}
-              />
-            </label>
-            <label>
-              駐車場（円/月）
-              <input
-                type="number"
-                min="0"
-                value={parking}
-                onChange={(e) => setParking(e.target.value)}
-              />
-            </label>
-            <label>
-              車検費用（2年分・円）
-              <input
-                type="number"
-                min="0"
-                value={inspection}
-                onChange={(e) => setInspection(e.target.value)}
-              />
-            </label>
-            <label>
-              保有年数（年）
-              <input
-                type="number"
-                min="1"
-                step="1"
-                value={ownershipYears}
-                onChange={(e) => setOwnershipYears(e.target.value)}
-              />
-            </label>
-          </div>
-          <div className="form-actions">
-            <button
-              type="button"
-              className="calc-button"
-              onClick={handleCalculate}
-              disabled={loading}
-            >
-              {loading ? '計算中…' : '計算'}
-            </button>
-          </div>
-          {importMessage && (
-            <p className={importMessage.type === 'success' ? 'import-success' : 'error'}>
-              {importMessage.text}
-            </p>
-          )}
-        </section>
+        <SimulatorInput
+          fileInputRef={fileInputRef}
+          importLoading={importLoading}
+          importMessage={importMessage}
+          onExportCsv={handleExportCsv}
+          onImportCsv={handleImportCsv}
+          carSearchText={carSearchText}
+          setCarSearchText={setCarSearchText}
+          setCarDropdownOpen={setCarDropdownOpen}
+          onCarKeyDown={handleCarKeyDown}
+          carDropdownOpen={carDropdownOpen}
+          carFiltered={carFiltered}
+          carHighlightedSafe={carHighlightedSafe}
+          selectedCarId={selectedCarId}
+          onCarSelect={handleCarSelect}
+          carDisplayName={carDisplayName}
+          distance={distance}
+          setDistance={setDistance}
+          fuel={fuel}
+          setFuel={setFuel}
+          gasPrice={gasPrice}
+          setGasPrice={setGasPrice}
+          price={price}
+          setPrice={setPrice}
+          engine={engine}
+          setEngine={setEngine}
+          onEngineBlur={handleEngineBlur}
+          insurance={insurance}
+          setInsurance={setInsurance}
+          parking={parking}
+          setParking={setParking}
+          inspection={inspection}
+          setInspection={setInspection}
+          ownershipYears={ownershipYears}
+          setOwnershipYears={setOwnershipYears}
+          onCalculate={handleCalculate}
+          loading={loading}
+        />
 
         {error && (
           <p className="error" role="alert">
@@ -483,117 +311,7 @@ function App() {
         )}
 
         {result && (
-          <section className="result-section">
-            <div className="result-section-header">
-              <h2>結果</h2>
-              <button
-                type="button"
-                className="result-download-button"
-                onClick={handleDownloadResult}
-              >
-                入力・結果をダウンロード
-              </button>
-            </div>
-            <div className="result-summary">
-              <div className="result-block">
-                <span className="result-label">年間維持費</span>
-                <span className="result-value">{result.total.toLocaleString()}円</span>
-              </div>
-              <div className="result-block">
-                <span className="result-label">月間維持費</span>
-                <span className="result-value">{result.monthly.toLocaleString()}円</span>
-              </div>
-              <div className="result-block">
-                <span className="result-label">
-                  年間合計（総額
-                  <span className="result-info">
-                    <button
-                      type="button"
-                      className="result-info-mark"
-                      aria-label="総額*の内訳を表示"
-                    >
-                      ※
-                    </button>
-                    <span className="result-info-body" role="tooltip">
-                      維持費 + 車両価格（年換算）
-                    </span>
-                  </span>
-                  ）
-                </span>
-                <span className="result-value">{result.total_with_vehicle.toLocaleString()}円</span>
-              </div>
-              <div className="result-block">
-                <span className="result-label">
-                  月間合計（総額
-                  <span className="result-info">
-                    <button
-                      type="button"
-                      className="result-info-mark"
-                      aria-label="総額*の内訳を表示"
-                    >
-                      ※
-                    </button>
-                    <span className="result-info-body" role="tooltip">
-                      維持費 + 車両価格（年換算）÷12
-                    </span>
-                  </span>
-                  ）
-                </span>
-                <span className="result-value">{result.monthly_with_vehicle.toLocaleString()}円</span>
-              </div>
-            </div>
-            <div className="breakdown">
-              <h3>内訳</h3>
-              <ul>
-                <li className="breakdown-item breakdown-item--gas">
-                  <span className="breakdown-item-label">ガソリン</span>
-                  <span className="breakdown-item-value">{result.gas_cost.toLocaleString()}円</span>
-                </li>
-                <li className="breakdown-item breakdown-item--tax">
-                  <span className="breakdown-item-label">税金</span>
-                  <span className="breakdown-item-value">{result.tax.toLocaleString()}円</span>
-                </li>
-                <li className="breakdown-item breakdown-item--inspection">
-                  <span className="breakdown-item-label">車検</span>
-                  <span className="breakdown-item-value">{result.inspection_annual.toLocaleString()}円</span>
-                </li>
-                <li className="breakdown-item breakdown-item--insurance">
-                  <span className="breakdown-item-label">保険</span>
-                  <span className="breakdown-item-value">{result.insurance.toLocaleString()}円</span>
-                </li>
-                <li className="breakdown-item breakdown-item--parking">
-                  <span className="breakdown-item-label">駐車場</span>
-                  <span className="breakdown-item-value">{result.parking_annual.toLocaleString()}円</span>
-                </li>
-                <li className="breakdown-item breakdown-item--vehicle">
-                  <span className="breakdown-item-label">車両価格（年換算）</span>
-                  <span className="breakdown-item-value">{result.vehicle_annual.toLocaleString()}円</span>
-                </li>
-              </ul>
-            </div>
-            {chartData && (
-              <div className="chart-wrap">
-                <Doughnut
-                  data={chartData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    cutout: '60%',
-                    plugins: {
-                      legend: {
-                        position: 'bottom',
-                        labels: {
-                          usePointStyle: true,
-                          padding: 16,
-                          font: { size: 11 },
-                        },
-                      },
-                    },
-                  }}
-                />
-              </div>
-            )}
-          </section>
+          <ResultSection result={result} onDownloadResult={handleDownloadResult} />
         )}
       </main>
     </div>

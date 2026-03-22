@@ -1,0 +1,270 @@
+.form-section {
+  background: var(--surface);
+  border-radius: var(--radius-lg, 14px);
+  padding: 1.75rem 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.form-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #10b981, #059669);
+  border-radius: var(--radius-lg, 14px) 0 0 var(--radius-lg, 14px);
+}
+
+.form-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-section-header h2,
+.form-section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-h);
+  letter-spacing: 0.04em;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.35rem;
+  margin-bottom: 1.75rem;
+}
+
+.form-grid > label:first-child {
+  grid-column: 1 / -1;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-h);
+  letter-spacing: 0.03em;
+}
+
+.form-grid input,
+.form-grid select {
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+  font-size: 1rem;
+  background: var(--bg);
+  color: var(--text-h);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-grid input:hover:not(:focus):not(.readonly),
+.form-grid select:hover {
+  border-color: #c4c2ca;
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+  outline: none;
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+}
+
+.car-combobox-wrap {
+  position: relative;
+}
+
+.car-combobox-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.car-combobox-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.car-combobox-item {
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  transition: background 0.15s ease;
+}
+
+.car-combobox-item:hover,
+.car-combobox-item--highlight {
+  background: rgba(5, 150, 105, 0.1);
+}
+
+.car-combobox-item--empty {
+  cursor: default;
+  color: var(--text);
+}
+
+.car-combobox-item--empty:hover {
+  background: transparent;
+}
+
+.form-grid input.readonly {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.calc-button {
+  padding: 0.75rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f0fdf4;
+  background: linear-gradient(180deg, #059669 0%, #047857 100%);
+  border: none;
+  border-radius: var(--radius-md, 10px);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.calc-button:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.calc-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.calc-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.csv-tools {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.csv-export-button,
+.csv-import-button {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #f0fdf4;
+  background: linear-gradient(180deg, #047857 0%, #065f46 100%);
+  border: 1px solid #059669;
+  border-radius: var(--radius-md, 10px);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.csv-export-button:hover,
+.csv-import-button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #059669 0%, #047857 100%);
+  border-color: #10b981;
+  color: #ecfdf5;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.csv-export-button:active:not(:disabled),
+.csv-import-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.csv-import-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.import-success {
+  color: var(--success);
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-section::before {
+    background: linear-gradient(180deg, #34d399, #10b981);
+  }
+  .form-grid input:focus,
+  .form-grid select:focus {
+    border-color: #34d399;
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+  }
+  .car-combobox-item:hover,
+  .car-combobox-item--highlight {
+    background: rgba(52, 211, 153, 0.15);
+  }
+  .csv-export-button,
+  .csv-import-button {
+    color: #ecfdf5;
+    background: linear-gradient(180deg, #065f46 0%, #047857 100%);
+    border-color: #34d399;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .csv-export-button:hover,
+  .csv-import-button:hover:not(:disabled) {
+    background: linear-gradient(180deg, #047857 0%, #059669 100%);
+    border-color: #6ee7b7;
+    color: #f0fdf4;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  .calc-button {
+    background: linear-gradient(180deg, #047857 0%, #065f46 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .calc-button:hover:not(:disabled) {
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+}
+
+@media (max-width: 640px) {
+  .form-section {
+    padding: 1.25rem 1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
