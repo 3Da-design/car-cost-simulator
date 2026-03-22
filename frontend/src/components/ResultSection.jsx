@@ -1,8 +1,60 @@
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { forwardRef } from 'react'
+import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import './ResultSection.css'
 
-ChartJS.register(ArcElement, Tooltip, Legend)
+ChartJS.register(ArcElement, Tooltip)
+
+/** ドーナツの各扇形内に項目名を描画する（凡例だけだと対応が分かりづらい場合向け） */
+const doughnutSegmentLabelsPlugin = {
+  id: 'doughnutSegmentLabels',
+  afterDatasetsDraw(chart) {
+    const meta = chart.getDatasetMeta(0)
+    if (!meta?.visible || !meta.data?.length) return
+
+    const labels = chart.data.labels
+    const { ctx } = chart
+    ctx.save()
+
+    const w = chart.width
+    const fontSize = Math.max(10, Math.min(12, Math.round(w / 26)))
+    ctx.font = `600 ${fontSize}px system-ui, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Noto Sans JP", sans-serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    meta.data.forEach((element, i) => {
+      if (element.skip || element.hidden) return
+      const label = labels[i]
+      if (label == null || label === '') return
+
+      const { x, y, startAngle, endAngle, innerRadius, outerRadius } = element.getProps(
+        ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius'],
+        true
+      )
+
+      const span = endAngle - startAngle
+      if (!Number.isFinite(span) || span < 0.14) return
+
+      const midAngle = startAngle + span / 2
+      const midR = (innerRadius + outerRadius) / 2
+      const tx = x + Math.cos(midAngle) * midR
+      const ty = y + Math.sin(midAngle) * midR
+
+      const chord = 2 * midR * Math.sin(span / 2)
+      if (chord < ctx.measureText(String(label)).width * 0.85) return
+
+      ctx.lineWidth = Math.max(2, fontSize / 5)
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)'
+      ctx.lineJoin = 'round'
+      ctx.miterLimit = 2
+      ctx.strokeText(String(label), tx, ty)
+      ctx.fillStyle = '#ffffff'
+      ctx.fillText(String(label), tx, ty)
+    })
+
+    ctx.restore()
+  },
+}
 
 function getChartColors() {
   const style = getComputedStyle(document.documentElement)
@@ -11,7 +63,7 @@ function getChartColors() {
   )
 }
 
-export default function ResultSection({ result, onDownloadResult }) {
+const ResultSection = forwardRef(function ResultSection({ result, onDownloadResult }, ref) {
   const chartData = result
     ? {
         labels: ['ガソリン', '税金', '車検', '保険', '駐車場'],
@@ -32,7 +84,7 @@ export default function ResultSection({ result, onDownloadResult }) {
     : null
 
   return (
-    <section className="result-section">
+    <section ref={ref} className="result-section" id="simulation-result" aria-label="計算結果">
       <div className="result-section-header">
         <h2>結果</h2>
         <button
@@ -124,17 +176,25 @@ export default function ResultSection({ result, onDownloadResult }) {
         <div className="chart-wrap">
           <Doughnut
             data={chartData}
+            plugins={[doughnutSegmentLabelsPlugin]}
             options={{
               responsive: true,
               maintainAspectRatio: true,
               cutout: '60%',
               plugins: {
                 legend: {
-                  position: 'bottom',
-                  labels: {
-                    usePointStyle: true,
-                    padding: 16,
-                    font: { size: 11 },
+                  display: false,
+                },
+                tooltip: {
+                  callbacks: {
+                    title(items) {
+                      const item = items[0]
+                      return item?.label != null ? String(item.label) : ''
+                    },
+                    label(ctx) {
+                      const v = ctx.dataset.data[ctx.dataIndex]
+                      return Number(v).toLocaleString() + '円'
+                    },
                   },
                 },
               },
@@ -144,4 +204,6 @@ export default function ResultSection({ result, onDownloadResult }) {
       )}
     </section>
   )
-}
+})
+
+export default ResultSection

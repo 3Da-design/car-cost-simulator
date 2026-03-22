@@ -26,6 +26,7 @@ function App() {
   const [carDropdownOpen, setCarDropdownOpen] = useState(false)
   const [carHighlightedIndex, setCarHighlightedIndex] = useState(0)
   const fileInputRef = useRef(null)
+  const resultSectionRef = useRef(null)
   const formatEngineToThreeDecimals = (value) => {
     const numeric = Number(value)
     if (!Number.isFinite(numeric)) return ''
@@ -54,6 +55,11 @@ function App() {
   useEffect(() => {
     fetchCars()
   }, [])
+
+  useEffect(() => {
+    if (!result) return
+    resultSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [result])
 
   useEffect(() => {
     if (!selectedCarId || !cars.length) return
@@ -311,7 +317,11 @@ function App() {
         )}
 
         {result && (
-          <ResultSection result={result} onDownloadResult={handleDownloadResult} />
+          <ResultSection
+            ref={resultSectionRef}
+            result={result}
+            onDownloadResult={handleDownloadResult}
+          />
         )}
       </main>
     </div>
