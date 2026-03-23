@@ -112,7 +112,7 @@ export default function SimulatorInput({
       <div className="input-block">
         <h3 className="input-block-title">車・スペック</h3>
         <p className="field-hint">
-          車種を選ぶと、車両価格・排気量・燃費などが自動入力されます。
+          メーカーから車種を選ぶと、車両価格・排気量・燃費などが自動入力されます。
         </p>
         <div className="form-grid form-grid--car-spec">
           <label className="car-spec-row-wide">

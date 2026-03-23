@@ -53,21 +53,21 @@
   padding: 0.5rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #047857;
-  background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
-  border: 1px solid #059669;
+  color: #1d4ed8;
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #3b82f6;
   border-radius: var(--radius-md, 10px);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   box-sizing: border-box;
   letter-spacing: 0.03em;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .result-download-button:hover {
-  background: linear-gradient(180deg, #d1fae5 0%, #a7f3d0 100%);
-  border-color: #047857;
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #1d4ed8;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
 }
 
@@ -381,16 +381,16 @@
     color: #e9d5ff;
   }
   .result-download-button {
-    color: #ecfdf5;
-    background: linear-gradient(180deg, #065f46 0%, #047857 100%);
-    border-color: #34d399;
+    color: #eff6ff;
+    background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 100%);
+    border-color: #60a5fa;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   .result-download-button:hover {
-    background: linear-gradient(180deg, #047857 0%, #059669 100%);
-    border-color: #6ee7b7;
-    color: #f0fdf4;
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 100%);
+    border-color: #93c5fd;
+    color: #f8fafc;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
   .result-section::before {
     background: linear-gradient(180deg, #93c5fd, #a78bfa);
