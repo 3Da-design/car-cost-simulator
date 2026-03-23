@@ -1,4 +1,4 @@
-import { CAR_SEARCH_PLACEHOLDER } from '../constants.js'
+import { useEffect, useMemo, useState } from 'react'
 import './SimulatorInput.css'
 
 export default function SimulatorInput({
@@ -7,16 +7,12 @@ export default function SimulatorInput({
   importMessage,
   onExportCsv,
   onImportCsv,
-  carSearchText,
-  setCarSearchText,
-  setCarDropdownOpen,
-  onCarKeyDown,
-  carDropdownOpen,
-  carFiltered,
-  carHighlightedSafe,
+  selectedMaker,
+  makerOptions,
+  onMakerChange,
+  modelOptions,
+  onModelChipSelect,
   selectedCarId,
-  onCarSelect,
-  carDisplayName,
   distance,
   setDistance,
   fuel,
@@ -39,6 +35,41 @@ export default function SimulatorInput({
   onCalculate,
   loading,
 }) {
+  const [modelPickerOpen, setModelPickerOpen] = useState(false)
+  const [modelFilterText, setModelFilterText] = useState('')
+
+  const selectedModelLabel =
+    modelOptions.find((model) => model.id === selectedCarId)?.label || '車種を選択'
+  const filteredModelOptions = useMemo(() => {
+    const keyword = modelFilterText.trim().toLowerCase()
+    if (!keyword) return modelOptions
+    return modelOptions.filter((model) => model.label.toLowerCase().includes(keyword))
+  }, [modelOptions, modelFilterText])
+
+  useEffect(() => {
+    if (!modelPickerOpen) return
+    const onEsc = (e) => {
+      if (e.key === 'Escape') {
+        setModelPickerOpen(false)
+        setModelFilterText('')
+      }
+    }
+    window.addEventListener('keydown', onEsc)
+    return () => window.removeEventListener('keydown', onEsc)
+  }, [modelPickerOpen])
+
+  const handleModelPick = (id) => {
+    onModelChipSelect(id)
+    setModelPickerOpen(false)
+    setModelFilterText('')
+  }
+
+  const handleMakerSelect = (e) => {
+    onMakerChange(e)
+    setModelPickerOpen(false)
+    setModelFilterText('')
+  }
+
   return (
     <section className="form-section">
       <div className="form-section-header">
@@ -74,60 +105,33 @@ export default function SimulatorInput({
           車種を選ぶと、車両価格・排気量・燃費などが自動入力されます。
         </p>
         <div className="form-grid form-grid--car-spec">
-          <label>
-            車種
-            <div className="car-combobox-wrap">
-              <input
-                type="text"
-                className="car-combobox-input"
-                placeholder={CAR_SEARCH_PLACEHOLDER}
-                value={carSearchText}
-                onChange={(e) => setCarSearchText(e.target.value)}
-                onFocus={() => {
-                  if (carSearchText === CAR_SEARCH_PLACEHOLDER) {
-                    setCarSearchText('')
-                  }
-                  setCarDropdownOpen(true)
-                }}
-                onBlur={() => setTimeout(() => setCarDropdownOpen(false), 150)}
-                onKeyDown={onCarKeyDown}
-                aria-autocomplete="list"
-                aria-expanded={carDropdownOpen}
-                aria-controls="car-listbox"
-                aria-activedescendant={carFiltered[carHighlightedSafe] ? `car-option-${carFiltered[carHighlightedSafe].id}` : undefined}
-              />
-              {carDropdownOpen && (
-                <ul
-                  id="car-listbox"
-                  className="car-combobox-list"
-                  role="listbox"
-                  aria-label="車種候補"
-                >
-                  {carFiltered.length === 0 ? (
-                    <li className="car-combobox-item car-combobox-item--empty" role="option">
-                      該当する車種がありません
-                    </li>
-                  ) : (
-                    carFiltered.map((c, i) => (
-                      <li
-                        key={c.id}
-                        id={`car-option-${c.id}`}
-                        role="option"
-                        aria-selected={String(c.id) === selectedCarId}
-                        className={`car-combobox-item ${i === carHighlightedSafe ? 'car-combobox-item--highlight' : ''}`}
-                        onMouseDown={(e) => {
-                          e.preventDefault()
-                          onCarSelect(c)
-                        }}
-                      >
-                        {carDisplayName(c)}
-                      </li>
-                    ))
-                  )}
-                </ul>
-              )}
-            </div>
+          <label className="car-spec-row-wide">
+            メーカー
+            <select
+              value={selectedMaker}
+              onChange={handleMakerSelect}
+            >
+              <option value="">メーカーを選択</option>
+              {makerOptions.map((maker) => (
+                <option key={maker} value={maker}>
+                  {maker}
+                </option>
+              ))}
+            </select>
           </label>
+          {selectedMaker && (
+            <label className="car-spec-row-wide model-select-row model-select-row--appear">
+              車種（選択）
+              <button
+                type="button"
+                className="model-picker-trigger"
+                onClick={() => setModelPickerOpen(true)}
+                disabled={modelOptions.length === 0}
+              >
+                {selectedModelLabel}
+              </button>
+            </label>
+          )}
           <label>
             車両価格（円）
             <input
@@ -256,6 +260,48 @@ export default function SimulatorInput({
         <p className={importMessage.type === 'success' ? 'import-success' : 'error'}>
           {importMessage.text}
         </p>
+      )}
+      {modelPickerOpen && (
+        <div className="model-picker-modal-overlay" role="dialog" aria-modal="true" aria-label="車種選択">
+          <div className="model-picker-modal">
+            <div className="model-picker-modal-header">
+              <h4>車種を選択</h4>
+              <button
+                type="button"
+                className="model-picker-close"
+                onClick={() => {
+                  setModelPickerOpen(false)
+                  setModelFilterText('')
+                }}
+              >
+                閉じる
+              </button>
+            </div>
+            <input
+              type="text"
+              className="model-picker-search"
+              placeholder="車種を絞り込み"
+              value={modelFilterText}
+              onChange={(e) => setModelFilterText(e.target.value)}
+            />
+            <div className="model-picker-list" role="listbox" aria-label="車種候補リスト">
+              {filteredModelOptions.length === 0 ? (
+                <p className="model-chip-empty">該当車種がありません</p>
+              ) : (
+                filteredModelOptions.map((model) => (
+                  <button
+                    key={model.id}
+                    type="button"
+                    className={`model-list-item ${model.id === selectedCarId ? 'model-list-item--selected' : ''}`}
+                    onClick={() => handleModelPick(model.id)}
+                  >
+                    {model.label}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </section>
   )

@@ -47,8 +47,140 @@
   margin-top: 0.85rem;
 }
 
-.form-grid--car-spec > label:first-child {
+.form-grid--car-spec > .car-spec-row-wide {
   grid-column: 1 / -1;
+}
+
+.model-select-row--appear {
+  animation: modelSelectFadeIn 0.2s ease-out;
+}
+
+.model-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.model-picker-trigger {
+  width: 100%;
+  text-align: left;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.model-picker-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 40;
+}
+
+.model-picker-modal {
+  width: min(720px, 100%);
+  max-height: 80vh;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 14px);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.model-picker-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.model-picker-modal-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-h);
+}
+
+.model-picker-close {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 0.875rem;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+}
+
+.model-picker-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+  font-size: 1rem;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.model-picker-list {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+  overflow: auto;
+  max-height: 52vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.model-list-item {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-h);
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.model-list-item:last-child {
+  border-bottom: none;
+}
+
+.model-list-item:hover {
+  background: rgba(5, 150, 105, 0.08);
+}
+
+.model-list-item--selected {
+  background: rgba(5, 150, 105, 0.15);
+  font-weight: 700;
+}
+
+.model-chip-empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+@keyframes modelSelectFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .form-grid label {
@@ -253,6 +385,12 @@
   .car-combobox-item:hover,
   .car-combobox-item--highlight {
     background: rgba(52, 211, 153, 0.15);
+  }
+  .model-list-item:hover {
+    background: rgba(52, 211, 153, 0.16);
+  }
+  .model-list-item--selected {
+    background: rgba(16, 185, 129, 0.24);
   }
   .csv-export-button,
   .csv-import-button {

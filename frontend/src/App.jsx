@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
-import { API_BASE, CAR_SEARCH_PLACEHOLDER } from './constants.js'
+import { API_BASE } from './constants.js'
 import AppHeader from './components/AppHeader.jsx'
 import SimulatorInput from './components/SimulatorInput.jsx'
 import ResultSection from './components/ResultSection.jsx'
@@ -22,9 +22,7 @@ function App() {
   const [error, setError] = useState(null)
   const [importMessage, setImportMessage] = useState(null)
   const [importLoading, setImportLoading] = useState(false)
-  const [carSearchText, setCarSearchText] = useState(CAR_SEARCH_PLACEHOLDER)
-  const [carDropdownOpen, setCarDropdownOpen] = useState(false)
-  const [carHighlightedIndex, setCarHighlightedIndex] = useState(0)
+  const [selectedMaker, setSelectedMaker] = useState('')
   const fileInputRef = useRef(null)
   const resultSectionRef = useRef(null)
   const formatEngineToThreeDecimals = (value) => {
@@ -70,58 +68,38 @@ function App() {
       setEngine(formatEngineToThreeDecimals(car.engine))
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
-      setCarSearchText(car.maker && car.model ? `${car.maker} ${car.model}` : (car.name || ''))
       /* eslint-enable react-hooks/set-state-in-effect */
     }
   }, [selectedCarId, cars])
 
-  useEffect(() => {
-    /* eslint-disable react-hooks/set-state-in-effect */
-    setCarHighlightedIndex(0)
-    /* eslint-enable react-hooks/set-state-in-effect */
-  }, [carSearchText])
-
-  const isInitialSearch = carSearchText === CAR_SEARCH_PLACEHOLDER
-  const hasSearchText = carSearchText.trim().length > 0
   const carDisplayName = (c) => (c.maker && c.model ? `${c.maker} ${c.model}` : (c.name || ''))
-  const carFiltered =
-    isInitialSearch || !hasSearchText
-      ? []
-      : cars
-          .filter((c) =>
-            carDisplayName(c).toLowerCase().includes(carSearchText.trim().toLowerCase())
-          )
-          .slice(0, 10)
-  const carHighlightedSafe = carFiltered.length ? Math.min(carHighlightedIndex, carFiltered.length - 1) : 0
+  const makerOptions = [...new Set(cars.map((c) => c.maker).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b, 'ja')
+  )
+  const carsByMaker = selectedMaker
+    ? cars.filter((c) => c.maker === selectedMaker)
+    : []
+  const modelOptions = carsByMaker.map((c) => ({
+    id: String(c.id),
+    label: c.name || c.model || carDisplayName(c),
+  }))
+  const selectedCarName = cars.find((c) => String(c.id) === selectedCarId)?.name || ''
 
   const handleCarSelect = (car) => {
     setSelectedCarId(String(car.id))
-    setCarSearchText(car.maker && car.model ? `${car.maker} ${car.model}` : (car.name || ''))
-    setCarDropdownOpen(false)
+    setSelectedMaker(car.maker || '')
   }
 
-  const handleCarKeyDown = (e) => {
-    if (!carDropdownOpen) {
-      if (e.key === 'ArrowDown' || e.key === 'Enter') {
-        e.preventDefault()
-        setCarDropdownOpen(true)
-        setCarHighlightedIndex(0)
-      }
-      return
-    }
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setCarHighlightedIndex((i) => (i < carFiltered.length - 1 ? i + 1 : i))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setCarHighlightedIndex((i) => (i > 0 ? i - 1 : 0))
-    } else if (e.key === 'Enter') {
-      e.preventDefault()
-      if (carFiltered[carHighlightedSafe]) {
-        handleCarSelect(carFiltered[carHighlightedSafe])
-      }
-    } else if (e.key === 'Escape') {
-      setCarDropdownOpen(false)
+  const handleMakerChange = (e) => {
+    const nextMaker = e.target.value
+    setSelectedMaker(nextMaker)
+    setSelectedCarId('')
+  }
+
+  const handleModelChipSelect = (nextCarId) => {
+    const selected = carsByMaker.find((c) => String(c.id) === nextCarId)
+    if (selected) {
+      handleCarSelect(selected)
     }
   }
 
@@ -230,7 +208,7 @@ function App() {
       '駐車場(円)',
     ]
     const row = [
-      carSearchText,
+      selectedCarName,
       distance,
       fuel,
       gasPrice,
@@ -277,16 +255,12 @@ function App() {
           importMessage={importMessage}
           onExportCsv={handleExportCsv}
           onImportCsv={handleImportCsv}
-          carSearchText={carSearchText}
-          setCarSearchText={setCarSearchText}
-          setCarDropdownOpen={setCarDropdownOpen}
-          onCarKeyDown={handleCarKeyDown}
-          carDropdownOpen={carDropdownOpen}
-          carFiltered={carFiltered}
-          carHighlightedSafe={carHighlightedSafe}
+          selectedMaker={selectedMaker}
+          makerOptions={makerOptions}
+          onMakerChange={handleMakerChange}
+          modelOptions={modelOptions}
+          onModelChipSelect={handleModelChipSelect}
           selectedCarId={selectedCarId}
-          onCarSelect={handleCarSelect}
-          carDisplayName={carDisplayName}
           distance={distance}
           setDistance={setDistance}
           fuel={fuel}
