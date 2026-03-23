@@ -44,10 +44,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.35rem;
-  margin-bottom: 1.75rem;
+  margin-top: 0.85rem;
 }
 
-.form-grid > label:first-child {
+.form-grid--car-spec > label:first-child {
   grid-column: 1 / -1;
 }
 
@@ -59,6 +59,25 @@
   font-weight: 600;
   color: var(--text-h);
   letter-spacing: 0.03em;
+}
+
+.input-block + .input-block {
+  margin-top: 1.25rem;
+}
+
+.input-block-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-h);
+  letter-spacing: 0.03em;
+}
+
+.field-hint {
+  margin: 0.65rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--text);
+  line-height: 1.5;
 }
 
 .form-grid input,
@@ -261,6 +280,10 @@
 @media (max-width: 640px) {
   .form-section {
     padding: 1.25rem 1rem;
+  }
+
+  .input-block + .input-block {
+    margin-top: 1rem;
   }
 
   .form-grid {
