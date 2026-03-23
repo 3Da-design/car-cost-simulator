@@ -132,6 +132,28 @@
   color: var(--text-h);
 }
 
+.model-initial-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.model-initial-chip {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.model-initial-chip--active {
+  border-color: #047857;
+  background: #047857;
+  color: #ecfdf5;
+}
+
 .model-picker-list {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm, 6px);
@@ -391,6 +413,10 @@
   }
   .model-list-item--selected {
     background: rgba(16, 185, 129, 0.24);
+  }
+  .model-initial-chip--active {
+    border-color: #10b981;
+    background: #065f46;
   }
   .csv-export-button,
   .csv-import-button {

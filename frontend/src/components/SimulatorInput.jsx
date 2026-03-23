@@ -35,16 +35,23 @@ export default function SimulatorInput({
   onCalculate,
   loading,
 }) {
+  const initials = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
   const [modelPickerOpen, setModelPickerOpen] = useState(false)
   const [modelFilterText, setModelFilterText] = useState('')
+  const [selectedInitial, setSelectedInitial] = useState('')
 
   const selectedModelLabel =
     modelOptions.find((model) => model.id === selectedCarId)?.label || '車種を選択'
   const filteredModelOptions = useMemo(() => {
     const keyword = modelFilterText.trim().toLowerCase()
-    if (!keyword) return modelOptions
-    return modelOptions.filter((model) => model.label.toLowerCase().includes(keyword))
-  }, [modelOptions, modelFilterText])
+    return modelOptions.filter((model) => {
+      const label = model.label || ''
+      const matchesKeyword = !keyword || label.toLowerCase().includes(keyword)
+      const matchesInitial =
+        !selectedInitial || label.trim().toUpperCase().startsWith(selectedInitial)
+      return matchesKeyword && matchesInitial
+    })
+  }, [modelOptions, modelFilterText, selectedInitial])
 
   useEffect(() => {
     if (!modelPickerOpen) return
@@ -52,6 +59,7 @@ export default function SimulatorInput({
       if (e.key === 'Escape') {
         setModelPickerOpen(false)
         setModelFilterText('')
+        setSelectedInitial('')
       }
     }
     window.addEventListener('keydown', onEsc)
@@ -62,12 +70,14 @@ export default function SimulatorInput({
     onModelChipSelect(id)
     setModelPickerOpen(false)
     setModelFilterText('')
+    setSelectedInitial('')
   }
 
   const handleMakerSelect = (e) => {
     onMakerChange(e)
     setModelPickerOpen(false)
     setModelFilterText('')
+    setSelectedInitial('')
   }
 
   return (
@@ -272,6 +282,7 @@ export default function SimulatorInput({
                 onClick={() => {
                   setModelPickerOpen(false)
                   setModelFilterText('')
+                  setSelectedInitial('')
                 }}
               >
                 閉じる
@@ -284,6 +295,25 @@ export default function SimulatorInput({
               value={modelFilterText}
               onChange={(e) => setModelFilterText(e.target.value)}
             />
+            <div className="model-initial-filter" role="group" aria-label="頭文字フィルター">
+              <button
+                type="button"
+                className={`model-initial-chip ${selectedInitial === '' ? 'model-initial-chip--active' : ''}`}
+                onClick={() => setSelectedInitial('')}
+              >
+                すべて
+              </button>
+              {initials.map((initial) => (
+                <button
+                  key={initial}
+                  type="button"
+                  className={`model-initial-chip ${selectedInitial === initial ? 'model-initial-chip--active' : ''}`}
+                  onClick={() => setSelectedInitial(initial)}
+                >
+                  {initial}
+                </button>
+              ))}
+            </div>
             <div className="model-picker-list" role="listbox" aria-label="車種候補リスト">
               {filteredModelOptions.length === 0 ? (
                 <p className="model-chip-empty">該当車種がありません</p>
