@@ -83,6 +83,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* スティッキーヘッダー下でも見出しが隠れないように（コンパクトヘッダー時も余裕を持たせる） */
+#sim-intro,
+#simulation-input,
+#simulation-result {
+  scroll-margin-top: 6rem;
+}
+
 body {
   margin: 0;
   min-height: 100svh;

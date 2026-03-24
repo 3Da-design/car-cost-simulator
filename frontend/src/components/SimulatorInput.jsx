@@ -81,7 +81,7 @@ export default function SimulatorInput({
   }
 
   return (
-    <section className="form-section">
+    <section className="form-section" id="simulation-input">
       <div className="form-section-header">
         <h2>入力</h2>
         <div className="csv-tools">

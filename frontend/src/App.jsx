@@ -247,7 +247,7 @@ function App() {
 
   return (
     <div className="app">
-      <AppHeader />
+      <AppHeader hasResult={Boolean(result)} />
 
       <main className="main">
         <SimulatorIntro />

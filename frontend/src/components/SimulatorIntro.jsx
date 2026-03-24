@@ -2,7 +2,7 @@ import './SimulatorIntro.css'
 
 export default function SimulatorIntro() {
   return (
-    <section className="sim-intro" aria-labelledby="sim-intro-title">
+    <section className="sim-intro" id="sim-intro" aria-labelledby="sim-intro-title">
       <div className="sim-intro-inner">
         <p className="sim-intro-eyebrow" aria-hidden="true">
           Overview
