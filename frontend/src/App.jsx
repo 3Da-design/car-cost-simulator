@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import { API_BASE } from './constants.js'
 import AppHeader from './components/AppHeader.jsx'
+import SimulatorIntro from './components/SimulatorIntro.jsx'
 import SimulatorInput from './components/SimulatorInput.jsx'
 import ResultSection from './components/ResultSection.jsx'
 
@@ -249,6 +250,7 @@ function App() {
       <AppHeader />
 
       <main className="main">
+        <SimulatorIntro />
         <SimulatorInput
           fileInputRef={fileInputRef}
           importLoading={importLoading}

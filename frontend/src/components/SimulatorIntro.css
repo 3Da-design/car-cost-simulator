@@ -1,0 +1,171 @@
+.sim-intro {
+  position: relative;
+  border-radius: var(--radius-lg, 14px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  background-color: var(--surface);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 100% 0%, rgba(16, 185, 129, 0.12), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 0% 100%, rgba(5, 150, 105, 0.08), transparent 50%),
+    linear-gradient(165deg, rgba(236, 253, 245, 0.65) 0%, var(--surface) 42%, var(--surface) 100%);
+  margin-bottom: 1rem;
+}
+
+.sim-intro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #10b981, #059669);
+  border-radius: var(--radius-lg, 14px) 0 0 var(--radius-lg, 14px);
+}
+
+.sim-intro-inner {
+  position: relative;
+  z-index: 1;
+  padding: 1.65rem 1.5rem 1.5rem 1.65rem;
+}
+
+.sim-intro-eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #059669;
+  opacity: 0.9;
+}
+
+.sim-intro-title {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-h);
+  letter-spacing: 0.02em;
+}
+
+.sim-intro-lead {
+  margin: 0 0 1.35rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text);
+  max-width: 80ch;
+}
+
+.sim-intro-features {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.sim-intro-feature {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.85rem 0.9rem;
+  border-radius: var(--radius-md, 10px);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.sim-intro-feature-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #f0fdf4;
+  background: linear-gradient(145deg, #10b981, #047857);
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35);
+}
+
+.sim-intro-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.sim-intro-feature-label {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-h);
+  letter-spacing: 0.02em;
+}
+
+.sim-intro-note {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text);
+  background: rgba(5, 150, 105, 0.06);
+  border-radius: var(--radius-sm, 8px);
+  border-left: 3px solid #059669;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sim-intro {
+    background-image:
+      radial-gradient(ellipse 120% 80% at 100% 0%, rgba(52, 211, 153, 0.14), transparent 55%),
+      radial-gradient(ellipse 90% 70% at 0% 100%, rgba(16, 185, 129, 0.1), transparent 50%),
+      linear-gradient(165deg, rgba(6, 95, 70, 0.35) 0%, var(--surface) 45%, var(--surface) 100%);
+  }
+
+  .sim-intro::before {
+    background: linear-gradient(180deg, #34d399, #10b981);
+  }
+
+  .sim-intro-eyebrow {
+    color: #6ee7b7;
+  }
+
+  .sim-intro-feature {
+    background: rgba(28, 26, 34, 0.65);
+    box-shadow: none;
+  }
+
+  .sim-intro-feature-badge {
+    background: linear-gradient(145deg, #10b981, #065f46);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .sim-intro-note {
+    background: rgba(16, 185, 129, 0.1);
+    border-left-color: #34d399;
+  }
+}
+
+@media (max-width: 720px) {
+  .sim-intro-features {
+    grid-template-columns: 1fr;
+  }
+
+  .sim-intro-inner {
+    padding: 1.35rem 1.15rem 1.25rem 1.35rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .sim-intro-inner {
+    padding: 1.2rem 1rem 1.15rem 1.2rem;
+  }
+
+  .sim-intro-lead {
+    font-size: 0.875rem;
+  }
+}
