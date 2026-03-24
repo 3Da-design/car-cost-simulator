@@ -145,7 +145,6 @@
   display: inline-flex;
   flex-direction: column;
   align-items: stretch;
-  /* 幅はボタンに合わせ、パネルと同じ幅に揃える */
 }
 
 .header-menu-button {

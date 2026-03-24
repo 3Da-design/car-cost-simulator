@@ -64,12 +64,10 @@ function App() {
     if (!selectedCarId || !cars.length) return
     const car = cars.find((c) => String(c.id) === selectedCarId)
     if (car) {
-      /* eslint-disable react-hooks/set-state-in-effect */
       setFuel(String(car.fuel))
       setEngine(formatEngineToThreeDecimals(car.engine))
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
-      /* eslint-enable react-hooks/set-state-in-effect */
     }
   }, [selectedCarId, cars])
 

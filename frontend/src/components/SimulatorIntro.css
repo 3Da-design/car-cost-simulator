@@ -1,15 +1,31 @@
 .sim-intro {
+  --sim-pad-x: 1.5rem;
+  --sim-pad-hero-y: clamp(1.85rem, 4.5vw, 2.6rem);
+  --sim-pad-inner-y: clamp(1.75rem, 4vw, 2.35rem);
+  --sim-r-outer: 18px;
+  --sim-r-panel: 14px;
+  --sim-glass-bg: rgba(255, 255, 255, 0.58);
+  --sim-glass-border: rgba(255, 255, 255, 0.75);
+  --sim-glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 10px 40px -8px rgba(16, 185, 129, 0.12);
+  --sim-glass-blur: blur(14px);
+
   position: relative;
-  border-radius: var(--radius-lg, 14px);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
   overflow: hidden;
+  border-radius: var(--sim-r-outer);
+  border: 1px solid rgba(232, 230, 236, 0.95);
+  box-shadow:
+    0 1px 2px rgba(26, 22, 37, 0.04),
+    0 20px 50px -18px rgba(16, 185, 129, 0.18),
+    0 4px 24px rgba(26, 22, 37, 0.06);
   background-color: var(--surface);
   background-image:
-    radial-gradient(ellipse 120% 80% at 100% 0%, rgba(16, 185, 129, 0.12), transparent 55%),
-    radial-gradient(ellipse 90% 70% at 0% 100%, rgba(5, 150, 105, 0.08), transparent 50%),
-    linear-gradient(165deg, rgba(236, 253, 245, 0.65) 0%, var(--surface) 42%, var(--surface) 100%);
-  margin-bottom: 1rem;
+    radial-gradient(ellipse 120% 90% at 100% -10%, rgba(16, 185, 129, 0.2) 0%, transparent 52%),
+    radial-gradient(ellipse 80% 70% at 0% 110%, rgba(124, 58, 237, 0.1) 0%, transparent 48%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(16, 185, 129, 0.07) 0%, transparent 42%),
+    linear-gradient(180deg, rgba(248, 253, 250, 0.97) 0%, var(--surface) 38%, var(--surface) 100%);
 }
 
 .sim-intro::before {
@@ -17,62 +33,339 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, #10b981, #059669);
-  border-radius: var(--radius-lg, 14px) 0 0 var(--radius-lg, 14px);
+  right: 0;
+  height: 3px;
+  border-radius: var(--sim-r-outer) var(--sim-r-outer) 0 0;
+  background: linear-gradient(90deg, #34d399, #10b981 35%, #7c3aed 72%, #a855f7);
+  opacity: 0.92;
+  pointer-events: none;
 }
 
-.sim-intro-inner {
+.sim-intro-hero {
   position: relative;
-  z-index: 1;
-  padding: 1.65rem 1.5rem 1.5rem 1.65rem;
+  z-index: 0;
+  padding: var(--sim-pad-hero-y) var(--sim-pad-x) calc(var(--sim-pad-hero-y) * 0.75);
+  background: transparent;
 }
 
-.sim-intro-eyebrow {
-  margin: 0 0 0.5rem;
-  font-size: 0.6875rem;
+.sim-intro-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 34%);
+  gap: 1.5rem 2rem;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sim-intro-hero-copy {
+  min-width: 0;
+}
+
+.sim-intro-hero-copy .sim-intro-eyebrow {
+  margin-bottom: 0.65rem;
+}
+
+.sim-intro-hero-heading {
+  margin: 0 0 0.95rem;
+  font-size: clamp(1.4rem, 3.6vw, 1.95rem);
+  font-weight: 800;
+  line-height: 1.28;
+  letter-spacing: 0.03em;
+  color: var(--text-h);
+}
+
+.sim-intro-hero-catch {
+  margin: 0 0 1rem;
+  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
   font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #059669;
+  line-height: 1.55;
+  color: #047857;
+  letter-spacing: 0.02em;
+}
+
+.sim-intro-hero-catch-line {
+  display: block;
+}
+
+.sim-intro-hero-lead {
+  margin: 0 0 1.35rem;
+  font-size: 0.9375rem;
+  line-height: 1.68;
+  color: var(--text);
+  max-width: 36em;
+  opacity: 0.96;
+}
+
+.sim-intro-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.72rem 1.65rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  color: #f0fdf4;
+  background: linear-gradient(135deg, #10b981 0%, #059669 48%, #047857 100%);
+  border-radius: 9999px;
+  box-shadow:
+    0 2px 4px rgba(5, 150, 105, 0.2),
+    0 8px 24px rgba(5, 150, 105, 0.32);
+  transition:
+    transform var(--transition, 0.2s ease),
+    box-shadow var(--transition, 0.2s ease),
+    filter 0.2s ease;
+}
+
+.sim-intro-hero-cta:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    0 4px 8px rgba(5, 150, 105, 0.22),
+    0 12px 32px rgba(5, 150, 105, 0.38);
+}
+
+.sim-intro-hero-cta:focus-visible {
+  outline: 2px solid var(--accent, #aa3bff);
+  outline-offset: 3px;
+}
+
+.sim-intro-hero-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.sim-intro-divider {
+  flex-shrink: 0;
+  height: 1px;
+  margin: 0 var(--sim-pad-x);
+  width: auto;
+  align-self: stretch;
+  box-sizing: border-box;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(16, 185, 129, 0.22) 22%,
+    rgba(124, 58, 237, 0.15) 50%,
+    rgba(16, 185, 129, 0.22) 78%,
+    transparent 100%
+  );
   opacity: 0.9;
 }
 
-.sim-intro-title {
-  margin: 0 0 0.85rem;
-  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+/* Shared glass panels: hero icons, how-to, feature cards */
+.sim-intro-hero-icons,
+.sim-intro-howto,
+.sim-intro-feature {
+  background: var(--sim-glass-bg);
+  backdrop-filter: var(--sim-glass-blur);
+  -webkit-backdrop-filter: var(--sim-glass-blur);
+  border: 1px solid var(--sim-glass-border);
+  border-radius: var(--sim-r-panel);
+  box-shadow: var(--sim-glass-shadow);
+}
+
+.sim-intro-hero-icons {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: auto;
+  max-width: none;
+  padding: 1.35rem 1.15rem;
+}
+
+.sim-intro-hero-icon-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(3.5rem, 11vw, 4.2rem);
+  height: clamp(3.5rem, 11vw, 4.2rem);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #10b981, #047857);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+}
+
+.sim-intro-hero-icon-cell--calc {
+  background: linear-gradient(145deg, #a855f7, #6d28d9);
+  box-shadow: 0 4px 16px rgba(109, 40, 217, 0.35);
+}
+
+.sim-intro-hero-icon {
+  font-size: clamp(1.45rem, 4.2vw, 1.8rem);
+  line-height: 1;
+  color: #f0fdf4;
+}
+
+.sim-intro-hero-icon-sep {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: rgba(5, 150, 105, 0.48);
+  user-select: none;
+  line-height: 1;
+}
+
+.sim-intro-hero-icon-sep::before {
+  content: '\2193';
+  font-family: var(--sans, 'Noto Sans JP', sans-serif);
+}
+
+/* ----- Overview ----- */
+.sim-intro-inner {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sim-pad-inner-y) var(--sim-pad-x) calc(var(--sim-pad-inner-y) + 0.15rem);
+  background: transparent;
+}
+
+.sim-intro-inner .sim-intro-eyebrow {
+  margin-top: 0;
+}
+
+.sim-intro-eyebrow {
+  margin: 0 0 0.55rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  line-height: 1.35;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #059669;
+  opacity: 0.92;
+}
+
+.sim-intro-title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.2rem, 2.9vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.32;
+  color: var(--text-h);
+  letter-spacing: 0.025em;
+}
+
+.sim-intro-lead {
+  margin: 0 0 1.4rem;
+  font-size: 0.9375rem;
+  line-height: 1.68;
+  color: var(--text);
+  opacity: 0.96;
+}
+
+.sim-intro-howto {
+  margin: 0 0 1.5rem;
+  padding: 1.2rem 1.15rem 1.25rem;
+}
+
+.sim-intro-howto-title {
+  margin: 0 0 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-h);
+}
+
+.sim-intro-howto-title::before {
+  content: '';
+  display: inline-block;
+  width: 0.3rem;
+  height: 1.05em;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #34d399, #059669 55%, #7c3aed);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.sim-intro-howto-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  counter-reset: howto;
+}
+
+.sim-intro-howto-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.8rem 1rem;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  counter-increment: howto;
+}
+
+.sim-intro-howto-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1));
+  border: 1px solid rgba(5, 150, 105, 0.22);
+  color: #047857;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+
+.sim-intro-howto-icon {
+  font-size: 1.12rem;
+  line-height: 1;
+}
+
+.sim-intro-howto-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  min-width: 0;
+  padding-top: 0.12rem;
+}
+
+.sim-intro-howto-step-label {
+  font-weight: 700;
+  font-size: 0.9rem;
   color: var(--text-h);
   letter-spacing: 0.02em;
 }
 
-.sim-intro-lead {
-  margin: 0 0 1.35rem;
-  font-size: 0.9375rem;
-  line-height: 1.65;
+.sim-intro-howto-step-label::before {
+  content: counter(howto) '. ';
+  color: #059669;
+  font-weight: 800;
+}
+
+.sim-intro-howto-step-text {
+  font-size: 0.8125rem;
+  line-height: 1.62;
   color: var(--text);
 }
 
 .sim-intro-features {
   list-style: none;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.35rem;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .sim-intro-feature {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.8rem;
   align-items: flex-start;
-  padding: 0.85rem 0.9rem;
-  border-radius: var(--radius-md, 10px);
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  padding: 1rem 1rem;
 }
 
 .sim-intro-feature-badge {
@@ -80,20 +373,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: 1.7rem;
+  height: 1.7rem;
   border-radius: 10px;
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #f0fdf4;
   background: linear-gradient(145deg, #10b981, #047857);
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
 }
 
 .sim-intro-feature-text {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.32rem;
   font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--text);
@@ -108,63 +401,139 @@
 
 .sim-intro-note {
   margin: 0;
-  padding: 0.75rem 0.9rem;
+  padding: 0.85rem 1rem;
   font-size: 0.8125rem;
-  line-height: 1.55;
+  line-height: 1.58;
   color: var(--text);
-  background: rgba(5, 150, 105, 0.06);
-  border-radius: var(--radius-sm, 8px);
-  border-left: 3px solid #059669;
+  background: rgba(16, 185, 129, 0.07);
+  border-radius: var(--sim-r-panel);
+  border: 1px solid rgba(5, 150, 105, 0.14);
+  border-left: 3px solid #10b981;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
 }
 
 @media (prefers-color-scheme: dark) {
   .sim-intro {
+    --sim-glass-bg: rgba(36, 34, 44, 0.55);
+    --sim-glass-border: rgba(255, 255, 255, 0.08);
+    --sim-glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 40px rgba(0, 0, 0, 0.35);
+
+    border-color: rgba(44, 42, 50, 0.98);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.25),
+      0 24px 56px -20px rgba(16, 185, 129, 0.15),
+      var(--shadow);
     background-image:
-      radial-gradient(ellipse 120% 80% at 100% 0%, rgba(52, 211, 153, 0.14), transparent 55%),
-      radial-gradient(ellipse 90% 70% at 0% 100%, rgba(16, 185, 129, 0.1), transparent 50%),
-      linear-gradient(165deg, rgba(6, 95, 70, 0.35) 0%, var(--surface) 45%, var(--surface) 100%);
+      radial-gradient(ellipse 120% 90% at 100% -10%, rgba(52, 211, 153, 0.22) 0%, transparent 52%),
+      radial-gradient(ellipse 80% 70% at 0% 110%, rgba(124, 58, 237, 0.14) 0%, transparent 48%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 42%),
+      linear-gradient(180deg, rgba(24, 32, 30, 0.65) 0%, var(--surface) 42%, var(--surface) 100%);
   }
 
   .sim-intro::before {
-    background: linear-gradient(180deg, #34d399, #10b981);
+    opacity: 0.88;
+  }
+
+  .sim-intro-hero-catch {
+    color: #6ee7b7;
+  }
+
+  .sim-intro-hero-cta {
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 8px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  .sim-intro-hero-cta:hover {
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.25),
+      0 12px 36px rgba(0, 0, 0, 0.5);
+  }
+
+  .sim-intro-divider {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(52, 211, 153, 0.2) 22%,
+      rgba(167, 139, 250, 0.14) 50%,
+      rgba(52, 211, 153, 0.2) 78%,
+      transparent 100%
+    );
+  }
+
+  .sim-intro-hero-icon-sep {
+    color: rgba(110, 231, 183, 0.42);
   }
 
   .sim-intro-eyebrow {
     color: #6ee7b7;
   }
 
-  .sim-intro-feature {
-    background: rgba(28, 26, 34, 0.65);
+  .sim-intro-howto-icon-wrap {
+    background: linear-gradient(145deg, rgba(52, 211, 153, 0.18), rgba(16, 185, 129, 0.08));
+    border-color: rgba(52, 211, 153, 0.26);
+    color: #6ee7b7;
     box-shadow: none;
+  }
+
+  .sim-intro-howto-step-label::before {
+    color: #6ee7b7;
   }
 
   .sim-intro-feature-badge {
     background: linear-gradient(145deg, #10b981, #065f46);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   }
 
   .sim-intro-note {
     background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(52, 211, 153, 0.2);
     border-left-color: #34d399;
+    box-shadow: none;
   }
 }
 
 @media (max-width: 720px) {
-  .sim-intro-features {
+  .sim-intro-hero-grid {
     grid-template-columns: 1fr;
+    text-align: center;
   }
 
-  .sim-intro-inner {
-    padding: 1.35rem 1.15rem 1.25rem 1.35rem;
+  .sim-intro-hero-visual {
+    order: -1;
+    min-height: 0;
+    padding-bottom: 0.35rem;
+  }
+
+  .sim-intro-hero-lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sim-intro-hero-cta {
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .sim-intro-features {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 640px) {
-  .sim-intro-inner {
-    padding: 1.2rem 1rem 1.15rem 1.2rem;
+  .sim-intro {
+    --sim-pad-x: 1rem;
   }
 
   .sim-intro-lead {
     font-size: 0.875rem;
+  }
+
+  .sim-intro-hero-lead {
+    font-size: 0.875rem;
+  }
+
+  .sim-intro-howto {
+    padding: 1rem 0.95rem 1.05rem;
   }
 }
