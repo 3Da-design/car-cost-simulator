@@ -1,23 +1,5 @@
 import './SimulatorIntro.css'
 
-function HeroVisual() {
-  return (
-    <div className="sim-intro-hero-icons" aria-hidden="true">
-      <span className="sim-intro-hero-icon-cell sim-intro-hero-icon-cell--car">
-        <i className="fa-solid fa-car-on sim-intro-hero-icon" />
-      </span>
-      <span className="sim-intro-hero-icon-sep" />
-      <span className="sim-intro-hero-icon-cell sim-intro-hero-icon-cell--calc">
-        <i className="fa-solid fa-calculator sim-intro-hero-icon" />
-      </span>
-      <span className="sim-intro-hero-icon-sep" />
-      <span className="sim-intro-hero-icon-cell sim-intro-hero-icon-cell--cost">
-        <i className="fa-solid fa-comment-dollar sim-intro-hero-icon" />
-      </span>
-    </div>
-  )
-}
-
 export default function SimulatorIntro() {
   return (
     <section
@@ -45,9 +27,6 @@ export default function SimulatorIntro() {
             <a href="#simulation-input" className="sim-intro-hero-cta">
               条件を入力する
             </a>
-          </div>
-          <div className="sim-intro-hero-visual">
-            <HeroVisual />
           </div>
         </div>
       </div>

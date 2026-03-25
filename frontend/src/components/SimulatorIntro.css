@@ -44,43 +44,74 @@
 .sim-intro-hero {
   position: relative;
   z-index: 0;
-  padding: var(--sim-pad-hero-y) var(--sim-pad-x) calc(var(--sim-pad-hero-y) * 0.75);
-  background: transparent;
+  padding: var(--sim-pad-hero-y) var(--sim-pad-x) calc(var(--sim-pad-hero-y) * 0.85);
+  min-height: clamp(14rem, 36vh, 22rem);
+  background-color: #e8f5ef;
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(248, 253, 250, 0.98) 0%,
+      rgba(248, 253, 250, 0.9) 32%,
+      rgba(248, 253, 250, 0.65) 58%,
+      rgba(248, 253, 250, 0.28) 82%,
+      rgba(248, 253, 250, 0.06) 100%
+    ),
+    url('../assets/car.jpg');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
 }
 
 .sim-intro-hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 4vw, 2.75rem);
-  align-items: center;
+  position: relative;
+  z-index: 1;
   width: 100%;
   box-sizing: border-box;
 }
 
 .sim-intro-hero-copy {
   min-width: 0;
+  max-width: min(38rem, 100%);
+  padding: 0.15rem 0;
 }
 
 .sim-intro-hero-copy .sim-intro-eyebrow {
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
+  font-family: 'Outfit', var(--sans, 'Noto Sans JP', sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.36em;
+  color: #047857;
+  opacity: 1;
+  text-shadow:
+    0 0 12px rgba(255, 255, 255, 0.95),
+    0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 .sim-intro-hero-heading {
-  margin: 0 0 0.95rem;
-  font-size: clamp(1.4rem, 3.6vw, 1.95rem);
+  margin: 0 0 1rem;
+  font-family: var(--sans, 'Noto Sans JP', sans-serif);
+  font-size: clamp(1.65rem, 4.2vw, 2.35rem);
   font-weight: 800;
-  line-height: 1.28;
-  letter-spacing: 0.03em;
-  color: var(--text-h);
+  line-height: 1.22;
+  letter-spacing: 0.04em;
+  color: #06281a;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.9),
+    0 2px 24px rgba(255, 253, 248, 0.88),
+    0 1px 3px rgba(12, 42, 28, 0.08);
 }
 
 .sim-intro-hero-catch {
-  margin: 0 0 1rem;
-  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.12rem, 2.5vw, 1.42rem);
   font-weight: 700;
-  line-height: 1.55;
-  color: #047857;
-  letter-spacing: 0.02em;
+  line-height: 1.48;
+  color: #0f6f4c;
+  letter-spacing: 0.03em;
+  text-shadow:
+    0 0 14px rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(255, 255, 255, 0.55);
 }
 
 .sim-intro-hero-catch-line {
@@ -88,29 +119,36 @@
 }
 
 .sim-intro-hero-lead {
-  margin: 0 0 1.35rem;
-  font-size: 0.9375rem;
-  line-height: 1.68;
-  color: var(--text);
-  max-width: 36em;
-  opacity: 0.96;
+  margin: 0 0 1.45rem;
+  font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+  font-weight: 500;
+  line-height: 1.78;
+  color: #1a3329;
+  max-width: 34em;
+  letter-spacing: 0.03em;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.85),
+    0 1px 1px rgba(255, 255, 255, 0.45);
 }
 
 .sim-intro-hero-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.72rem 1.65rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  min-height: 3.05rem;
+  padding: 0.85rem 2rem;
+  font-family: var(--sans, 'Noto Sans JP', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-decoration: none;
-  color: #f0fdf4;
+  color: #f8fafc;
   background: linear-gradient(135deg, #10b981 0%, #059669 48%, #047857 100%);
   border-radius: 9999px;
+  border: 1px solid rgba(6, 95, 70, 0.45);
   box-shadow:
-    0 2px 4px rgba(5, 150, 105, 0.2),
-    0 8px 24px rgba(5, 150, 105, 0.32);
+    0 3px 8px rgba(5, 150, 105, 0.28),
+    0 12px 28px rgba(5, 150, 105, 0.4);
   transition:
     transform var(--transition, 0.2s ease),
     box-shadow var(--transition, 0.2s ease),
@@ -118,23 +156,16 @@
 }
 
 .sim-intro-hero-cta:hover {
+  transform: translateY(-1px);
   filter: brightness(1.06);
   box-shadow:
-    0 4px 8px rgba(5, 150, 105, 0.22),
-    0 12px 32px rgba(5, 150, 105, 0.38);
+    0 6px 12px rgba(5, 150, 105, 0.26),
+    0 16px 34px rgba(5, 150, 105, 0.42);
 }
 
 .sim-intro-hero-cta:focus-visible {
   outline: 2px solid var(--accent, #aa3bff);
   outline-offset: 3px;
-}
-
-.sim-intro-hero-visual {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 0;
-  justify-self: stretch;
 }
 
 .sim-intro-divider {
@@ -155,8 +186,7 @@
   opacity: 0.9;
 }
 
-/* Shared glass panels: hero icons, how-to, feature cards */
-.sim-intro-hero-icons,
+/* Shared glass panels: how-to, feature cards */
 .sim-intro-howto,
 .sim-intro-feature {
   background: var(--sim-glass-bg);
@@ -165,96 +195,6 @@
   border: 1px solid var(--sim-glass-border);
   border-radius: var(--sim-r-panel);
   box-shadow: var(--sim-glass-shadow);
-}
-
-.sim-intro-hero-icons {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  width: 100%;
-  max-width: min(100%, 26rem);
-  margin: 0 auto;
-  padding: 1.35rem 1.15rem;
-  box-sizing: border-box;
-}
-
-.sim-intro-hero-icon-cell {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(3.5rem, 11vw, 4.2rem);
-  height: clamp(3.5rem, 11vw, 4.2rem);
-  border-radius: 12px;
-  background: linear-gradient(145deg, #10b981, #047857);
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
-}
-
-.sim-intro-hero-icon-cell--calc {
-  background: linear-gradient(145deg, #a855f7, #6d28d9);
-  box-shadow: 0 4px 16px rgba(109, 40, 217, 0.35);
-}
-
-.sim-intro-hero-icon {
-  font-size: clamp(1.45rem, 4.2vw, 1.8rem);
-  line-height: 1;
-  color: #f0fdf4;
-}
-
-.sim-intro-hero-icon-sep {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 0.8rem;
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: rgba(5, 150, 105, 0.48);
-  user-select: none;
-  line-height: 1;
-}
-
-.sim-intro-hero-icon-sep::before {
-  content: '\2193';
-  font-family: var(--sans, 'Noto Sans JP', sans-serif);
-}
-
-/* 2カラム時はアイコンを横並びにし、右カラムの余白と重量感を揃える */
-@media (min-width: 721px) {
-  .sim-intro-hero-grid {
-    align-items: center;
-  }
-
-  .sim-intro-hero-icons {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.55rem 0.5rem;
-    padding: clamp(1.25rem, 2.5vw, 1.65rem) clamp(1rem, 2.5vw, 1.5rem);
-    max-width: none;
-  }
-
-  .sim-intro-hero-icon-sep {
-    width: auto;
-    min-width: 0.75rem;
-    min-height: 0;
-    flex-shrink: 0;
-  }
-
-  .sim-intro-hero-icon-sep::before {
-    content: '\2192';
-  }
-
-  .sim-intro-hero-icon-cell {
-    width: clamp(3.65rem, 7vw, 4.35rem);
-    height: clamp(3.65rem, 7vw, 4.35rem);
-  }
-
-  .sim-intro-hero-icon {
-    font-size: clamp(1.5rem, 3.5vw, 1.85rem);
-  }
 }
 
 .sim-intro-inner {
@@ -472,10 +412,6 @@
     opacity: 0.88;
   }
 
-  .sim-intro-hero-catch {
-    color: #6ee7b7;
-  }
-
   .sim-intro-hero-cta {
     box-shadow:
       0 2px 4px rgba(0, 0, 0, 0.2),
@@ -499,8 +435,46 @@
     );
   }
 
-  .sim-intro-hero-icon-sep {
-    color: rgba(110, 231, 183, 0.42);
+  .sim-intro-hero {
+    background-color: #1a2421;
+    background-image:
+      linear-gradient(
+        100deg,
+        rgba(15, 23, 21, 0.94) 0%,
+        rgba(15, 23, 21, 0.8) 42%,
+        rgba(15, 23, 21, 0.52) 72%,
+        rgba(15, 23, 21, 0.28) 100%
+      ),
+      url('../assets/car.jpg');
+  }
+
+  .sim-intro-hero-heading {
+    color: #ecfdf5;
+    text-shadow:
+      0 0 28px rgba(15, 23, 21, 0.75),
+      0 2px 6px rgba(0, 0, 0, 0.45);
+  }
+
+  .sim-intro-hero-lead {
+    color: #d1fae5;
+    font-weight: 500;
+    text-shadow:
+      0 0 18px rgba(15, 23, 21, 0.65),
+      0 1px 3px rgba(0, 0, 0, 0.35);
+  }
+
+  .sim-intro-hero-catch {
+    color: #a7f3d0;
+    text-shadow:
+      0 0 16px rgba(15, 23, 21, 0.7),
+      0 1px 3px rgba(0, 0, 0, 0.35);
+  }
+
+  .sim-intro-hero-copy .sim-intro-eyebrow {
+    color: #5eead4;
+    text-shadow:
+      0 0 14px rgba(15, 23, 21, 0.65),
+      0 1px 2px rgba(0, 0, 0, 0.3);
   }
 
   .sim-intro-eyebrow {
@@ -532,15 +506,17 @@
 }
 
 @media (max-width: 720px) {
+  .sim-intro-hero {
+    background-position: center;
+  }
+
   .sim-intro-hero-grid {
-    grid-template-columns: 1fr;
     text-align: center;
   }
 
-  .sim-intro-hero-visual {
-    order: -1;
-    min-height: 0;
-    padding-bottom: 0.35rem;
+  .sim-intro-hero-copy {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .sim-intro-hero-lead {

@@ -242,6 +242,13 @@ function App() {
     setEngine(formatEngineToThreeDecimals(engine))
   }
 
+  const errorAlert =
+    error != null && error !== '' ? (
+      <p className="error" role="alert">
+        {error}
+      </p>
+    ) : null
+
   return (
     <div className="app">
       <AppHeader hasResult={Boolean(result)} />
@@ -286,12 +293,7 @@ function App() {
                 onCalculate={handleCalculate}
                 loading={loading}
               />
-
-              {error && (
-                <p className="error" role="alert">
-                  {error}
-                </p>
-              )}
+              {errorAlert}
             </main>
           }
         />

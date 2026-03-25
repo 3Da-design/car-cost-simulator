@@ -20,7 +20,7 @@ export default function AppHeader({ hasResult = false }) {
     { to: '/#sim-intro', label: '概要', menuIcon: 'fa-circle-info' },
     { to: '/#simulation-input', label: '入力', menuIcon: 'fa-keyboard' },
     ...(hasResult
-      ? [{ to: '/result', label: '結果', menuIcon: 'fa-chart-pie' }]
+      ? [{ to: '/result#simulation-result', label: '結果', menuIcon: 'fa-chart-pie' }]
       : []),
   ]
 
