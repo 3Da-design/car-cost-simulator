@@ -7,12 +7,33 @@
 }
 
 .main {
+  display: flex;
   flex-direction: column;
   gap: 2.25rem;
   padding: 2rem 1rem;
   max-width: 90%;
   margin: 0 auto;
   width: 100%;
+}
+
+.result-page-back {
+  margin: 0;
+}
+
+.result-page-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-h, inherit);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.result-page-back-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 .error {

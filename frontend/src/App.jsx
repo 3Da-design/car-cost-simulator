@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom'
 import './App.css'
 import { API_BASE } from './constants.js'
 import AppHeader from './components/AppHeader.jsx'
@@ -7,6 +8,7 @@ import SimulatorInput from './components/SimulatorInput.jsx'
 import ResultSection from './components/ResultSection.jsx'
 
 function App() {
+  const navigate = useNavigate()
   const [cars, setCars] = useState([])
   const [selectedCarId, setSelectedCarId] = useState('')
   const [distance, setDistance] = useState(10000)
@@ -25,7 +27,6 @@ function App() {
   const [importLoading, setImportLoading] = useState(false)
   const [selectedMaker, setSelectedMaker] = useState('')
   const fileInputRef = useRef(null)
-  const resultSectionRef = useRef(null)
   const formatEngineToThreeDecimals = (value) => {
     const numeric = Number(value)
     if (!Number.isFinite(numeric)) return ''
@@ -56,11 +57,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!result) return
-    resultSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [result])
-
-  useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- 車種選択時に一覧の値を入力欄へ反映 */
     if (!selectedCarId || !cars.length) return
     const car = cars.find((c) => String(c.id) === selectedCarId)
     if (car) {
@@ -69,6 +66,7 @@ function App() {
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [selectedCarId, cars])
 
   const carDisplayName = (c) => (c.maker && c.model ? `${c.maker} ${c.model}` : (c.name || ''))
@@ -125,6 +123,7 @@ function App() {
       .then((data) => {
         if (data.error) throw new Error(data.error)
         setResult(data)
+        navigate('/result')
       })
       .catch(() => setError('計算に失敗しました'))
       .finally(() => setLoading(false))
@@ -247,57 +246,74 @@ function App() {
     <div className="app">
       <AppHeader hasResult={Boolean(result)} />
 
-      <main className="main">
-        <SimulatorIntro />
-        <SimulatorInput
-          fileInputRef={fileInputRef}
-          importLoading={importLoading}
-          importMessage={importMessage}
-          onExportCsv={handleExportCsv}
-          onImportCsv={handleImportCsv}
-          selectedMaker={selectedMaker}
-          makerOptions={makerOptions}
-          onMakerChange={handleMakerChange}
-          modelOptions={modelOptions}
-          onModelChipSelect={handleModelChipSelect}
-          selectedCarId={selectedCarId}
-          distance={distance}
-          setDistance={setDistance}
-          fuel={fuel}
-          setFuel={setFuel}
-          gasPrice={gasPrice}
-          setGasPrice={setGasPrice}
-          price={price}
-          setPrice={setPrice}
-          engine={engine}
-          setEngine={setEngine}
-          onEngineBlur={handleEngineBlur}
-          insurance={insurance}
-          setInsurance={setInsurance}
-          parking={parking}
-          setParking={setParking}
-          inspection={inspection}
-          setInspection={setInspection}
-          ownershipYears={ownershipYears}
-          setOwnershipYears={setOwnershipYears}
-          onCalculate={handleCalculate}
-          loading={loading}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <main className="main">
+              <SimulatorIntro />
+              <SimulatorInput
+                fileInputRef={fileInputRef}
+                importLoading={importLoading}
+                importMessage={importMessage}
+                onExportCsv={handleExportCsv}
+                onImportCsv={handleImportCsv}
+                selectedMaker={selectedMaker}
+                makerOptions={makerOptions}
+                onMakerChange={handleMakerChange}
+                modelOptions={modelOptions}
+                onModelChipSelect={handleModelChipSelect}
+                selectedCarId={selectedCarId}
+                distance={distance}
+                setDistance={setDistance}
+                fuel={fuel}
+                setFuel={setFuel}
+                gasPrice={gasPrice}
+                setGasPrice={setGasPrice}
+                price={price}
+                setPrice={setPrice}
+                engine={engine}
+                setEngine={setEngine}
+                onEngineBlur={handleEngineBlur}
+                insurance={insurance}
+                setInsurance={setInsurance}
+                parking={parking}
+                setParking={setParking}
+                inspection={inspection}
+                setInspection={setInspection}
+                ownershipYears={ownershipYears}
+                setOwnershipYears={setOwnershipYears}
+                onCalculate={handleCalculate}
+                loading={loading}
+              />
+
+              {error && (
+                <p className="error" role="alert">
+                  {error}
+                </p>
+              )}
+            </main>
+          }
         />
-
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
-        )}
-
-        {result && (
-          <ResultSection
-            ref={resultSectionRef}
-            result={result}
-            onDownloadResult={handleDownloadResult}
-          />
-        )}
-      </main>
+        <Route
+          path="/result"
+          element={
+            result ? (
+              <main className="main">
+                <nav className="result-page-back" aria-label="ページ移動">
+                  <Link to="/" className="result-page-back-link">
+                    入力に戻る
+                  </Link>
+                </nav>
+                <ResultSection result={result} onDownloadResult={handleDownloadResult} />
+              </main>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   )
 }

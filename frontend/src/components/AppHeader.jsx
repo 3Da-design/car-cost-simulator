@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import './AppHeader.css'
 
 const SCROLL_THRESHOLD = 40
@@ -16,10 +17,10 @@ export default function AppHeader({ hasResult = false }) {
   const rafRef = useRef(null)
 
   const navItems = [
-    { href: '#sim-intro', label: '概要', menuIcon: 'fa-circle-info' },
-    { href: '#simulation-input', label: '入力', menuIcon: 'fa-keyboard' },
+    { to: '/#sim-intro', label: '概要', menuIcon: 'fa-circle-info' },
+    { to: '/#simulation-input', label: '入力', menuIcon: 'fa-keyboard' },
     ...(hasResult
-      ? [{ href: '#simulation-result', label: '結果', menuIcon: 'fa-chart-pie' }]
+      ? [{ to: '/result', label: '結果', menuIcon: 'fa-chart-pie' }]
       : []),
   ]
 
@@ -81,8 +82,8 @@ export default function AppHeader({ hasResult = false }) {
     <header ref={headerRef} className={headerClass}>
       <div className="header-inner">
         <h1 className="header-title">
-          <a
-            href="#sim-intro"
+          <Link
+            to="/#sim-intro"
             className="header-title-link"
             aria-label={isScrolled ? '自動車維持費シミュレーター（概要へ）' : undefined}
           >
@@ -92,15 +93,15 @@ export default function AppHeader({ hasResult = false }) {
             <span className="header-title-icon-wrap" aria-hidden="true">
               <i className="fa-solid fa-car header-title-icon" />
             </span>
-          </a>
+          </Link>
         </h1>
         <nav className="header-nav" aria-label="ページ内">
           <ul className="header-nav-inline">
             {navItems.map((item) => (
-              <li key={item.href}>
-                <a href={item.href} className="header-nav-link">
+              <li key={item.to}>
+                <Link to={item.to} className="header-nav-link">
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -130,9 +131,9 @@ export default function AppHeader({ hasResult = false }) {
             >
               <ul className="header-menu-list">
                 {navItems.map((item) => (
-                  <li key={item.href}>
-                    <a
-                      href={item.href}
+                  <li key={item.to}>
+                    <Link
+                      to={item.to}
                       className="header-menu-link"
                       aria-label={item.label}
                       onClick={() => setMenuOpen(false)}
@@ -141,7 +142,7 @@ export default function AppHeader({ hasResult = false }) {
                         className={`fa-solid ${item.menuIcon} header-menu-link-icon`}
                         aria-hidden="true"
                       />
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
