@@ -94,7 +94,8 @@ const ResultSection = forwardRef(function ResultSection({ result, onDownloadResu
           入力・結果をダウンロード
         </button>
       </div>
-      <div className="result-summary">
+      <div className="result-main">
+        <div className="result-summary">
         <div className="result-block">
           <span className="result-label">年間維持費</span>
           <span className="result-value">{result.total.toLocaleString()}円</span>
@@ -141,10 +142,10 @@ const ResultSection = forwardRef(function ResultSection({ result, onDownloadResu
           </span>
           <span className="result-value">{result.monthly_with_vehicle.toLocaleString()}円</span>
         </div>
-      </div>
-      <div className="breakdown">
-        <h3>内訳</h3>
-        <ul>
+        </div>
+        <div className="breakdown">
+          <h3>内訳</h3>
+          <ul>
           <li className="breakdown-item breakdown-item--gas">
             <span className="breakdown-item-label">ガソリン</span>
             <span className="breakdown-item-value">{result.gas_cost.toLocaleString()}円</span>
@@ -169,11 +170,11 @@ const ResultSection = forwardRef(function ResultSection({ result, onDownloadResu
             <span className="breakdown-item-label">車両価格（年換算）</span>
             <span className="breakdown-item-value">{result.vehicle_annual.toLocaleString()}円</span>
           </li>
-        </ul>
-      </div>
-      {chartData && (
-        <div className="chart-wrap">
-          <Doughnut
+          </ul>
+        </div>
+        {chartData && (
+          <div className="chart-wrap">
+            <Doughnut
             data={chartData}
             plugins={[doughnutSegmentLabelsPlugin]}
             options={{
@@ -198,9 +199,10 @@ const ResultSection = forwardRef(function ResultSection({ result, onDownloadResu
                 },
               },
             }}
-          />
-        </div>
-      )}
+            />
+          </div>
+        )}
+      </div>
     </section>
   )
 })
