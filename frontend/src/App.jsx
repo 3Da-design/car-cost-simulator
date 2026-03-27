@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom'
 import './App.css'
 import { API_BASE } from './constants.js'
 import AppHeader from './components/AppHeader.jsx'
@@ -8,8 +7,8 @@ import SimulatorInput from './components/SimulatorInput.jsx'
 import ResultSection from './components/ResultSection.jsx'
 
 function App() {
-  const navigate = useNavigate()
   const [cars, setCars] = useState([])
+  const [activeView, setActiveView] = useState('intro')
   const [selectedCarId, setSelectedCarId] = useState('')
   const [distance, setDistance] = useState(10000)
   const [gasPrice, setGasPrice] = useState(170)
@@ -123,7 +122,7 @@ function App() {
       .then((data) => {
         if (data.error) throw new Error(data.error)
         setResult(data)
-        navigate('/result')
+        setActiveView('result')
       })
       .catch(() => setError('計算に失敗しました'))
       .finally(() => setLoading(false))
@@ -249,73 +248,100 @@ function App() {
       </p>
     ) : null
 
+  const navItems = [
+    { key: 'intro', label: '概要', icon: 'fa-circle-info' },
+    { key: 'input', label: '入力', icon: 'fa-keyboard' },
+    { key: 'result', label: '結果', icon: 'fa-chart-pie', disabled: !result },
+  ]
+
+  const renderMainContent = () => {
+    if (activeView === 'intro') return <SimulatorIntro />
+    if (activeView === 'input') {
+      return (
+        <main className="main">
+          <SimulatorInput
+            fileInputRef={fileInputRef}
+            importLoading={importLoading}
+            importMessage={importMessage}
+            onExportCsv={handleExportCsv}
+            onImportCsv={handleImportCsv}
+            selectedMaker={selectedMaker}
+            makerOptions={makerOptions}
+            onMakerChange={handleMakerChange}
+            modelOptions={modelOptions}
+            onModelChipSelect={handleModelChipSelect}
+            selectedCarId={selectedCarId}
+            distance={distance}
+            setDistance={setDistance}
+            fuel={fuel}
+            setFuel={setFuel}
+            gasPrice={gasPrice}
+            setGasPrice={setGasPrice}
+            price={price}
+            setPrice={setPrice}
+            engine={engine}
+            setEngine={setEngine}
+            onEngineBlur={handleEngineBlur}
+            insurance={insurance}
+            setInsurance={setInsurance}
+            parking={parking}
+            setParking={setParking}
+            inspection={inspection}
+            setInspection={setInspection}
+            ownershipYears={ownershipYears}
+            setOwnershipYears={setOwnershipYears}
+            onCalculate={handleCalculate}
+            loading={loading}
+          />
+          {errorAlert}
+        </main>
+      )
+    }
+    if (!result) {
+      return (
+        <main className="main">
+          <p className="error" role="alert">
+            先に入力画面で計算を実行してください。
+          </p>
+        </main>
+      )
+    }
+    return (
+      <main className="main">
+        <ResultSection result={result} onDownloadResult={handleDownloadResult} />
+      </main>
+    )
+  }
+
   return (
     <div className="app">
-      <AppHeader hasResult={Boolean(result)} />
-
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <main className="main">
-              <SimulatorIntro />
-              <SimulatorInput
-                fileInputRef={fileInputRef}
-                importLoading={importLoading}
-                importMessage={importMessage}
-                onExportCsv={handleExportCsv}
-                onImportCsv={handleImportCsv}
-                selectedMaker={selectedMaker}
-                makerOptions={makerOptions}
-                onMakerChange={handleMakerChange}
-                modelOptions={modelOptions}
-                onModelChipSelect={handleModelChipSelect}
-                selectedCarId={selectedCarId}
-                distance={distance}
-                setDistance={setDistance}
-                fuel={fuel}
-                setFuel={setFuel}
-                gasPrice={gasPrice}
-                setGasPrice={setGasPrice}
-                price={price}
-                setPrice={setPrice}
-                engine={engine}
-                setEngine={setEngine}
-                onEngineBlur={handleEngineBlur}
-                insurance={insurance}
-                setInsurance={setInsurance}
-                parking={parking}
-                setParking={setParking}
-                inspection={inspection}
-                setInspection={setInspection}
-                ownershipYears={ownershipYears}
-                setOwnershipYears={setOwnershipYears}
-                onCalculate={handleCalculate}
-                loading={loading}
-              />
-              {errorAlert}
-            </main>
-          }
-        />
-        <Route
-          path="/result"
-          element={
-            result ? (
-              <main className="main">
-                <nav className="result-page-back" aria-label="ページ移動">
-                  <Link to="/" className="result-page-back-link">
-                    入力に戻る
-                  </Link>
-                </nav>
-                <ResultSection result={result} onDownloadResult={handleDownloadResult} />
-              </main>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AppHeader hasResult={Boolean(result)} showNav={false} />
+      <div className="spa-layout">
+        <aside className="left-nav" aria-label="コンテンツ切り替え">
+          <ul className="left-nav-list">
+            {navItems.map((item) => {
+              const isActive = item.key === activeView
+              return (
+                <li key={item.key}>
+                  <button
+                    type="button"
+                    className={`left-nav-button ${isActive ? 'is-active' : ''}`}
+                    onClick={() => setActiveView(item.key)}
+                    disabled={item.disabled}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
+                    <span>{item.label}</span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </aside>
+        <section className="content-pane">
+          {renderMainContent()}
+        </section>
+      </div>
     </div>
   )
 }

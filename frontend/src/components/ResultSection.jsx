@@ -5,7 +5,6 @@ import './ResultSection.css'
 
 ChartJS.register(ArcElement, Tooltip)
 
-/** ドーナツの各扇形内に項目名を描画する（凡例だけだと対応が分かりづらい場合向け） */
 const doughnutSegmentLabelsPlugin = {
   id: 'doughnutSegmentLabels',
   afterDatasetsDraw(chart) {
