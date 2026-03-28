@@ -123,8 +123,16 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         if (data.error) throw new Error(data.error)
-        setResult(data)
-        setActiveView('result')
+        flushSync(() => {
+          setResult(data)
+          setActiveView('result')
+        })
+        window.requestAnimationFrame(() => {
+          document.getElementById('simulation-result')?.scrollIntoView({
+            block: 'start',
+            behavior: 'smooth',
+          })
+        })
       })
       .catch(() => setError('計算に失敗しました'))
       .finally(() => setLoading(false))

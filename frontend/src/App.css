@@ -77,6 +77,8 @@
 
 .content-pane {
   min-width: 0;
+  /* グリッド行がビューポートいっぱいに伸びても、本文は上端から並べる */
+  align-self: start;
 }
 
 .main {

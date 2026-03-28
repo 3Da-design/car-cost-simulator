@@ -96,51 +96,57 @@ const ResultSection = forwardRef(function ResultSection({ result, onDownloadResu
       </div>
       <div className="result-main">
         <div className="result-summary">
-          <div className="result-block">
-            <span className="result-label">年間維持費</span>
-            <span className="result-value">{result.total.toLocaleString()}円</span>
-          </div>
-          <div className="result-block">
-            <span className="result-label">月間維持費</span>
-            <span className="result-value">{result.monthly.toLocaleString()}円</span>
-          </div>
-          <div className="result-block">
-            <span className="result-label">
-              年間合計（総額
-              <span className="result-info">
-                <button
-                  type="button"
-                  className="result-info-mark"
-                  aria-label="総額*の内訳を表示"
-                >
-                  ※
-                </button>
-                <span className="result-info-body" role="tooltip">
-                  維持費 + 車両価格（年換算）
-                </span>
-              </span>
-              ）
-            </span>
-            <span className="result-value">{result.total_with_vehicle.toLocaleString()}円</span>
-          </div>
-          <div className="result-block">
-            <span className="result-label">
-              月間合計（総額
-              <span className="result-info">
-                <button
-                  type="button"
-                  className="result-info-mark"
-                  aria-label="総額*の内訳を表示"
-                >
-                  ※
-                </button>
-                <span className="result-info-body" role="tooltip">
-                  維持費 + 車両価格（年換算）÷12
-                </span>
-              </span>
-              ）
-            </span>
-            <span className="result-value">{result.monthly_with_vehicle.toLocaleString()}円</span>
+          <div className="result-summary-card">
+            <dl className="result-summary-table">
+              <div className="result-summary-row">
+                <dt className="result-summary-dt">年間維持費</dt>
+                <dd className="result-summary-dd" aria-label={`年間維持費 ${result.total.toLocaleString()}円`}>
+                  {result.total.toLocaleString()}円
+                </dd>
+              </div>
+              <div className="result-summary-row">
+                <dt className="result-summary-dt">月間維持費</dt>
+                <dd className="result-summary-dd">{result.monthly.toLocaleString()}円</dd>
+              </div>
+              <div className="result-summary-row">
+                <dt className="result-summary-dt">
+                  年間合計（総額
+                  <span className="result-info">
+                    <button
+                      type="button"
+                      className="result-info-mark"
+                      aria-label="総額*の内訳を表示"
+                    >
+                      ※
+                    </button>
+                    <span className="result-info-body" role="tooltip">
+                      維持費 + 車両価格（年換算）
+                    </span>
+                  </span>
+                  ）
+                </dt>
+                <dd className="result-summary-dd">{result.total_with_vehicle.toLocaleString()}円</dd>
+              </div>
+              <div className="result-summary-row">
+                <dt className="result-summary-dt">
+                  月間合計（総額
+                  <span className="result-info">
+                    <button
+                      type="button"
+                      className="result-info-mark"
+                      aria-label="総額*の内訳を表示"
+                    >
+                      ※
+                    </button>
+                    <span className="result-info-body" role="tooltip">
+                      維持費 + 車両価格（年換算）÷12
+                    </span>
+                  </span>
+                  ）
+                </dt>
+                <dd className="result-summary-dd">{result.monthly_with_vehicle.toLocaleString()}円</dd>
+              </div>
+            </dl>
           </div>
         </div>
         <div className="breakdown">
