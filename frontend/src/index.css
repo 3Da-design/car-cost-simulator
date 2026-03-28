@@ -6,10 +6,18 @@
   --border: #e8e6ec;
   --surface: #fff;
   --code-bg: #f0eef4;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --text-on-accent: #fff;
+  /* AppHeader と揃えた黒＋アクセント黄 */
+  --app-ink: #0a0a0a;
+  --app-accent: #ffd921;
+  /* 入力／結果などページ内セクション見出し（純黒ではなく黄みのダークトーンで統一） */
+  --page-section-title-color: #5c5340;
+  --page-section-title-size: clamp(1.2rem, 2.35vw, 1.3rem);
+  --page-section-title-weight: 700;
+  --page-section-title-tracking: 0.06em;
+  --accent: #ffd921;
+  --accent-bg: rgba(255, 217, 33, 0.12);
+  --accent-border: rgba(255, 217, 33, 0.5);
+  --text-on-accent: #0a0a0a;
   --error: #c62828;
   --error-bg: #ffebee;
   --success: #2e7d32;
@@ -17,11 +25,12 @@
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
   --shadow-hover: 0 8px 28px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
 
-  --chart-1: #6366f1;
-  --chart-2: #10b981;
-  --chart-3: #f59e0b;
-  --chart-4: #8b5cf6;
-  --chart-5: #ec4899;
+  /* モノトーン＋黄（ドーナツの区別用） */
+  --chart-1: #1a1a1a;
+  --chart-2: #ffd921;
+  --chart-3: #6b6b6b;
+  --chart-4: #a3a3a3;
+  --chart-5: #d4d4d4;
 
   --sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --heading: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -55,16 +64,23 @@
     --border: #2c2a32;
     --surface: #1c1a22;
     --code-bg: #242228;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --text-on-accent: #fff;
+    --accent: #ffd921;
+    --accent-bg: rgba(255, 217, 33, 0.14);
+    --accent-border: rgba(255, 217, 33, 0.45);
+    --text-on-accent: #0a0a0a;
+    --page-section-title-color: #e8dd9a;
     --error: #ef5350;
     --error-bg: #3d1c1c;
     --success: #66bb6a;
     --social-bg: rgba(44, 42, 50, 0.6);
     --shadow: 0 4px 24px rgba(0, 0, 0, 0.35), 0 1px 4px rgba(0, 0, 0, 0.2);
     --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+
+    --chart-1: #e5e5e5;
+    --chart-2: #ffd921;
+    --chart-3: #9ca3af;
+    --chart-4: #6b7280;
+    --chart-5: #4b5563;
   }
 
   #social .button-icon {
@@ -101,6 +117,34 @@ body {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+}
+
+/* イントロの .sim-intro-eyebrow と同系統（入力・結果ブロック用） */
+.spa-section-eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #3d3d3d;
+  opacity: 0.92;
+}
+
+.spa-section-header-lead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.spa-section-header-lead h2 {
+  margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .spa-section-eyebrow {
+    color: rgba(226, 232, 240, 0.78);
+  }
 }
 
 /* ===== タイポグラフィ ===== */

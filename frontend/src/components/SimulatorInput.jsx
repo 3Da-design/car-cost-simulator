@@ -83,7 +83,12 @@ export default function SimulatorInput({
   return (
     <section className="form-section" id="simulation-input">
       <div className="form-section-header">
-        <h2>入力</h2>
+        <div className="spa-section-header-lead">
+          <p className="spa-section-eyebrow" aria-hidden="true">
+            Input
+          </p>
+          <h2>入力</h2>
+        </div>
         <div className="csv-tools">
           <button
             type="button"

@@ -1,11 +1,12 @@
 .form-section {
   background: var(--surface);
   border-radius: var(--radius-lg, 14px);
-  padding: 1rem;
+  /* .result-section と同じ内側余白・はみ出し扱い */
+  padding: 1.75rem 1.5rem;
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .form-section::before {
@@ -15,7 +16,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, #10b981, #059669);
+  background: linear-gradient(180deg, #0a0a0a, #ffd921);
   border-radius: var(--radius-lg, 14px) 0 0 var(--radius-lg, 14px);
 }
 
@@ -32,11 +33,11 @@
 
 .form-section-header h2,
 .form-section h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--page-section-title-size);
+  font-weight: var(--page-section-title-weight);
   margin: 0;
-  color: var(--text-h);
-  letter-spacing: 0.04em;
+  color: var(--page-section-title-color);
+  letter-spacing: var(--page-section-title-tracking);
 }
 
 .form-grid {
@@ -148,9 +149,9 @@
 }
 
 .model-initial-chip--active {
-  border-color: #047857;
-  background: #047857;
-  color: #ecfdf5;
+  border-color: #0a0a0a;
+  background: #0a0a0a;
+  color: #ffd921;
 }
 
 .model-picker-list {
@@ -179,11 +180,11 @@
 }
 
 .model-list-item:hover {
-  background: rgba(5, 150, 105, 0.08);
+  background: rgba(255, 217, 33, 0.08);
 }
 
 .model-list-item--selected {
-  background: rgba(5, 150, 105, 0.15);
+  background: rgba(255, 217, 33, 0.14);
   font-weight: 700;
 }
 
@@ -215,7 +216,7 @@
 }
 
 .input-block + .input-block {
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
 }
 
 .input-block-title {
@@ -252,8 +253,8 @@
 .form-grid input:focus,
 .form-grid select:focus {
   outline: none;
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  border-color: #0a0a0a;
+  box-shadow: 0 0 0 3px rgba(255, 217, 33, 0.35);
 }
 
 .car-combobox-wrap {
@@ -291,7 +292,7 @@
 
 .car-combobox-item:hover,
 .car-combobox-item--highlight {
-  background: rgba(5, 150, 105, 0.1);
+  background: rgba(255, 217, 33, 0.1);
 }
 
 .car-combobox-item--empty {
@@ -312,18 +313,19 @@
   padding: 0.75rem 1.75rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #f0fdf4;
-  background: linear-gradient(180deg, #059669 0%, #047857 100%);
-  border: none;
+  color: #ffd921;
+  background: #0a0a0a;
+  border: 1px solid #ffd921;
   border-radius: var(--radius-md, 10px);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.14);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .calc-button:hover:not(:disabled) {
-  filter: brightness(1.06);
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: #ffd921;
+  color: #0a0a0a;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 .calc-button:active:not(:disabled) {
@@ -355,30 +357,30 @@
   padding: 0.6rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #f0fdf4;
-  background: linear-gradient(180deg, #047857 0%, #065f46 100%);
-  border: 1px solid #059669;
+  color: #ffd921;
+  background: #0a0a0a;
+  border: 1px solid #ffd921;
   border-radius: var(--radius-md, 10px);
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
   box-sizing: border-box;
-  letter-spacing: 0.03em;
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
 }
 
 .csv-export-button:hover,
 .csv-import-button:hover:not(:disabled) {
-  background: linear-gradient(180deg, #059669 0%, #047857 100%);
-  border-color: #10b981;
-  color: #ecfdf5;
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: #ffd921;
+  border-color: #ffd921;
+  color: #0a0a0a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
   transform: translateY(-1px);
 }
 
 .csv-export-button:active:not(:disabled),
 .csv-import-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
 }
 
 .csv-import-button:disabled {
@@ -396,57 +398,62 @@
 
 @media (prefers-color-scheme: dark) {
   .form-section::before {
-    background: linear-gradient(180deg, #34d399, #10b981);
+    background: linear-gradient(180deg, #0a0a0a, #ffd921);
   }
   .form-grid input:focus,
   .form-grid select:focus {
-    border-color: #34d399;
-    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+    border-color: #ffd921;
+    box-shadow: 0 0 0 3px rgba(255, 217, 33, 0.22);
   }
   .car-combobox-item:hover,
   .car-combobox-item--highlight {
-    background: rgba(52, 211, 153, 0.15);
+    background: rgba(255, 217, 33, 0.12);
   }
   .model-list-item:hover {
-    background: rgba(52, 211, 153, 0.16);
+    background: rgba(255, 217, 33, 0.1);
   }
   .model-list-item--selected {
-    background: rgba(16, 185, 129, 0.24);
+    background: rgba(255, 217, 33, 0.18);
   }
   .model-initial-chip--active {
-    border-color: #10b981;
-    background: #065f46;
+    border-color: #ffd921;
+    background: #0a0a0a;
+    color: #ffd921;
   }
   .csv-export-button,
   .csv-import-button {
-    color: #ecfdf5;
-    background: linear-gradient(180deg, #065f46 0%, #047857 100%);
-    border-color: #34d399;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    color: #ffd921;
+    background: #0a0a0a;
+    border-color: #ffd921;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   }
   .csv-export-button:hover,
   .csv-import-button:hover:not(:disabled) {
-    background: linear-gradient(180deg, #047857 0%, #059669 100%);
-    border-color: #6ee7b7;
-    color: #f0fdf4;
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: #ffd921;
+    border-color: #ffd921;
+    color: #0a0a0a;
+    box-shadow: 0 4px 20px rgba(255, 217, 33, 0.2);
   }
   .calc-button {
-    background: linear-gradient(180deg, #047857 0%, #065f46 100%);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: #0a0a0a;
+    color: #ffd921;
+    border-color: #ffd921;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   }
   .calc-button:hover:not(:disabled) {
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: #ffd921;
+    color: #0a0a0a;
+    box-shadow: 0 4px 20px rgba(255, 217, 33, 0.22);
   }
 }
 
 @media (max-width: 640px) {
   .form-section {
-    padding: 1.25rem 1rem;
+    padding: 1.75rem 1.5rem;
   }
 
   .input-block + .input-block {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
   }
 
   .form-grid {

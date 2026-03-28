@@ -85,7 +85,12 @@ const ResultSection = forwardRef(function ResultSection({ result, onDownloadResu
   return (
     <section ref={ref} className="result-section" id="simulation-result" aria-label="計算結果">
       <div className="result-section-header">
-        <h2>結果</h2>
+        <div className="spa-section-header-lead">
+          <p className="spa-section-eyebrow" aria-hidden="true">
+            Result
+          </p>
+          <h2>結果</h2>
+        </div>
         <button
           type="button"
           className="result-download-button"
