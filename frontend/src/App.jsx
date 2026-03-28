@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import { flushSync } from 'react-dom'
 import './App.css'
 import { API_BASE } from './constants.js'
 import AppHeader from './components/AppHeader.jsx'
+import AppFooter from './components/AppFooter.jsx'
 import SimulatorIntro from './components/SimulatorIntro.jsx'
 import SimulatorInput from './components/SimulatorInput.jsx'
 import ResultSection from './components/ResultSection.jsx'
@@ -254,6 +256,21 @@ function App() {
     { key: 'result', label: '結果', icon: 'fa-chart-pie', disabled: !result },
   ]
 
+  const navigateToFooterSection = (view, sectionId) => {
+    const scrollTo = () => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      window.history.replaceState(null, '', `#${sectionId}`)
+    }
+    if (activeView === view) {
+      window.requestAnimationFrame(scrollTo)
+      return
+    }
+    flushSync(() => {
+      setActiveView(view)
+    })
+    window.requestAnimationFrame(scrollTo)
+  }
+
   const renderMainContent = () => {
     if (activeView === 'intro') return <SimulatorIntro />
     if (activeView === 'input') {
@@ -342,6 +359,7 @@ function App() {
           {renderMainContent()}
         </section>
       </div>
+      <AppFooter hasResult={Boolean(result)} onNavigateToSection={navigateToFooterSection} />
     </div>
   )
 }

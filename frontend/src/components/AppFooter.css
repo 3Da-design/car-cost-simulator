@@ -1,0 +1,155 @@
+/* PLAYWORK (https://pwork.jp) のフッター帯を参考: ダーク背景・ブランドイエロー (#ffd921)・ Zen Kaku 系 */
+
+.app-footer {
+  --footer-bg: #0a0a0a;
+  --footer-text: rgba(255, 255, 255, 0.88);
+  --footer-muted: rgba(255, 255, 255, 0.55);
+
+  width: 100%;
+  margin-top: auto;
+  padding: 0;
+  font-family: 'Zen Kaku Gothic New', var(--sans);
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  border-top: 4px solid var(--footer-accent, #ffd921);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.app-footer-inner {
+  margin: 0;
+  padding: 2rem var(--layout-edge, 2rem) 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.app-footer-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+}
+
+.app-footer-brand {
+  min-width: min(100%, 280px);
+}
+
+.app-footer-brand-name {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: #fff;
+}
+
+.app-footer-brand-tag {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--footer-muted);
+}
+
+.app-footer-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1.5rem;
+}
+
+.app-footer-nav-link {
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--footer-text);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: inherit;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+button.app-footer-nav-link {
+  display: inline;
+}
+
+.app-footer-nav-link:hover:not(.is-disabled) {
+  color: var(--footer-accent, #ffd921);
+}
+
+.app-footer-nav-link.is-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.app-footer-note {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--footer-muted);
+  max-width: 48rem;
+}
+
+.app-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.app-footer-copy {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  color: var(--footer-muted);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.app-footer-back {
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--footer-accent, #ffd921);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+button.app-footer-back {
+  display: inline;
+}
+
+.app-footer-back:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+  .app-footer-inner {
+    padding: 1.6rem var(--layout-edge, 2rem) 1.5rem;
+  }
+
+  .app-footer-nav-list {
+    gap: 0.5rem 1.1rem;
+  }
+}
+
+/* ライト/ダークの OS 設定に依存せず、常に PLAYWORK 風のダークフッターを維持 */

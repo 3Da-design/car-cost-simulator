@@ -1,4 +1,15 @@
+/* 左ナビ（.left-nav-list）とヘッダー／フッターの左端を一致させる */
+:root {
+  --spa-margin: 1rem;
+  --spa-pad-x: 1rem;
+  --layout-edge: calc(var(--spa-margin) + var(--spa-pad-x));
+}
+
 .app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100%;
   width: 100%;
   margin: 0 auto;
   padding: 0;
@@ -7,11 +18,13 @@
 }
 
 .spa-layout {
+  flex: 1;
   display: grid;
   grid-template-columns: minmax(132px, 190px) minmax(0, 1fr);
   gap: 1rem;
-  margin: 1rem;
-  padding: 1rem 1rem 1.5rem;
+  margin: var(--spa-margin);
+  padding: 1rem var(--spa-pad-x) 1.5rem;
+  min-height: 0;
 }
 
 .left-nav {
