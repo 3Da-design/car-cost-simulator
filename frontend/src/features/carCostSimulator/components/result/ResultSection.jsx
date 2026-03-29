@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
-import SpaSectionLead from './ui/SpaSectionLead.jsx'
-import ResultDownloadButton from './ui/ResultDownloadButton.jsx'
+import SpaSectionLead from '../../../../components/SpaSectionLead.jsx'
+import ResultDownloadButton from '../../../../components/ResultDownloadButton.jsx'
 import './ResultSection.css'
 
 ChartJS.register(ArcElement, Tooltip)

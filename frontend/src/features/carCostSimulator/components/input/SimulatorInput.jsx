@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import SpaSectionLead from './ui/SpaSectionLead.jsx'
-import CsvExportButton from './ui/CsvExportButton.jsx'
-import CsvImportButton from './ui/CsvImportButton.jsx'
-import CalcButton from './ui/CalcButton.jsx'
+import SpaSectionLead from '../../../../components/SpaSectionLead.jsx'
+import CsvExportButton from '../../../../components/CsvExportButton.jsx'
+import CsvImportButton from '../../../../components/CsvImportButton.jsx'
+import CalcButton from '../../../../components/CalcButton.jsx'
+import { carFieldMeta } from '../../../../schemas/carFields.js'
 import './SimulatorInput.css'
 
 export default function SimulatorInput({
@@ -182,6 +183,8 @@ export default function SimulatorInput({
             <input
               type="number"
               min="0"
+              max={carFieldMeta.distance.max}
+              step={carFieldMeta.distance.step}
               placeholder="例: 10000"
               value={distance}
               onChange={(e) => setDistance(e.target.value)}
