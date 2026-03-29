@@ -264,6 +264,19 @@ function App() {
     { key: 'result', label: '結果', icon: 'fa-chart-pie', disabled: !result },
   ]
 
+  const navigateToInput = () => {
+    flushSync(() => {
+      setActiveView('input')
+    })
+    window.requestAnimationFrame(() => {
+      document.getElementById('simulation-input')?.scrollIntoView({
+        block: 'start',
+        behavior: 'smooth',
+      })
+      window.history.replaceState(null, '', '#simulation-input')
+    })
+  }
+
   const navigateToFooterSection = (view, sectionId) => {
     const scrollTo = () => {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -280,7 +293,7 @@ function App() {
   }
 
   const renderMainContent = () => {
-    if (activeView === 'intro') return <SimulatorIntro />
+    if (activeView === 'intro') return <SimulatorIntro onGoToInput={navigateToInput} />
     if (activeView === 'input') {
       return (
         <main className="main">

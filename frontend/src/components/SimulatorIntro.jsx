@@ -1,6 +1,6 @@
 import './SimulatorIntro.css'
 
-export default function SimulatorIntro() {
+export default function SimulatorIntro({ onGoToInput }) {
   return (
     <section
       className="sim-intro"
@@ -24,7 +24,16 @@ export default function SimulatorIntro() {
             <p className="sim-intro-hero-lead">
               ガソリン・税金・車検・保険・駐車場まで、ざっくりでも「持ち出し感」を掴める無料の概算ツールです。
             </p>
-            <a href="#simulation-input" className="sim-intro-hero-cta">
+            <a
+              href="#simulation-input"
+              className="sim-intro-hero-cta"
+              onClick={(e) => {
+                if (onGoToInput) {
+                  e.preventDefault()
+                  onGoToInput()
+                }
+              }}
+            >
               条件を入力する
             </a>
           </div>
