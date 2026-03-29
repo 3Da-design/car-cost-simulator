@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import SpaSectionLead from './ui/SpaSectionLead.jsx'
+import CsvExportButton from './ui/CsvExportButton.jsx'
+import CsvImportButton from './ui/CsvImportButton.jsx'
+import CalcButton from './ui/CalcButton.jsx'
 import './SimulatorInput.css'
 
 export default function SimulatorInput({
@@ -83,28 +87,13 @@ export default function SimulatorInput({
   return (
     <section className="form-section" id="simulation-input">
       <div className="form-section-header">
-        <div className="spa-section-header-lead">
-          <p className="spa-section-eyebrow" aria-hidden="true">
-            Input
-          </p>
-          <h2>入力</h2>
-        </div>
+        <SpaSectionLead eyebrow="Input">入力</SpaSectionLead>
         <div className="csv-tools">
-          <button
-            type="button"
-            className="csv-export-button"
-            onClick={onExportCsv}
-          >
-            CSVでダウンロード
-          </button>
-          <button
-            type="button"
-            className="csv-import-button"
+          <CsvExportButton onClick={onExportCsv} />
+          <CsvImportButton
             onClick={() => fileInputRef.current?.click()}
             disabled={importLoading}
-          >
-            CSVをインポート
-          </button>
+          />
           <input
             ref={fileInputRef}
             type="file"
@@ -262,14 +251,7 @@ export default function SimulatorInput({
         </div>
       </div>
       <div className="form-actions">
-        <button
-          type="button"
-          className="calc-button"
-          onClick={onCalculate}
-          disabled={loading}
-        >
-          {loading ? '計算中…' : '計算'}
-        </button>
+        <CalcButton onClick={onCalculate} loading={loading} />
       </div>
       {importMessage && (
         <p className={importMessage.type === 'success' ? 'import-success' : 'error'}>

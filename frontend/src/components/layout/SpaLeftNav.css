@@ -1,0 +1,66 @@
+.left-nav {
+  position: sticky;
+  top: 4.25rem;
+  align-self: start;
+}
+
+.left-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 14px);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.left-nav-button {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-h);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.left-nav-button:hover:not(:disabled) {
+  background: var(--accent-bg);
+}
+
+.left-nav-button.is-active {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.left-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .left-nav {
+    position: static;
+  }
+
+  .left-nav-list {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.4rem;
+    overflow-x: auto;
+  }
+
+  .left-nav-button {
+    white-space: nowrap;
+    justify-content: center;
+    border-radius: 999px;
+  }
+}

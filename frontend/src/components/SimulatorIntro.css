@@ -179,7 +179,6 @@
   opacity: 0.9;
 }
 
-/* Shared glass panels: how-to, feature cards */
 .sim-intro-howto,
 .sim-intro-feature {
   background: var(--sim-glass-bg);

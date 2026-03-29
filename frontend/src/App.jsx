@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import './App.css'
 import { API_BASE } from './constants.js'
-import AppHeader from './components/AppHeader.jsx'
-import AppFooter from './components/AppFooter.jsx'
+import AppHeader from './components/layout/AppHeader.jsx'
+import AppFooter from './components/layout/AppFooter.jsx'
+import SpaLeftNav from './components/layout/SpaLeftNav.jsx'
 import SimulatorIntro from './components/SimulatorIntro.jsx'
 import SimulatorInput from './components/SimulatorInput.jsx'
 import ResultSection from './components/ResultSection.jsx'
@@ -58,7 +59,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-    /* eslint-disable react-hooks/set-state-in-effect -- 車種選択時に一覧の値を入力欄へ反映 */
     if (!selectedCarId || !cars.length) return
     const car = cars.find((c) => String(c.id) === selectedCarId)
     if (car) {
@@ -67,7 +67,6 @@ function App() {
       setPrice(String(car.price))
       setInspection(car.inspection ?? 100000)
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
   }, [selectedCarId, cars])
 
   const carDisplayName = (c) => (c.maker && c.model ? `${c.maker} ${c.model}` : (c.name || ''))
@@ -259,9 +258,9 @@ function App() {
     ) : null
 
   const navItems = [
-    { key: 'intro', label: '概要', icon: 'fa-circle-info' },
-    { key: 'input', label: '入力', icon: 'fa-keyboard' },
-    { key: 'result', label: '結果', icon: 'fa-chart-pie', disabled: !result },
+    { id: 'intro', label: '概要', icon: 'fa-circle-info' },
+    { id: 'input', label: '入力', icon: 'fa-keyboard' },
+    { id: 'result', label: '結果', icon: 'fa-chart-pie', disabled: !result },
   ]
 
   const navigateToInput = () => {
@@ -355,27 +354,7 @@ function App() {
     <div className="app">
       <AppHeader hasResult={Boolean(result)} showNav={false} />
       <div className="spa-layout">
-        <aside className="left-nav" aria-label="コンテンツ切り替え">
-          <ul className="left-nav-list">
-            {navItems.map((item) => {
-              const isActive = item.key === activeView
-              return (
-                <li key={item.key}>
-                  <button
-                    type="button"
-                    className={`left-nav-button ${isActive ? 'is-active' : ''}`}
-                    onClick={() => setActiveView(item.key)}
-                    disabled={item.disabled}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
-                    <span>{item.label}</span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </aside>
+        <SpaLeftNav items={navItems} activeId={activeView} onSelect={setActiveView} />
         <section className="content-pane">
           {renderMainContent()}
         </section>
