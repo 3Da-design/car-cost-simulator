@@ -24,4 +24,19 @@
  * @property {number} parking_annual
  */
 
+/**
+ * 結果画面「計算の前提」に渡す入力のスナップショット
+ * @typedef {Object} ResultAssumptions
+ * @property {string} [carName]
+ * @property {string|number} [distance]
+ * @property {string|number} [fuel]
+ * @property {string|number} [gasPrice]
+ * @property {string|number} [engine]
+ * @property {string|number} [price]
+ * @property {string|number} [insurance]
+ * @property {string|number} [parking]
+ * @property {string|number} [inspection]
+ * @property {string|number} [ownershipYears]
+ */
+
 export {}

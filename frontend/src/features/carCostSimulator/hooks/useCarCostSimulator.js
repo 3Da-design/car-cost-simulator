@@ -65,10 +65,12 @@ export function useCarCostSimulator() {
     [carsByMaker]
   )
 
-  const selectedCarName = useMemo(
-    () => state.cars.find((c) => String(c.id) === state.selectedCarId)?.name || '',
-    [state.cars, state.selectedCarId]
-  )
+  const selectedCarName = useMemo(() => {
+    const c = state.cars.find((x) => String(x.id) === state.selectedCarId)
+    if (!c) return ''
+    // DB/API には name がなく maker+model のみのため、入力チップと同じ表示ルールに合わせる
+    return c.name || c.model || carDisplayName(c)
+  }, [state.cars, state.selectedCarId])
 
   const handleCarSelect = useCallback(
     (car) => {
@@ -279,6 +281,7 @@ export function useCarCostSimulator() {
 
   return {
     state,
+    selectedCarName,
     fileInputRef,
     makerOptions,
     modelOptions,

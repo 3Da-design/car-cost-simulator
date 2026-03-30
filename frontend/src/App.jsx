@@ -10,6 +10,7 @@ import { useCarCostSimulator } from './features/carCostSimulator/hooks/useCarCos
 function App() {
   const {
     state,
+    selectedCarName,
     fileInputRef,
     makerOptions,
     modelOptions,
@@ -113,7 +114,22 @@ function App() {
     }
     return (
       <main className="main">
-        <ResultSection result={result} onDownloadResult={handleDownloadResult} />
+        <ResultSection
+          result={result}
+          onDownloadResult={handleDownloadResult}
+          assumptions={{
+            carName: selectedCarName,
+            distance,
+            fuel,
+            gasPrice,
+            engine,
+            price,
+            insurance,
+            parking,
+            inspection,
+            ownershipYears,
+          }}
+        />
       </main>
     )
   }
