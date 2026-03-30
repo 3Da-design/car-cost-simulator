@@ -1,4 +1,5 @@
 export const initialSimulatorState = {
+  simulatorMode: 'gasoline_hybrid',
   cars: [],
   activeView: 'intro',
   selectedCarId: '',
@@ -17,4 +18,11 @@ export const initialSimulatorState = {
   importMessage: null,
   importLoading: false,
   selectedMaker: '',
+  /** plugin_ev 専用 */
+  powertrain: 'bev',
+  electricWhPerKm: '',
+  hydrogenKmPerKg: '',
+  electricityPrice: 27,
+  hydrogenPrice: 1200,
+  phevEvRatio: 0.5,
 }

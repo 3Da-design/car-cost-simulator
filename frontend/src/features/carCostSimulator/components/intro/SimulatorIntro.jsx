@@ -1,6 +1,11 @@
 import './SimulatorIntro.css'
 
-export default function SimulatorIntro({ onGoToInput }) {
+/**
+ * @param {object} props
+ * @param {() => void} props.onSelectGasoline
+ * @param {() => void} props.onSelectPlugin
+ */
+export default function SimulatorIntro({ onSelectGasoline, onSelectPlugin }) {
   return (
     <section
       className="sim-intro"
@@ -22,20 +27,16 @@ export default function SimulatorIntro({ onGoToInput }) {
               <span className="sim-intro-hero-catch-line">条件で試せる。</span>
             </p>
             <p className="sim-intro-hero-lead">
-              ガソリン・税金・車検・保険・駐車場まで、ざっくりでも「持ち出し感」を掴める無料の概算ツールです。
+              ガソリン車・ハイブリッドと、BEV・PHEV・燃料電池で画面を分けています。車種データのCSVも区分ごとにインポートできます。
             </p>
-            <a
-              href="#simulation-input"
-              className="sim-intro-hero-cta"
-              onClick={(e) => {
-                if (onGoToInput) {
-                  e.preventDefault()
-                  onGoToInput()
-                }
-              }}
-            >
-              条件を入力する
-            </a>
+            <div className="sim-intro-hero-cta-row">
+              <button type="button" className="sim-intro-hero-cta" onClick={onSelectGasoline}>
+                ガソリン車・HVで試す
+              </button>
+              <button type="button" className="sim-intro-hero-cta sim-intro-hero-cta--secondary" onClick={onSelectPlugin}>
+                BEV・PHEV・FCVで試す
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -50,8 +51,10 @@ export default function SimulatorIntro({ onGoToInput }) {
           年間・月間の維持費を、入力条件から概算できます
         </h2>
         <p className="sim-intro-lead">
-          メーカーと車種を選ぶと、車両価格・排気量・燃費・車検費用の目安などが自動で入ります。<br />
-          年間走行距離やガソリン単価、任意保険・駐車場代、保有年数を足し合わせて、維持費のイメージをつかめます。
+          メーカーと車種を選ぶと、車両価格・燃費や電費・車検費用の目安などが自動で入ります。
+          <br />
+          ガソリン/HV は従来どおり燃費とガソリン単価。プラグイン系は電気・水素・ガソリンの単価と、PHEV
+          の電気走行の割合を足し合わせて試せます。
         </p>
 
         <div className="sim-intro-howto">
@@ -64,9 +67,9 @@ export default function SimulatorIntro({ onGoToInput }) {
                 <i className="fa-solid fa-car sim-intro-howto-icon" />
               </span>
               <div className="sim-intro-howto-step-body">
-                <span className="sim-intro-howto-step-label">メーカーと車種を選ぶ</span>
+                <span className="sim-intro-howto-step-label">区分を選び、メーカーと車種を選ぶ</span>
                 <span className="sim-intro-howto-step-text">
-                  入力エリアでメーカーを選び、車種チップからモデルを指定します。価格・排気量・燃費・車検の目安が自動で入ります。
+                  概要で「ガソリン車・HV」か「BEV・PHEV・FCV」の入力画面を開き、メーカーと車種を指定します。
                 </span>
               </div>
             </li>
@@ -77,7 +80,7 @@ export default function SimulatorIntro({ onGoToInput }) {
               <div className="sim-intro-howto-step-body">
                 <span className="sim-intro-howto-step-label">条件を入力・調整する</span>
                 <span className="sim-intro-howto-step-text">
-                  年間走行距離、ガソリン単価、任意保険、駐車場代、保有年数など、ご自身の想定に合わせて編集できます。
+                  年間走行距離、単価、任意保険、駐車場代、保有年数など、ご自身の想定に合わせて編集できます。
                 </span>
               </div>
             </li>
@@ -88,7 +91,7 @@ export default function SimulatorIntro({ onGoToInput }) {
               <div className="sim-intro-howto-step-body">
                 <span className="sim-intro-howto-step-label">「計算する」を押す</span>
                 <span className="sim-intro-howto-step-text">
-                  ボタン一つで年間・月間の維持費と、ガソリン・税金・車検などの内訳が求められます。
+                  ボタン一つで年間・月間の維持費と、区分に合ったコスト内訳が求められます。
                 </span>
               </div>
             </li>
@@ -130,13 +133,13 @@ export default function SimulatorIntro({ onGoToInput }) {
               3
             </span>
             <span className="sim-intro-feature-text">
-              <span className="sim-intro-feature-label">CSV で入出力</span>
-              条件の保存や共有に、エクスポート・インポートが使えます。
+              <span className="sim-intro-feature-label">区分別CSVで入出力</span>
+              ガソリン/HV用とプラグイン系用のCSVをそれぞれエクスポート・インポートできます。
             </span>
           </li>
         </ul>
         <p className="sim-intro-note" role="note">
-          表示はあくまで目安です。ガソリン価格・保険料・駐車場などは地域や契約内容で大きく変わるため、実際の金額とは異なる場合があります。
+          表示はあくまで目安です。ガソリン価格・電気・水素の単価・保険料・駐車場などは地域や契約内容で大きく変わるため、実際の金額とは異なる場合があります。
         </p>
       </div>
     </section>

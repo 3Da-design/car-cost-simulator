@@ -77,11 +77,11 @@ function formatYenDisplay(n) {
 
 /**
  * @param {object} props
- * @param {import('../../types/simulator.types.js').CalcResult} props.result
+ * @param {import('../../types/simulator.types.js').CalcResultGasolineHybrid} props.result
  * @param {() => void} props.onDownloadResult
  * @param {import('../../types/simulator.types.js').ResultAssumptions} [props.assumptions]
  */
-const ResultSection = forwardRef(function ResultSection(
+const ResultSectionGasolineHybrid = forwardRef(function ResultSectionGasolineHybrid(
   { result, onDownloadResult, assumptions = {} },
   ref
 ) {
@@ -101,12 +101,9 @@ const ResultSection = forwardRef(function ResultSection(
   const derived = useMemo(() => {
     const fuelNum = Number(fuel) || 0
     const distNum = Number(distance) || 0
-    const annualLiters =
-      fuelNum > 0 ? distNum / fuelNum : null
-    const perKmMaint =
-      distNum > 0 && result ? result.total / distNum : null
-    const perKmWithVehicle =
-      distNum > 0 && result ? result.total_with_vehicle / distNum : null
+    const annualLiters = fuelNum > 0 ? distNum / fuelNum : null
+    const perKmMaint = distNum > 0 && result ? result.total / distNum : null
+    const perKmWithVehicle = distNum > 0 && result ? result.total_with_vehicle / distNum : null
     return { annualLiters, perKmMaint, perKmWithVehicle, distNum, fuelNum }
   }, [fuel, distance, result])
 
@@ -180,10 +177,12 @@ const ResultSection = forwardRef(function ResultSection(
       ? '燃費（km/L）と年間走行距離を入力すると表示されます'
       : undefined
 
+  if (!result) return null
+
   return (
     <section ref={ref} className="result-section" id="simulation-result" aria-label="計算結果">
       <div className="result-section-header">
-        <SpaSectionLead eyebrow="Result">結果</SpaSectionLead>
+        <SpaSectionLead eyebrow="Result · ガソリン/HV">結果</SpaSectionLead>
         <ResultDownloadButton onClick={onDownloadResult} />
       </div>
       <div className="result-main">
@@ -263,10 +262,7 @@ const ResultSection = forwardRef(function ResultSection(
                   </span>
                 ) : null}
               </dt>
-              <dd
-                className="result-derived-value"
-                title={litersTitle}
-              >
+              <dd className="result-derived-value" title={litersTitle}>
                 {derived.annualLiters != null
                   ? `${derived.annualLiters.toLocaleString('ja-JP', {
                       minimumFractionDigits: 0,
@@ -322,11 +318,7 @@ const ResultSection = forwardRef(function ResultSection(
                 <dt className="result-summary-dt">
                   年間合計（総額
                   <span className="result-info">
-                    <button
-                      type="button"
-                      className="result-info-mark"
-                      aria-label="総額*の内訳を表示"
-                    >
+                    <button type="button" className="result-info-mark" aria-label="総額*の内訳を表示">
                       ※
                     </button>
                     <span className="result-info-body" role="tooltip">
@@ -341,11 +333,7 @@ const ResultSection = forwardRef(function ResultSection(
                 <dt className="result-summary-dt">
                   月間合計（総額
                   <span className="result-info">
-                    <button
-                      type="button"
-                      className="result-info-mark"
-                      aria-label="総額*の内訳を表示"
-                    >
+                    <button type="button" className="result-info-mark" aria-label="総額*の内訳を表示">
                       ※
                     </button>
                     <span className="result-info-body" role="tooltip">
@@ -377,10 +365,7 @@ const ResultSection = forwardRef(function ResultSection(
             <li className="breakdown-item breakdown-item--vehicle">
               <span className="breakdown-item-label">車両価格（年換算）</span>
               <span className="breakdown-item-value">{result.vehicle_annual.toLocaleString()}円</span>
-              <span
-                className="breakdown-item-pct"
-                aria-label={`車両価格 総額に占める割合 ${vehiclePct}`}
-              >
+              <span className="breakdown-item-pct" aria-label={`車両価格 総額に占める割合 ${vehiclePct}`}>
                 {vehiclePct}
               </span>
             </li>
@@ -423,4 +408,4 @@ const ResultSection = forwardRef(function ResultSection(
   )
 })
 
-export default ResultSection
+export default ResultSectionGasolineHybrid

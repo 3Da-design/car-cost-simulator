@@ -16,10 +16,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../lib/cars_schema.php';
+
+$segment = isset($_GET['segment']) ? trim((string) $_GET['segment']) : '';
+$allowed = ['gasoline_hybrid', 'plugin_ev', ''];
+if ($segment !== '' && !in_array($segment, ['gasoline_hybrid', 'plugin_ev'], true)) {
+  http_response_code(400);
+  echo json_encode(['error' => 'segment は gasoline_hybrid または plugin_ev です']);
+  exit;
+}
 
 try {
   $pdo = getPdo();
-  $stmt = $pdo->query('SELECT id, maker, model, fuel, engine, price, inspection FROM cars ORDER BY maker, model');
+  ensure_cars_extended_columns($pdo);
+  migrate_electric_km_per_kwh_to_wh_per_km($pdo);
+
+  $sql = 'SELECT id, segment, powertrain, maker, model, fuel, electric_wh_per_km, hydrogen_km_per_kg, engine, price, inspection FROM cars';
+  if ($segment === 'gasoline_hybrid' || $segment === 'plugin_ev') {
+    $sql .= ' WHERE segment = ' . $pdo->quote($segment);
+  }
+  $sql .= ' ORDER BY maker, model';
+
+  $stmt = $pdo->query($sql);
   $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
   echo json_encode($cars);
 } catch (PDOException $e) {

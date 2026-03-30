@@ -62,7 +62,7 @@ npm run dev
 mysql -u root -p < database/schema.sql
 ```
 
-実行後、アプリの「CSVインポート」で `cars.csv` を再度インポートしてください。
+実行後、アプリの「CSVインポート」で、ガソリン/HV 用の `cars_gasoline_hybrid.csv` と BEV・PHEV・FCV 用の `cars_plugin_ev.csv` をそれぞれ該当する入力画面からインポートしてください。
 
 ## プロジェクト構成
 

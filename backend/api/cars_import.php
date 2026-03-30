@@ -17,6 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
+$segment = isset($_GET['segment']) ? trim((string) $_GET['segment']) : (isset($_POST['segment']) ? trim((string) $_POST['segment']) : '');
+if ($segment !== 'gasoline_hybrid' && $segment !== 'plugin_ev') {
+  http_response_code(400);
+  ob_end_clean();
+  echo json_encode(['error' => 'segment に gasoline_hybrid または plugin_ev を指定してください']);
+  exit;
+}
+
 if (!isset($_FILES['csv']) || $_FILES['csv']['error'] !== UPLOAD_ERR_OK) {
   http_response_code(400);
   ob_end_clean();
@@ -45,36 +53,58 @@ $header = array_map('trim', $firstRow);
 if (isset($header[0]) && substr($header[0], 0, 3) === "\xEF\xBB\xBF") {
   $header[0] = ltrim($header[0], "\xEF\xBB\xBF");
 }
-$expected = ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'];
 $headerLower = array_map('strtolower', $header);
+
+if ($segment === 'gasoline_hybrid') {
+  $expected = ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'];
+  $expectedMsg = 'maker,model,fuel,engine,price,inspection';
+} else {
+  $expected = ['maker', 'model', 'powertrain', 'electric_wh_per_km', 'fuel', 'hydrogen_km_per_kg', 'engine', 'price', 'inspection'];
+  $expectedMsg = 'maker,model,powertrain,electric_wh_per_km,fuel,hydrogen_km_per_kg,engine,price,inspection';
+}
+
 foreach ($expected as $col) {
   if (!in_array($col, $headerLower, true)) {
     fclose($handle);
     http_response_code(400);
     ob_end_clean();
-    echo json_encode(['error' => 'CSVの1行目は maker,model,fuel,engine,price,inspection である必要があります']);
+    echo json_encode(['error' => "CSVの1行目は {$expectedMsg} である必要があります"]);
     exit;
   }
 }
-$makerIdx = array_search('maker', $headerLower, true);
-$modelIdx = array_search('model', $headerLower, true);
-$fuelIdx = array_search('fuel', $headerLower, true);
-$engineIdx = array_search('engine', $headerLower, true);
-$priceIdx = array_search('price', $headerLower, true);
-$inspectionIdx = array_search('inspection', $headerLower, true);
+
+$idx = [];
+foreach ($expected as $col) {
+  $idx[$col] = array_search($col, $headerLower, true);
+}
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../lib/cars_schema.php';
 
 try {
   $pdo = getPdo();
+  ensure_cars_extended_columns($pdo);
+  migrate_electric_km_per_kwh_to_wh_per_km($pdo);
   $pdo->exec("ALTER TABLE cars MODIFY engine DECIMAL(5,3) NOT NULL COMMENT '排気量 L（小数点以下3桁）'");
+
   $pdo->beginTransaction();
-  $pdo->exec('DELETE FROM cars');
-  $stmt = $pdo->prepare('INSERT INTO cars (maker, model, fuel, engine, price, inspection) VALUES (?, ?, ?, ?, ?, ?)');
+  $segQuoted = $pdo->quote($segment);
+  $pdo->exec("DELETE FROM cars WHERE segment = {$segQuoted}");
+
+  if ($segment === 'gasoline_hybrid') {
+    $stmt = $pdo->prepare(
+      'INSERT INTO cars (maker, model, fuel, engine, price, inspection, segment, powertrain, electric_wh_per_km, hydrogen_km_per_kg) VALUES (?, ?, ?, ?, ?, ?, \'gasoline_hybrid\', NULL, NULL, NULL)'
+    );
+  } else {
+    $stmt = $pdo->prepare(
+      'INSERT INTO cars (maker, model, powertrain, fuel, electric_wh_per_km, hydrogen_km_per_kg, engine, price, inspection, segment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, \'plugin_ev\')'
+    );
+  }
+
   $imported = 0;
   $lineNum = 1;
+  $maxIdx = max($idx);
 
-  $maxIdx = max($makerIdx, $modelIdx, $fuelIdx, $engineIdx, $priceIdx, $inspectionIdx);
   while (($row = fgetcsv($handle, 0, ',', '"', '')) !== false) {
     $lineNum++;
     if (count($row) <= $maxIdx) {
@@ -88,15 +118,12 @@ try {
       echo json_encode(['error' => "{$lineNum}行目: 列数が不足しています"]);
       exit;
     }
-    $maker = trim($row[$makerIdx] ?? '');
-    $model = trim($row[$modelIdx] ?? '');
+
+    $maker = trim($row[$idx['maker']] ?? '');
+    $model = trim($row[$idx['model']] ?? '');
     if ($maker === '' && $model === '' && trim(implode('', $row)) === '') {
       continue;
     }
-    $fuelRaw = trim($row[$fuelIdx] ?? '');
-    $engineRaw = trim($row[$engineIdx] ?? '');
-    $priceRaw = trim($row[$priceIdx] ?? '');
-    $inspectionRaw = isset($row[$inspectionIdx]) ? trim($row[$inspectionIdx]) : '';
 
     if ($maker === '') {
       $pdo->rollBack();
@@ -112,37 +139,129 @@ try {
       echo json_encode(['error' => "{$lineNum}行目: 車種名が空です"]);
       exit;
     }
-    if ($fuelRaw === '' || !is_numeric($fuelRaw) || (float)$fuelRaw < 0) {
-      $pdo->rollBack();
-      fclose($handle);
-      ob_end_clean();
-      echo json_encode(['error' => "{$lineNum}行目: 燃費は0以上の数で入力してください"]);
-      exit;
-    }
-    if ($engineRaw === '' || !is_numeric($engineRaw) || (float)$engineRaw < 0 || (float)$engineRaw > 20) {
-      $pdo->rollBack();
-      fclose($handle);
-      ob_end_clean();
-      echo json_encode(['error' => "{$lineNum}行目: 排気量は0以上20以下の数（L）で入力してください"]);
-      exit;
-    }
-    if ($priceRaw === '' || !is_numeric($priceRaw) || (int)$priceRaw < 0) {
-      $pdo->rollBack();
-      fclose($handle);
-      ob_end_clean();
-      echo json_encode(['error' => "{$lineNum}行目: 車両価格は0以上の数で入力してください"]);
-      exit;
+
+    if ($segment === 'gasoline_hybrid') {
+      $fuelRaw = trim($row[$idx['fuel']] ?? '');
+      $engineRaw = trim($row[$idx['engine']] ?? '');
+      $priceRaw = trim($row[$idx['price']] ?? '');
+      $inspectionRaw = isset($row[$idx['inspection']]) ? trim($row[$idx['inspection']]) : '';
+
+      if ($fuelRaw === '' || !is_numeric($fuelRaw) || (float) $fuelRaw < 0) {
+        $pdo->rollBack();
+        fclose($handle);
+        ob_end_clean();
+        echo json_encode(['error' => "{$lineNum}行目: 燃費は0以上の数で入力してください"]);
+        exit;
+      }
+      if ($engineRaw === '' || !is_numeric($engineRaw) || (float) $engineRaw < 0 || (float) $engineRaw > 20) {
+        $pdo->rollBack();
+        fclose($handle);
+        ob_end_clean();
+        echo json_encode(['error' => "{$lineNum}行目: 排気量は0以上20以下の数（L）で入力してください"]);
+        exit;
+      }
+      if ($priceRaw === '' || !is_numeric($priceRaw) || (int) $priceRaw < 0) {
+        $pdo->rollBack();
+        fclose($handle);
+        ob_end_clean();
+        echo json_encode(['error' => "{$lineNum}行目: 車両価格は0以上の数で入力してください"]);
+        exit;
+      }
+
+      $fuel = (float) $fuelRaw;
+      $engine = round((float) $engineRaw, 3);
+      $price = (int) $priceRaw;
+      $inspection = $inspectionRaw === '' ? null : (int) $inspectionRaw;
+      if ($inspection !== null && $inspection < 0) {
+        $inspection = null;
+      }
+
+      $stmt->execute([$maker, $model, $fuel, $engine, $price, $inspection]);
+    } else {
+      $ptRaw = strtolower(trim($row[$idx['powertrain']] ?? ''));
+      $elecRaw = trim($row[$idx['electric_wh_per_km']] ?? '');
+      $fuelRaw = trim($row[$idx['fuel']] ?? '');
+      $hydRaw = trim($row[$idx['hydrogen_km_per_kg']] ?? '');
+      $engineRaw = trim($row[$idx['engine']] ?? '');
+      $priceRaw = trim($row[$idx['price']] ?? '');
+      $inspectionRaw = isset($row[$idx['inspection']]) ? trim($row[$idx['inspection']]) : '';
+
+      if (!in_array($ptRaw, ['bev', 'phev', 'fcv'], true)) {
+        $pdo->rollBack();
+        fclose($handle);
+        ob_end_clean();
+        echo json_encode(['error' => "{$lineNum}行目: powertrain は bev / phev / fcv のいずれかです"]);
+        exit;
+      }
+
+      if ($fuelRaw === '' || !is_numeric($fuelRaw) || (float) $fuelRaw < 0) {
+        $pdo->rollBack();
+        fclose($handle);
+        ob_end_clean();
+        echo json_encode(['error' => "{$lineNum}行目: fuel（ガソリン時 km/L）は0以上の数で入力してください"]);
+        exit;
+      }
+      if ($engineRaw === '' || !is_numeric($engineRaw) || (float) $engineRaw < 0 || (float) $engineRaw > 20) {
+        $pdo->rollBack();
+        fclose($handle);
+        ob_end_clean();
+        echo json_encode(['error' => "{$lineNum}行目: 排気量は0以上20以下の数（L）で入力してください"]);
+        exit;
+      }
+      if ($priceRaw === '' || !is_numeric($priceRaw) || (int) $priceRaw < 0) {
+        $pdo->rollBack();
+        fclose($handle);
+        ob_end_clean();
+        echo json_encode(['error' => "{$lineNum}行目: 車両価格は0以上の数で入力してください"]);
+        exit;
+      }
+
+      $elec = $elecRaw === '' ? null : (float) $elecRaw;
+      $hyd = $hydRaw === '' ? null : (float) $hydRaw;
+      $fuel = (float) $fuelRaw;
+      $engine = round((float) $engineRaw, 3);
+      $price = (int) $priceRaw;
+      $inspection = $inspectionRaw === '' ? null : (int) $inspectionRaw;
+      if ($inspection !== null && $inspection < 0) {
+        $inspection = null;
+      }
+
+      if ($ptRaw === 'bev') {
+        if ($elec === null || $elec <= 0) {
+          $pdo->rollBack();
+          fclose($handle);
+          ob_end_clean();
+          echo json_encode(['error' => "{$lineNum}行目: BEV は electric_wh_per_km（Wh/km）に正の数が必要です"]);
+          exit;
+        }
+      } elseif ($ptRaw === 'phev') {
+        if ($elec === null || $elec <= 0) {
+          $pdo->rollBack();
+          fclose($handle);
+          ob_end_clean();
+          echo json_encode(['error' => "{$lineNum}行目: PHEV は electric_wh_per_km（Wh/km）に正の数が必要です"]);
+          exit;
+        }
+        if ($fuel <= 0) {
+          $pdo->rollBack();
+          fclose($handle);
+          ob_end_clean();
+          echo json_encode(['error' => "{$lineNum}行目: PHEV は fuel（ガソリン時 km/L）に正の数が必要です"]);
+          exit;
+        }
+      } else {
+        if ($hyd === null || $hyd <= 0) {
+          $pdo->rollBack();
+          fclose($handle);
+          ob_end_clean();
+          echo json_encode(['error' => "{$lineNum}行目: FCV は hydrogen_km_per_kg に正の数が必要です"]);
+          exit;
+        }
+      }
+
+      $stmt->execute([$maker, $model, $ptRaw, $fuel, $elec, $hyd, $engine, $price, $inspection]);
     }
 
-    $fuel = (float)$fuelRaw;
-    $engine = round((float)$engineRaw, 3);
-    $price = (int)$priceRaw;
-    $inspection = $inspectionRaw === '' ? null : (int)$inspectionRaw;
-    if ($inspection !== null && $inspection < 0) {
-      $inspection = null;
-    }
-
-    $stmt->execute([$maker, $model, $fuel, $engine, $price, $inspection]);
     $imported++;
   }
 

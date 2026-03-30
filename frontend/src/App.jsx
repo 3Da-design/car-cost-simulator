@@ -3,8 +3,10 @@ import AppHeader from './features/app/components/layout/AppHeader.jsx'
 import AppFooter from './features/app/components/layout/AppFooter.jsx'
 import SpaLeftNav from './features/app/components/layout/SpaLeftNav.jsx'
 import SimulatorIntro from './features/carCostSimulator/components/intro/SimulatorIntro.jsx'
-import SimulatorInput from './features/carCostSimulator/components/input/SimulatorInput.jsx'
-import ResultSection from './features/carCostSimulator/components/result/ResultSection.jsx'
+import SimulatorInputGasolineHybrid from './features/carCostSimulator/components/input/SimulatorInputGasolineHybrid.jsx'
+import SimulatorInputPluginEv from './features/carCostSimulator/components/input/SimulatorInputPluginEv.jsx'
+import ResultSectionGasolineHybrid from './features/carCostSimulator/components/result/ResultSectionGasolineHybrid.jsx'
+import ResultSectionPluginEv from './features/carCostSimulator/components/result/ResultSectionPluginEv.jsx'
 import { useCarCostSimulator } from './features/carCostSimulator/hooks/useCarCostSimulator.js'
 
 function App() {
@@ -23,12 +25,14 @@ function App() {
     handleEngineBlur,
     navigateToInput,
     navigateToFooterSection,
+    selectSimulatorMode,
     setActiveView,
     patch,
   } = useCarCostSimulator()
 
   const {
     activeView,
+    simulatorMode,
     selectedCarId,
     distance,
     gasPrice,
@@ -45,6 +49,12 @@ function App() {
     importMessage,
     importLoading,
     selectedMaker,
+    powertrain,
+    electricWhPerKm,
+    hydrogenKmPerKg,
+    electricityPrice,
+    hydrogenPrice,
+    phevEvRatio,
   } = state
 
   const errorAlert =
@@ -61,44 +71,82 @@ function App() {
   ]
 
   const renderMainContent = () => {
-    if (activeView === 'intro') return <SimulatorIntro onGoToInput={navigateToInput} />
+    if (activeView === 'intro') {
+      return (
+        <SimulatorIntro
+          onSelectGasoline={() => selectSimulatorMode('gasoline_hybrid')}
+          onSelectPlugin={() => selectSimulatorMode('plugin_ev')}
+        />
+      )
+    }
     if (activeView === 'input') {
+      const inputCommon = {
+        fileInputRef,
+        importLoading,
+        importMessage,
+        onExportCsv: handleExportCsv,
+        onImportCsv: handleImportCsv,
+        selectedMaker,
+        makerOptions,
+        onMakerChange: handleMakerChange,
+        modelOptions,
+        onModelChipSelect: handleModelChipSelect,
+        selectedCarId,
+        distance,
+        setDistance: (v) => patch({ distance: v }),
+        insurance,
+        setInsurance: (v) => patch({ insurance: v }),
+        parking,
+        setParking: (v) => patch({ parking: v }),
+        inspection,
+        setInspection: (v) => patch({ inspection: v }),
+        ownershipYears,
+        setOwnershipYears: (v) => patch({ ownershipYears: v }),
+        onCalculate: handleCalculate,
+        loading,
+      }
+
       return (
         <main className="main">
-          <SimulatorInput
-            fileInputRef={fileInputRef}
-            importLoading={importLoading}
-            importMessage={importMessage}
-            onExportCsv={handleExportCsv}
-            onImportCsv={handleImportCsv}
-            selectedMaker={selectedMaker}
-            makerOptions={makerOptions}
-            onMakerChange={handleMakerChange}
-            modelOptions={modelOptions}
-            onModelChipSelect={handleModelChipSelect}
-            selectedCarId={selectedCarId}
-            distance={distance}
-            setDistance={(v) => patch({ distance: v })}
-            fuel={fuel}
-            setFuel={(v) => patch({ fuel: v })}
-            gasPrice={gasPrice}
-            setGasPrice={(v) => patch({ gasPrice: v })}
-            price={price}
-            setPrice={(v) => patch({ price: v })}
-            engine={engine}
-            setEngine={(v) => patch({ engine: v })}
-            onEngineBlur={handleEngineBlur}
-            insurance={insurance}
-            setInsurance={(v) => patch({ insurance: v })}
-            parking={parking}
-            setParking={(v) => patch({ parking: v })}
-            inspection={inspection}
-            setInspection={(v) => patch({ inspection: v })}
-            ownershipYears={ownershipYears}
-            setOwnershipYears={(v) => patch({ ownershipYears: v })}
-            onCalculate={handleCalculate}
-            loading={loading}
-          />
+          {simulatorMode === 'gasoline_hybrid' ? (
+            <SimulatorInputGasolineHybrid
+              {...inputCommon}
+              fuel={fuel}
+              setFuel={(v) => patch({ fuel: v })}
+              gasPrice={gasPrice}
+              setGasPrice={(v) => patch({ gasPrice: v })}
+              price={price}
+              setPrice={(v) => patch({ price: v })}
+              engine={engine}
+              setEngine={(v) => patch({ engine: v })}
+              onEngineBlur={handleEngineBlur}
+            />
+          ) : (
+            <SimulatorInputPluginEv
+              {...inputCommon}
+              fuel={fuel}
+              setFuel={(v) => patch({ fuel: v })}
+              gasPrice={gasPrice}
+              setGasPrice={(v) => patch({ gasPrice: v })}
+              price={price}
+              setPrice={(v) => patch({ price: v })}
+              engine={engine}
+              setEngine={(v) => patch({ engine: v })}
+              onEngineBlur={handleEngineBlur}
+              powertrain={powertrain}
+              setPowertrain={(v) => patch({ powertrain: v })}
+              electricWhPerKm={electricWhPerKm}
+              setElectricWhPerKm={(v) => patch({ electricWhPerKm: v })}
+              hydrogenKmPerKg={hydrogenKmPerKg}
+              setHydrogenKmPerKg={(v) => patch({ hydrogenKmPerKg: v })}
+              electricityPrice={electricityPrice}
+              setElectricityPrice={(v) => patch({ electricityPrice: v })}
+              hydrogenPrice={hydrogenPrice}
+              setHydrogenPrice={(v) => patch({ hydrogenPrice: v })}
+              phevEvRatio={phevEvRatio}
+              setPhevEvRatio={(v) => patch({ phevEvRatio: v })}
+            />
+          )}
           {errorAlert}
         </main>
       )
@@ -112,24 +160,52 @@ function App() {
         </main>
       )
     }
+
+    const isPlugin = result.calc_mode === 'plugin_ev'
+
     return (
       <main className="main">
-        <ResultSection
-          result={result}
-          onDownloadResult={handleDownloadResult}
-          assumptions={{
-            carName: selectedCarName,
-            distance,
-            fuel,
-            gasPrice,
-            engine,
-            price,
-            insurance,
-            parking,
-            inspection,
-            ownershipYears,
-          }}
-        />
+        {isPlugin ? (
+          <ResultSectionPluginEv
+            result={result}
+            onDownloadResult={handleDownloadResult}
+            assumptions={{
+              carName: selectedCarName,
+              distance,
+              fuel,
+              gasPrice,
+              engine,
+              price,
+              insurance,
+              parking,
+              inspection,
+              ownershipYears,
+              powertrain,
+              electricWhPerKm,
+              hydrogenKmPerKg,
+              electricityPrice,
+              hydrogenPrice,
+              phevEvRatio,
+            }}
+          />
+        ) : (
+          <ResultSectionGasolineHybrid
+            result={result}
+            onDownloadResult={handleDownloadResult}
+            assumptions={{
+              carName: selectedCarName,
+              distance,
+              fuel,
+              gasPrice,
+              engine,
+              price,
+              insurance,
+              parking,
+              inspection,
+              ownershipYears,
+            }}
+          />
+        )}
       </main>
     )
   }

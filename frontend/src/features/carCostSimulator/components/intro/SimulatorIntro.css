@@ -127,6 +127,13 @@
     0 1px 1px rgba(255, 255, 255, 0.45);
 }
 
+.sim-intro-hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 .sim-intro-hero-cta {
   display: inline-flex;
   align-items: center;
@@ -159,6 +166,24 @@
 .sim-intro-hero-cta:focus-visible {
   outline: 2px solid #ffd921;
   outline-offset: 3px;
+}
+
+button.sim-intro-hero-cta {
+  cursor: pointer;
+  border: 1px solid #ffd921;
+}
+
+.sim-intro-hero-cta--secondary {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0a0a0a;
+  border: 1px solid rgba(10, 10, 10, 0.35);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.sim-intro-hero-cta--secondary:hover {
+  background: #ffd921;
+  color: #0a0a0a;
+  border-color: #ffd921;
 }
 
 .sim-intro-divider {

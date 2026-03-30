@@ -15,7 +15,8 @@ export function useCarCostSimulator() {
   }, [])
 
   const fetchCars = useCallback(() => {
-    return fetch(`${API_BASE}/cars.php`)
+    const seg = state.simulatorMode
+    return fetch(`${API_BASE}/cars.php?segment=${encodeURIComponent(seg)}`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.error) {
@@ -30,7 +31,7 @@ export function useCarCostSimulator() {
         patch({ error: '車一覧の取得に失敗しました' })
         return []
       })
-  }, [patch])
+  }, [patch, state.simulatorMode])
 
   useEffect(() => {
     fetchCars()
@@ -60,7 +61,10 @@ export function useCarCostSimulator() {
     () =>
       carsByMaker.map((c) => ({
         id: String(c.id),
-        label: c.name || c.model || carDisplayName(c),
+        label:
+          c.segment === 'plugin_ev' && c.powertrain
+            ? `${c.name || c.model || carDisplayName(c)} [${String(c.powertrain).toUpperCase()}]`
+            : c.name || c.model || carDisplayName(c),
       })),
     [carsByMaker]
   )
@@ -68,7 +72,6 @@ export function useCarCostSimulator() {
   const selectedCarName = useMemo(() => {
     const c = state.cars.find((x) => String(x.id) === state.selectedCarId)
     if (!c) return ''
-    // DB/API には name がなく maker+model のみのため、入力チップと同じ表示ルールに合わせる
     return c.name || c.model || carDisplayName(c)
   }, [state.cars, state.selectedCarId])
 
@@ -96,20 +99,41 @@ export function useCarCostSimulator() {
 
   const handleCalculate = useCallback(() => {
     patch({ error: null, result: null, loading: true })
+    const baseBody = {
+      distance: Number(state.distance) || 0,
+      insurance: Number(state.insurance) || 0,
+      parking: Number(state.parking) || 0,
+      engine: Number(state.engine) || 0,
+      inspection: Number(state.inspection) || 0,
+      price: Number(state.price) || 0,
+      ownership_years: Number(state.ownershipYears) || 1,
+    }
+
+    const body =
+      state.simulatorMode === 'plugin_ev'
+        ? {
+            ...baseBody,
+            calc_mode: 'plugin_ev',
+            powertrain: state.powertrain,
+            fuel: Number(state.fuel) || 0,
+            electric_wh_per_km: Number(state.electricWhPerKm) || 0,
+            hydrogen_km_per_kg: Number(state.hydrogenKmPerKg) || 0,
+            electricity_price: Number(state.electricityPrice) || 0,
+            gas_price: Number(state.gasPrice) || 0,
+            hydrogen_price: Number(state.hydrogenPrice) || 0,
+            phev_ev_ratio: Number(state.phevEvRatio) ?? 0.5,
+          }
+        : {
+            ...baseBody,
+            calc_mode: 'gasoline_hybrid',
+            fuel: Number(state.fuel) || 0,
+            gas_price: Number(state.gasPrice) || 0,
+          }
+
     fetch(`${API_BASE}/calc.php`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        distance: Number(state.distance) || 0,
-        fuel: Number(state.fuel) || 0,
-        gas_price: Number(state.gasPrice) || 0,
-        insurance: Number(state.insurance) || 0,
-        parking: Number(state.parking) || 0,
-        engine: Number(state.engine) || 0,
-        inspection: Number(state.inspection) || 0,
-        price: Number(state.price) || 0,
-        ownership_years: Number(state.ownershipYears) || 1,
-      }),
+      body: JSON.stringify(body),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -128,10 +152,29 @@ export function useCarCostSimulator() {
       .finally(() => {
         dispatch({ type: 'UPDATE', payload: { loading: false } })
       })
-  }, [state.distance, state.fuel, state.gasPrice, state.insurance, state.parking, state.engine, state.inspection, state.price, state.ownershipYears, patch])
+  }, [
+    state.simulatorMode,
+    state.distance,
+    state.fuel,
+    state.gasPrice,
+    state.insurance,
+    state.parking,
+    state.engine,
+    state.inspection,
+    state.price,
+    state.ownershipYears,
+    state.powertrain,
+    state.electricWhPerKm,
+    state.hydrogenKmPerKg,
+    state.electricityPrice,
+    state.hydrogenPrice,
+    state.phevEvRatio,
+    patch,
+  ])
 
   const handleExportCsv = useCallback(() => {
-    fetch(`${API_BASE}/cars_export.php`)
+    const seg = state.simulatorMode
+    fetch(`${API_BASE}/cars_export.php?segment=${encodeURIComponent(seg)}`)
       .then((res) => {
         if (!res.ok) throw new Error(res.statusText)
         return res.text()
@@ -141,7 +184,7 @@ export function useCarCostSimulator() {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'cars.csv'
+        a.download = seg === 'plugin_ev' ? 'cars_plugin_ev.csv' : 'cars_gasoline_hybrid.csv'
         a.click()
         URL.revokeObjectURL(url)
       })
@@ -150,7 +193,7 @@ export function useCarCostSimulator() {
           error: 'エクスポートに失敗しました。バックエンドが起動しているか確認してください（npm run dev）。',
         })
       )
-  }, [patch])
+  }, [patch, state.simulatorMode])
 
   const handleImportCsv = useCallback(
     (e) => {
@@ -159,7 +202,8 @@ export function useCarCostSimulator() {
       patch({ importMessage: null, importLoading: true })
       const formData = new FormData()
       formData.append('csv', file)
-      fetch(`${API_BASE}/cars_import.php`, {
+      const seg = state.simulatorMode
+      fetch(`${API_BASE}/cars_import.php?segment=${encodeURIComponent(seg)}`, {
         method: 'POST',
         body: formData,
       })
@@ -179,18 +223,83 @@ export function useCarCostSimulator() {
           e.target.value = ''
         })
     },
-    [patch, fetchCars]
+    [patch, fetchCars, state.simulatorMode]
   )
 
   const handleDownloadResult = useCallback(() => {
     if (!state.result) return
+    const r = state.result
+    const isPlugin = r.calc_mode === 'plugin_ev'
+
+    if (!isPlugin) {
+      const headers = [
+        '車種',
+        '年間走行距離(km)',
+        '燃費(km/L)',
+        'ガソリン価格(円/L)',
+        '車両価格(円)',
+        '排気量(L)',
+        '任意保険(円/年)',
+        '駐車場(円/月)',
+        '車検費用(2年分・円)',
+        '保有年数(年)',
+        '年間維持費(円)',
+        '月間維持費(円)',
+        '車両価格年換算(円)',
+        '年間合計(維持費+車両価格)(円)',
+        '月間合計(維持費+車両価格)(円)',
+        'ガソリン(円)',
+        '税金(円)',
+        '車検(円)',
+        '保険(円)',
+        '駐車場(円)',
+      ]
+      const row = [
+        selectedCarName,
+        state.distance,
+        state.fuel,
+        state.gasPrice,
+        state.price,
+        state.engine,
+        state.insurance,
+        state.parking,
+        state.inspection,
+        state.ownershipYears,
+        r.total,
+        r.monthly,
+        r.vehicle_annual,
+        r.total_with_vehicle,
+        r.monthly_with_vehicle,
+        r.gas_cost,
+        r.tax,
+        r.inspection_annual,
+        r.insurance,
+        r.parking_annual,
+      ].map(escapeCsvCell)
+      const csv = '\uFEFF' + headers.join(',') + '\n' + row.join(',')
+      const blob = new Blob([csv], { type: 'text/csv; charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `維持費シミュレーション結果_GHV_${new Date().toISOString().slice(0, 10)}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+      return
+    }
+
     const headers = [
       '車種',
+      'パワートレイン',
       '年間走行距離(km)',
-      '燃費(km/L)',
+      '電費(Wh/km)',
+      '水素費(km/kg)',
+      'ガソリン時燃費(km/L)',
+      '電気単価(円/kWh)',
+      '水素単価(円/kg)',
       'ガソリン価格(円/L)',
+      'PHEV電気走行割合',
       '車両価格(円)',
-      '排気量(cc)',
+      '排気量(L)',
       '任意保険(円/年)',
       '駐車場(円/月)',
       '車検費用(2年分・円)',
@@ -200,18 +309,26 @@ export function useCarCostSimulator() {
       '車両価格年換算(円)',
       '年間合計(維持費+車両価格)(円)',
       '月間合計(維持費+車両価格)(円)',
+      '電気代(円)',
       'ガソリン(円)',
+      '水素(円)',
+      'エネルギー計(円)',
       '税金(円)',
       '車検(円)',
       '保険(円)',
       '駐車場(円)',
     ]
-    const r = state.result
     const row = [
       selectedCarName,
+      state.powertrain,
       state.distance,
+      state.electricWhPerKm,
+      state.hydrogenKmPerKg,
       state.fuel,
+      state.electricityPrice,
+      state.hydrogenPrice,
       state.gasPrice,
+      state.phevEvRatio,
       state.price,
       state.engine,
       state.insurance,
@@ -223,7 +340,10 @@ export function useCarCostSimulator() {
       r.vehicle_annual,
       r.total_with_vehicle,
       r.monthly_with_vehicle,
-      r.gas_cost,
+      r.electricity_cost,
+      r.gasoline_cost,
+      r.hydrogen_cost,
+      r.energy_cost,
       r.tax,
       r.inspection_annual,
       r.insurance,
@@ -234,10 +354,28 @@ export function useCarCostSimulator() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `維持費シミュレーション結果_${new Date().toISOString().slice(0, 10)}.csv`
+    a.download = `維持費シミュレーション結果_XEV_${new Date().toISOString().slice(0, 10)}.csv`
     a.click()
     URL.revokeObjectURL(url)
-  }, [state.result, state.distance, state.fuel, state.gasPrice, state.price, state.engine, state.insurance, state.parking, state.inspection, state.ownershipYears, selectedCarName])
+  }, [
+    state.result,
+    state.distance,
+    state.fuel,
+    state.gasPrice,
+    state.price,
+    state.engine,
+    state.insurance,
+    state.parking,
+    state.inspection,
+    state.ownershipYears,
+    state.powertrain,
+    state.electricWhPerKm,
+    state.hydrogenKmPerKg,
+    state.electricityPrice,
+    state.hydrogenPrice,
+    state.phevEvRatio,
+    selectedCarName,
+  ])
 
   const handleEngineBlur = useCallback(() => {
     if (state.engine === '') return
@@ -247,6 +385,29 @@ export function useCarCostSimulator() {
   const navigateToInput = useCallback(() => {
     flushSync(() => {
       dispatch({ type: 'UPDATE', payload: { activeView: 'input' } })
+    })
+    window.requestAnimationFrame(() => {
+      document.getElementById('simulation-input')?.scrollIntoView({
+        block: 'start',
+        behavior: 'smooth',
+      })
+      window.history.replaceState(null, '', '#simulation-input')
+    })
+  }, [])
+
+  const selectSimulatorMode = useCallback((mode) => {
+    flushSync(() => {
+      dispatch({
+        type: 'UPDATE',
+        payload: {
+          simulatorMode: mode,
+          activeView: 'input',
+          result: null,
+          selectedCarId: '',
+          selectedMaker: '',
+          error: null,
+        },
+      })
     })
     window.requestAnimationFrame(() => {
       document.getElementById('simulation-input')?.scrollIntoView({
@@ -275,9 +436,12 @@ export function useCarCostSimulator() {
     [state.activeView]
   )
 
-  const setActiveView = useCallback((v) => {
-    patch({ activeView: v })
-  }, [patch])
+  const setActiveView = useCallback(
+    (v) => {
+      patch({ activeView: v })
+    },
+    [patch]
+  )
 
   return {
     state,
@@ -294,6 +458,7 @@ export function useCarCostSimulator() {
     handleEngineBlur,
     navigateToInput,
     navigateToFooterSection,
+    selectSimulatorMode,
     setActiveView,
     patch,
   }

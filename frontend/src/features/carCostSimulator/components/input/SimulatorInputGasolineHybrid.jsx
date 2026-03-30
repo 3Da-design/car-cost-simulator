@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import SpaSectionLead from '../../../../components/SpaSectionLead.jsx'
 import CsvExportButton from '../../../../components/CsvExportButton.jsx'
 import CsvImportButton from '../../../../components/CsvImportButton.jsx'
 import CalcButton from '../../../../components/CalcButton.jsx'
 import { carFieldMeta } from '../../../../schemas/carFields.js'
+import ModelPickerModal from './ModelPickerModal.jsx'
 import './SimulatorInput.css'
 
-export default function SimulatorInput({
+export default function SimulatorInputGasolineHybrid({
   fileInputRef,
   importLoading,
   importMessage,
@@ -40,55 +41,20 @@ export default function SimulatorInput({
   onCalculate,
   loading,
 }) {
-  const initials = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
   const [modelPickerOpen, setModelPickerOpen] = useState(false)
-  const [modelFilterText, setModelFilterText] = useState('')
-  const [selectedInitial, setSelectedInitial] = useState('')
 
   const selectedModelLabel =
     modelOptions.find((model) => model.id === selectedCarId)?.label || '車種を選択'
-  const filteredModelOptions = useMemo(() => {
-    const keyword = modelFilterText.trim().toLowerCase()
-    return modelOptions.filter((model) => {
-      const label = model.label || ''
-      const matchesKeyword = !keyword || label.toLowerCase().includes(keyword)
-      const matchesInitial =
-        !selectedInitial || label.trim().toUpperCase().startsWith(selectedInitial)
-      return matchesKeyword && matchesInitial
-    })
-  }, [modelOptions, modelFilterText, selectedInitial])
-
-  useEffect(() => {
-    if (!modelPickerOpen) return
-    const onEsc = (e) => {
-      if (e.key === 'Escape') {
-        setModelPickerOpen(false)
-        setModelFilterText('')
-        setSelectedInitial('')
-      }
-    }
-    window.addEventListener('keydown', onEsc)
-    return () => window.removeEventListener('keydown', onEsc)
-  }, [modelPickerOpen])
-
-  const handleModelPick = (id) => {
-    onModelChipSelect(id)
-    setModelPickerOpen(false)
-    setModelFilterText('')
-    setSelectedInitial('')
-  }
 
   const handleMakerSelect = (e) => {
     onMakerChange(e)
     setModelPickerOpen(false)
-    setModelFilterText('')
-    setSelectedInitial('')
   }
 
   return (
     <section className="form-section" id="simulation-input">
       <div className="form-section-header">
-        <SpaSectionLead eyebrow="Input">入力</SpaSectionLead>
+        <SpaSectionLead eyebrow="Input · ガソリン/HV">入力</SpaSectionLead>
         <div className="csv-tools">
           <CsvExportButton onClick={onExportCsv} />
           <CsvImportButton
@@ -112,10 +78,7 @@ export default function SimulatorInput({
         <div className="form-grid form-grid--car-spec">
           <label className="car-spec-row-wide">
             メーカー
-            <select
-              value={selectedMaker}
-              onChange={handleMakerSelect}
-            >
+            <select value={selectedMaker} onChange={handleMakerSelect}>
               <option value="">メーカーを選択</option>
               {makerOptions.map((maker) => (
                 <option key={maker} value={maker}>
@@ -261,68 +224,16 @@ export default function SimulatorInput({
           {importMessage.text}
         </p>
       )}
-      {modelPickerOpen && (
-        <div className="model-picker-modal-overlay" role="dialog" aria-modal="true" aria-label="車種選択">
-          <div className="model-picker-modal">
-            <div className="model-picker-modal-header">
-              <h4>車種を選択</h4>
-              <button
-                type="button"
-                className="model-picker-close"
-                onClick={() => {
-                  setModelPickerOpen(false)
-                  setModelFilterText('')
-                  setSelectedInitial('')
-                }}
-              >
-                閉じる
-              </button>
-            </div>
-            <input
-              type="text"
-              className="model-picker-search"
-              placeholder="車種を絞り込み"
-              value={modelFilterText}
-              onChange={(e) => setModelFilterText(e.target.value)}
-            />
-            <div className="model-initial-filter" role="group" aria-label="頭文字フィルター">
-              <button
-                type="button"
-                className={`model-initial-chip ${selectedInitial === '' ? 'model-initial-chip--active' : ''}`}
-                onClick={() => setSelectedInitial('')}
-              >
-                すべて
-              </button>
-              {initials.map((initial) => (
-                <button
-                  key={initial}
-                  type="button"
-                  className={`model-initial-chip ${selectedInitial === initial ? 'model-initial-chip--active' : ''}`}
-                  onClick={() => setSelectedInitial(initial)}
-                >
-                  {initial}
-                </button>
-              ))}
-            </div>
-            <div className="model-picker-list" role="listbox" aria-label="車種候補リスト">
-              {filteredModelOptions.length === 0 ? (
-                <p className="model-chip-empty">該当車種がありません</p>
-              ) : (
-                filteredModelOptions.map((model) => (
-                  <button
-                    key={model.id}
-                    type="button"
-                    className={`model-list-item ${model.id === selectedCarId ? 'model-list-item--selected' : ''}`}
-                    onClick={() => handleModelPick(model.id)}
-                  >
-                    {model.label}
-                  </button>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <ModelPickerModal
+        open={modelPickerOpen}
+        onClose={() => setModelPickerOpen(false)}
+        modelOptions={modelOptions}
+        selectedCarId={selectedCarId}
+        onPick={(id) => {
+          onModelChipSelect(id)
+          setModelPickerOpen(false)
+        }}
+      />
     </section>
   )
 }

@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: text/csv; charset=UTF-8');
-header('Content-Disposition: attachment; filename="cars.csv"');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -15,7 +14,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
   exit;
 }
 
+$segment = isset($_GET['segment']) ? trim((string) $_GET['segment']) : '';
+if ($segment !== 'gasoline_hybrid' && $segment !== 'plugin_ev') {
+  http_response_code(400);
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode(['error' => 'segment クエリに gasoline_hybrid または plugin_ev を指定してください']);
+  exit;
+}
+
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../lib/cars_schema.php';
+
+$filename = $segment === 'plugin_ev' ? 'cars_plugin_ev.csv' : 'cars_gasoline_hybrid.csv';
+header('Content-Disposition: attachment; filename="' . $filename . '"');
 
 $out = fopen('php://output', 'w');
 if ($out === false) {
@@ -27,11 +38,28 @@ fprintf($out, "\xEF\xBB\xBF");
 
 try {
   $pdo = getPdo();
-  $stmt = $pdo->query('SELECT maker, model, fuel, engine, price, inspection FROM cars ORDER BY maker, model');
+  ensure_cars_extended_columns($pdo);
+  migrate_electric_km_per_kwh_to_wh_per_km($pdo);
+
+  if ($segment === 'gasoline_hybrid') {
+    $stmt = $pdo->query(
+      "SELECT maker, model, fuel, engine, price, inspection FROM cars WHERE segment = 'gasoline_hybrid' ORDER BY maker, model"
+    );
+    fputcsv($out, ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'], ',', '"', '');
+  } else {
+    $stmt = $pdo->query(
+      "SELECT maker, model, powertrain, electric_wh_per_km, fuel, hydrogen_km_per_kg, engine, price, inspection FROM cars WHERE segment = 'plugin_ev' ORDER BY maker, model"
+    );
+    fputcsv(
+      $out,
+      ['maker', 'model', 'powertrain', 'electric_wh_per_km', 'fuel', 'hydrogen_km_per_kg', 'engine', 'price', 'inspection'],
+      ',',
+      '"',
+      ''
+    );
+  }
+
   $rows = $stmt->fetchAll(PDO::FETCH_NUM);
-
-  fputcsv($out, ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'], ',', '"', '');
-
   foreach ($rows as $row) {
     fputcsv($out, $row, ',', '"', '');
   }

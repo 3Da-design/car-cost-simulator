@@ -1,0 +1,30 @@
+maker,model,powertrain,electric_wh_per_km,fuel,hydrogen_km_per_kg,engine,price,inspection
+Toyota,PRIUS "G",phev,134,26,0,1.986,3847300,115000
+Toyota,PRIUS "Z",phev,134,26,0,1.986,4608900,115000
+Toyota,RAV4 "Z",phev,151,22.2,0,2.487,6000000,120000
+Toyota,RAV4 "GR SPORT",phev,145,21.5,0,2.487,6300000,120000
+Toyota,HARRIER "G",phev,160,20.5,0,2.487,5470300,130000
+Toyota,HARRIER "Z",phev,160,20.5,0,2.487,6260100,130000
+Toyota,bZ4X "G",bev,111,0,0,0,4800000,100000
+Toyota,bZ4X "Z" FWD,bev,113,0,0,0,5500000,100000
+Toyota,bZ4X "Z" 4WD,bev,121,0,0,0,6000000,100000
+Toyota,bZ4X Touring "Z" FWD,bev,114,0,0,0,5750000,100000
+Toyota,bZ4X Touring "Z" 4WD,bev,121,0,0,0,6400000,100000
+Toyota,CROWN "Z",fcv,0,0,148,0,8300000,140000
+Toyota,CROWN SPORT "RS",phev,165,20.3,0,2.487,7650000,145000
+Toyota,CROWN ESTATE "RS",phev,167,20.0,0,2.487,8100000,145000
+Lexus,RZ 350e "version L",bev,733,0,0,0,7900000,95000
+Lexus,RZ 500e "version L",bev,579,0,0,0,8500000,95000
+Lexus,RZ 500e "F SPORT",bev,582,0,0,0,9500000,95000
+Mazda,MX-30 Standard,bev,153.85,0,0,0,3990000,80000
+Mazda,MX-30 L Package,bev,153.85,0,0,0,4490000,80000
+Mazda,MX-30 ROTARY-EV,bev,153.85,0,0,0,4990000,80000
+Suzuki,e-Vitara X,bev,153.85,0,0,0,3990000,80000
+Suzuki,e-Vitara G,bev,153.85,0,0,0,4490000,80000
+Suzuki,e-Every,bev,153.85,0,0,0,3150000,80000
+Mitsubishi,eK Cross EV X,bev,153.85,0,0,0,2570000,80000
+Mitsubishi,eK Cross EV G,bev,153.85,0,0,0,2770000,80000
+Mitsubishi,Eclipse Cross PHEV X,phev,172.41,16.5,0,0,4090000,110000
+Mitsubishi,Eclipse Cross PHEV G,phev,172.41,16.5,0,0,4490000,110000
+Mitsubishi,Outlander PHEV X,phev,172.41,18,0,0,5290000,120000
+Mitsubishi,Outlander PHEV G,phev,172.41,18,0,0,5790000,120000

@@ -27,6 +27,7 @@
   --chart-3: #6b6b6b;
   --chart-4: #a3a3a3;
   --chart-5: #d4d4d4;
+  --chart-6: #b8b3c4;
 
   --sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --heading: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -77,6 +78,7 @@
     --chart-3: #9ca3af;
     --chart-4: #6b7280;
     --chart-5: #4b5563;
+    --chart-6: #525a6b;
   }
 
   #social .button-icon {
