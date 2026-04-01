@@ -104,6 +104,10 @@ function App() {
         setOwnershipYears: (v) => patch({ ownershipYears: v }),
         onCalculate: handleCalculate,
         loading,
+        onSelectInputMode: (next) => {
+          if (next === simulatorMode) return
+          selectSimulatorMode(next)
+        },
       }
 
       return (

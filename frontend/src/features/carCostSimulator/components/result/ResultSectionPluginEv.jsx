@@ -199,7 +199,7 @@ const ResultSectionPluginEv = forwardRef(function ResultSectionPluginEv(
         },
       ],
     }
-    return { chartData: cd, maintenanceRows: rows, energyCount: n }
+    return { chartData: cd, maintenanceRows: rows }
   }, [result])
 
   const vehiclePct = result

@@ -5,6 +5,7 @@ import CsvImportButton from '../../../../components/CsvImportButton.jsx'
 import CalcButton from '../../../../components/CalcButton.jsx'
 import { carFieldMeta } from '../../../../schemas/carFields.js'
 import ModelPickerModal from './ModelPickerModal.jsx'
+import SimulatorInputModeSwitch from './SimulatorInputModeSwitch.jsx'
 import './SimulatorInput.css'
 
 const PT_LABEL = { bev: 'BEV', phev: 'PHEV', fcv: '燃料電池（FCV）' }
@@ -54,6 +55,7 @@ export default function SimulatorInputPluginEv({
   setHydrogenPrice,
   phevEvRatio,
   setPhevEvRatio,
+  onSelectInputMode,
 }) {
   const [modelPickerOpen, setModelPickerOpen] = useState(false)
 
@@ -89,6 +91,7 @@ export default function SimulatorInputPluginEv({
           />
         </div>
       </div>
+      <SimulatorInputModeSwitch mode="plugin_ev" onSelectMode={onSelectInputMode} />
       <div className="input-block">
         <h3 className="input-block-title">車・スペック</h3>
         <p className="field-hint">

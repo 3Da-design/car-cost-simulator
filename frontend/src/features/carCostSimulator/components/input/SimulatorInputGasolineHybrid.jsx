@@ -5,6 +5,7 @@ import CsvImportButton from '../../../../components/CsvImportButton.jsx'
 import CalcButton from '../../../../components/CalcButton.jsx'
 import { carFieldMeta } from '../../../../schemas/carFields.js'
 import ModelPickerModal from './ModelPickerModal.jsx'
+import SimulatorInputModeSwitch from './SimulatorInputModeSwitch.jsx'
 import './SimulatorInput.css'
 
 export default function SimulatorInputGasolineHybrid({
@@ -40,6 +41,7 @@ export default function SimulatorInputGasolineHybrid({
   setOwnershipYears,
   onCalculate,
   loading,
+  onSelectInputMode,
 }) {
   const [modelPickerOpen, setModelPickerOpen] = useState(false)
 
@@ -54,7 +56,7 @@ export default function SimulatorInputGasolineHybrid({
   return (
     <section className="form-section" id="simulation-input">
       <div className="form-section-header">
-        <SpaSectionLead eyebrow="Input · ガソリン/HV">入力</SpaSectionLead>
+        <SpaSectionLead eyebrow="Input · ガソリン/HEV">入力</SpaSectionLead>
         <div className="csv-tools">
           <CsvExportButton onClick={onExportCsv} />
           <CsvImportButton
@@ -70,6 +72,7 @@ export default function SimulatorInputGasolineHybrid({
           />
         </div>
       </div>
+      <SimulatorInputModeSwitch mode="gasoline_hybrid" onSelectMode={onSelectInputMode} />
       <div className="input-block">
         <h3 className="input-block-title">車・スペック</h3>
         <p className="field-hint">
