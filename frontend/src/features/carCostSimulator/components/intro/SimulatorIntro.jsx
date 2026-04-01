@@ -31,7 +31,7 @@ export default function SimulatorIntro({ onSelectGasoline, onSelectPlugin }) {
             </p>
             <div className="sim-intro-hero-cta-row">
               <button type="button" className="sim-intro-hero-cta" onClick={onSelectGasoline}>
-                ガソリン車・HVで試す
+                ガソリン・HEVで試す
               </button>
               <button type="button" className="sim-intro-hero-cta sim-intro-hero-cta--secondary" onClick={onSelectPlugin}>
                 BEV・PHEV・FCVで試す
@@ -69,7 +69,7 @@ export default function SimulatorIntro({ onSelectGasoline, onSelectPlugin }) {
               <div className="sim-intro-howto-step-body">
                 <span className="sim-intro-howto-step-label">区分を選び、メーカーと車種を選ぶ</span>
                 <span className="sim-intro-howto-step-text">
-                  概要で「ガソリン車・HV」か「BEV・PHEV・FCV」の入力画面を開き、メーカーと車種を指定します。
+                  概要で「ガソリン・HEV」か「BEV・PHEV・FCV」の入力画面を開き、メーカーと車種を指定します。
                 </span>
               </div>
             </li>
