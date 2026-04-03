@@ -42,22 +42,88 @@
 .comparison-table-wrap {
   margin-top: 1rem;
   overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 10px);
 }
 
 .comparison-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
+  table-layout: fixed;
+  min-width: 1080px;
+}
+
+.comparison-table-caption {
+  caption-side: top;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 92%, #e9ecef);
 }
 
 .comparison-table th,
 .comparison-table td {
   border-bottom: 1px solid var(--border);
-  padding: 0.55rem 0.5rem;
+  padding: 0.6rem 0.55rem;
   text-align: left;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .comparison-table th {
   font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: color-mix(in srgb, var(--surface) 90%, #e8eaee);
+}
+
+.comparison-table tbody tr:nth-child(odd) {
+  background: color-mix(in srgb, var(--surface) 97%, #f3f4f6);
+}
+
+.comparison-table tbody tr:hover {
+  background: color-mix(in srgb, var(--accent-bg) 72%, var(--surface));
+}
+
+.comparison-table .cell-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.comparison-table .cell-mode {
+  font-weight: 600;
+}
+
+.comparison-table .cell-car-name {
+  font-weight: 600;
+}
+
+.col-mode {
+  width: 130px;
+}
+
+.col-car-name {
+  width: 220px;
+}
+
+.col-pt {
+  width: 100px;
+}
+
+.col-distance {
+  width: 130px;
+}
+
+.col-currency {
+  width: 135px;
+}
+
+.col-action {
+  width: 88px;
 }

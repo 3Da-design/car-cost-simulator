@@ -14,13 +14,6 @@ function formatYen(value) {
   return `${num.toLocaleString('ja-JP')}円`
 }
 
-function formatDate(value) {
-  if (!value) return '—'
-  const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return '—'
-  return d.toLocaleString('ja-JP')
-}
-
 /**
  * @param {{
  *   items: Array<{
@@ -62,9 +55,22 @@ export default function ComparisonPage({ items, onRemove, onClear, onDownload })
         ) : (
           <div className="comparison-table-wrap">
             <table className="comparison-table">
+              <caption className="comparison-table-caption">
+                比較結果一覧（横スクロール可）
+              </caption>
+              <colgroup>
+                <col className="col-mode" />
+                <col className="col-car-name" />
+                <col className="col-pt" />
+                <col className="col-distance" />
+                <col className="col-currency" />
+                <col className="col-currency" />
+                <col className="col-currency" />
+                <col className="col-currency" />
+                <col className="col-action" />
+              </colgroup>
               <thead>
                 <tr>
-                  <th>追加日時</th>
                   <th>モード</th>
                   <th>車種</th>
                   <th>パワートレイン</th>
@@ -78,20 +84,23 @@ export default function ComparisonPage({ items, onRemove, onClear, onDownload })
               </thead>
               <tbody>
                 {items.map((item) => {
-                  const modeName = item.mode === 'plugin_ev' ? 'BEV/PHEV/FCV' : 'ガソリン/HV'
+                  const modeName = item.mode === 'plugin_ev' ? 'BEV/PHEV/FCV' : 'ガソリン/HEV'
                   const distance = Number(item.inputs?.distance)
                   const pt = String(item.inputs?.powertrain ?? '')
                   return (
                     <tr key={item.id}>
-                      <td>{formatDate(item.addedAt)}</td>
-                      <td>{modeName}</td>
-                      <td>{item.carName || '（未選択）'}</td>
+                      <td className="cell-mode">{modeName}</td>
+                      <td className="cell-car-name" title={item.carName || '（未選択）'}>
+                        {item.carName || '（未選択）'}
+                      </td>
                       <td>{pt ? POWERTRAIN_LABELS[pt] || pt : '—'}</td>
-                      <td>{Number.isFinite(distance) ? `${distance.toLocaleString('ja-JP')}km` : '—'}</td>
-                      <td>{formatYen(item.result?.total)}</td>
-                      <td>{formatYen(item.result?.monthly)}</td>
-                      <td>{formatYen(item.result?.total_with_vehicle)}</td>
-                      <td>{formatYen(item.result?.monthly_with_vehicle)}</td>
+                      <td className="cell-number">
+                        {Number.isFinite(distance) ? `${distance.toLocaleString('ja-JP')}km` : '—'}
+                      </td>
+                      <td className="cell-number">{formatYen(item.result?.total)}</td>
+                      <td className="cell-number">{formatYen(item.result?.monthly)}</td>
+                      <td className="cell-number">{formatYen(item.result?.total_with_vehicle)}</td>
+                      <td className="cell-number">{formatYen(item.result?.monthly_with_vehicle)}</td>
                       <td>
                         <button type="button" className="comparison-row-remove" onClick={() => onRemove(item.id)}>
                           削除

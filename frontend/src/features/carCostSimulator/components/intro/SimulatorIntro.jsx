@@ -53,7 +53,7 @@ export default function SimulatorIntro({ onSelectGasoline, onSelectPlugin }) {
         <p className="sim-intro-lead">
           メーカーと車種を選ぶと、車両価格・燃費や電費・車検費用の目安などが自動で入ります。
           <br />
-          ガソリン/HV は従来どおり燃費とガソリン単価。プラグイン系は電気・水素・ガソリンの単価と、PHEV
+          ガソリン/HEV は従来どおり燃費とガソリン単価。プラグイン系は電気・水素・ガソリンの単価と、PHEV
           の電気走行の割合を足し合わせて試せます。
         </p>
 
@@ -134,7 +134,7 @@ export default function SimulatorIntro({ onSelectGasoline, onSelectPlugin }) {
             </span>
             <span className="sim-intro-feature-text">
               <span className="sim-intro-feature-label">区分別CSVで入出力</span>
-              ガソリン/HV用とプラグイン系用のCSVをそれぞれエクスポート・インポートできます。
+              ガソリン/HEV用とプラグイン系用のCSVをそれぞれエクスポート・インポートできます。
             </span>
           </li>
         </ul>

@@ -251,7 +251,7 @@ export function useCarCostSimulator() {
         parking: normalizeValue(state.parking),
         inspection: normalizeValue(state.inspection),
         ownershipYears: normalizeValue(state.ownershipYears),
-        powertrain: normalizeValue(state.powertrain),
+        powertrain: state.result.calc_mode === 'plugin_ev' ? normalizeValue(state.powertrain) : '',
         electricWhPerKm: normalizeValue(state.electricWhPerKm),
         hydrogenKmPerKg: normalizeValue(state.hydrogenKmPerKg),
         electricityPrice: normalizeValue(state.electricityPrice),
@@ -327,7 +327,7 @@ export function useCarCostSimulator() {
     const rows = state.comparisonItems.map((item) => {
       const r = item.result || {}
       const i = item.inputs || {}
-      const modeName = item.mode === 'plugin_ev' ? 'BEV/PHEV/FCV' : 'ガソリン/HV'
+      const modeName = item.mode === 'plugin_ev' ? 'BEV/PHEV/FCV' : 'ガソリン/HEV'
       return [
         item.addedAt,
         modeName,

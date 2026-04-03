@@ -182,7 +182,7 @@ const ResultSectionGasolineHybrid = forwardRef(function ResultSectionGasolineHyb
   return (
     <section ref={ref} className="result-section" id="simulation-result" aria-label="計算結果">
       <div className="result-section-header">
-        <SpaSectionLead eyebrow="Result · ガソリン/HV">結果</SpaSectionLead>
+        <SpaSectionLead eyebrow="Result · ガソリン/HEV">結果</SpaSectionLead>
         <button type="button" className="result-download-button" onClick={onAddToComparison}>
           比較に追加
         </button>
