@@ -2,7 +2,7 @@ import { forwardRef, useMemo } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import SpaSectionLead from '../../../../components/SpaSectionLead.jsx'
-import ResultDownloadButton from '../../../../components/ResultDownloadButton.jsx'
+import '../../../../components/ResultDownloadButton.css'
 import './ResultSection.css'
 
 ChartJS.register(ArcElement, Tooltip)
@@ -79,11 +79,11 @@ const PT_JA = { bev: 'BEV', phev: 'PHEV', fcv: '燃料電池（FCV）' }
 /**
  * @param {object} props
  * @param {import('../../types/simulator.types.js').CalcResultPluginEv} props.result
- * @param {() => void} props.onDownloadResult
+ * @param {() => void} props.onAddToComparison
  * @param {import('../../types/simulator.types.js').ResultAssumptionsPluginEv} [props.assumptions]
  */
 const ResultSectionPluginEv = forwardRef(function ResultSectionPluginEv(
-  { result, onDownloadResult, assumptions = {} },
+  { result, onAddToComparison, assumptions = {} },
   ref
 ) {
   const {
@@ -214,7 +214,9 @@ const ResultSectionPluginEv = forwardRef(function ResultSectionPluginEv(
     <section ref={ref} className="result-section" id="simulation-result" aria-label="計算結果">
       <div className="result-section-header">
         <SpaSectionLead eyebrow="Result · BEV/PHEV/FCV">結果</SpaSectionLead>
-        <ResultDownloadButton onClick={onDownloadResult} />
+        <button type="button" className="result-download-button" onClick={onAddToComparison}>
+          比較に追加
+        </button>
       </div>
       <div className="result-main">
         <p className="result-plugin-note" role="note">

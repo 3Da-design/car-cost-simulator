@@ -25,4 +25,5 @@ export const initialSimulatorState = {
   electricityPrice: 27,
   hydrogenPrice: 1200,
   phevEvRatio: 0.5,
+  comparisonItems: [],
 }

@@ -6,6 +6,14 @@ import { formatEngineToThreeDecimals } from '../../../utils/numberFormat.js'
 import { initialSimulatorState } from '../stores/initialState.js'
 import { simulatorReducer } from '../stores/simulatorReducer.js'
 
+function normalizeValue(v) {
+  return v == null ? '' : v
+}
+
+function formatDateForFileName() {
+  return new Date().toISOString().slice(0, 10)
+}
+
 export function useCarCostSimulator() {
   const [state, dispatch] = useReducer(simulatorReducer, initialSimulatorState)
   const fileInputRef = useRef(null)
@@ -121,7 +129,7 @@ export function useCarCostSimulator() {
             electricity_price: Number(state.electricityPrice) || 0,
             gas_price: Number(state.gasPrice) || 0,
             hydrogen_price: Number(state.hydrogenPrice) || 0,
-            phev_ev_ratio: Number(state.phevEvRatio) ?? 0.5,
+            phev_ev_ratio: Number.isFinite(Number(state.phevEvRatio)) ? Number(state.phevEvRatio) : 0.5,
           }
         : {
             ...baseBody,
@@ -226,77 +234,75 @@ export function useCarCostSimulator() {
     [patch, fetchCars, state.simulatorMode]
   )
 
-  const handleDownloadResult = useCallback(() => {
+  const addCurrentResultToComparison = useCallback(() => {
     if (!state.result) return
-    const r = state.result
-    const isPlugin = r.calc_mode === 'plugin_ev'
-
-    if (!isPlugin) {
-      const headers = [
-        '車種',
-        '年間走行距離(km)',
-        '燃費(km/L)',
-        'ガソリン価格(円/L)',
-        '車両価格(円)',
-        '排気量(L)',
-        '任意保険(円/年)',
-        '駐車場(円/月)',
-        '車検費用(2年分・円)',
-        '保有年数(年)',
-        '年間維持費(円)',
-        '月間維持費(円)',
-        '車両価格年換算(円)',
-        '年間合計(維持費+車両価格)(円)',
-        '月間合計(維持費+車両価格)(円)',
-        'ガソリン(円)',
-        '税金(円)',
-        '車検(円)',
-        '保険(円)',
-        '駐車場(円)',
-      ]
-      const row = [
-        selectedCarName,
-        state.distance,
-        state.fuel,
-        state.gasPrice,
-        state.price,
-        state.engine,
-        state.insurance,
-        state.parking,
-        state.inspection,
-        state.ownershipYears,
-        r.total,
-        r.monthly,
-        r.vehicle_annual,
-        r.total_with_vehicle,
-        r.monthly_with_vehicle,
-        r.gas_cost,
-        r.tax,
-        r.inspection_annual,
-        r.insurance,
-        r.parking_annual,
-      ].map(escapeCsvCell)
-      const csv = '\uFEFF' + headers.join(',') + '\n' + row.join(',')
-      const blob = new Blob([csv], { type: 'text/csv; charset=utf-8' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `維持費シミュレーション結果_GHV_${new Date().toISOString().slice(0, 10)}.csv`
-      a.click()
-      URL.revokeObjectURL(url)
-      return
+    const item = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      addedAt: new Date().toISOString(),
+      mode: state.result.calc_mode,
+      carName: selectedCarName || '',
+      inputs: {
+        distance: normalizeValue(state.distance),
+        fuel: normalizeValue(state.fuel),
+        gasPrice: normalizeValue(state.gasPrice),
+        price: normalizeValue(state.price),
+        engine: normalizeValue(state.engine),
+        insurance: normalizeValue(state.insurance),
+        parking: normalizeValue(state.parking),
+        inspection: normalizeValue(state.inspection),
+        ownershipYears: normalizeValue(state.ownershipYears),
+        powertrain: normalizeValue(state.powertrain),
+        electricWhPerKm: normalizeValue(state.electricWhPerKm),
+        hydrogenKmPerKg: normalizeValue(state.hydrogenKmPerKg),
+        electricityPrice: normalizeValue(state.electricityPrice),
+        hydrogenPrice: normalizeValue(state.hydrogenPrice),
+        phevEvRatio: normalizeValue(state.phevEvRatio),
+      },
+      result: state.result,
     }
+    dispatch({ type: 'ADD_COMPARISON_ITEM', payload: item })
+  }, [
+    state.result,
+    state.distance,
+    state.fuel,
+    state.gasPrice,
+    state.price,
+    state.engine,
+    state.insurance,
+    state.parking,
+    state.inspection,
+    state.ownershipYears,
+    state.powertrain,
+    state.electricWhPerKm,
+    state.hydrogenKmPerKg,
+    state.electricityPrice,
+    state.hydrogenPrice,
+    state.phevEvRatio,
+    selectedCarName,
+  ])
 
+  const removeComparisonItem = useCallback((id) => {
+    dispatch({ type: 'REMOVE_COMPARISON_ITEM', payload: id })
+  }, [])
+
+  const clearComparisonItems = useCallback(() => {
+    dispatch({ type: 'CLEAR_COMPARISON_ITEMS' })
+  }, [])
+
+  const downloadComparisonCsv = useCallback(() => {
+    if (!state.comparisonItems.length) return
     const headers = [
+      '追加日時',
+      '計算モード',
       '車種',
       'パワートレイン',
       '年間走行距離(km)',
+      '燃費(km/L)',
+      'ガソリン価格(円/L)',
       '電費(Wh/km)',
       '水素費(km/kg)',
-      'ガソリン時燃費(km/L)',
       '電気単価(円/kWh)',
       '水素単価(円/kg)',
-      'ガソリン価格(円/L)',
       'PHEV電気走行割合',
       '車両価格(円)',
       '排気量(L)',
@@ -318,64 +324,53 @@ export function useCarCostSimulator() {
       '保険(円)',
       '駐車場(円)',
     ]
-    const row = [
-      selectedCarName,
-      state.powertrain,
-      state.distance,
-      state.electricWhPerKm,
-      state.hydrogenKmPerKg,
-      state.fuel,
-      state.electricityPrice,
-      state.hydrogenPrice,
-      state.gasPrice,
-      state.phevEvRatio,
-      state.price,
-      state.engine,
-      state.insurance,
-      state.parking,
-      state.inspection,
-      state.ownershipYears,
-      r.total,
-      r.monthly,
-      r.vehicle_annual,
-      r.total_with_vehicle,
-      r.monthly_with_vehicle,
-      r.electricity_cost,
-      r.gasoline_cost,
-      r.hydrogen_cost,
-      r.energy_cost,
-      r.tax,
-      r.inspection_annual,
-      r.insurance,
-      r.parking_annual,
-    ].map(escapeCsvCell)
-    const csv = '\uFEFF' + headers.join(',') + '\n' + row.join(',')
+    const rows = state.comparisonItems.map((item) => {
+      const r = item.result || {}
+      const i = item.inputs || {}
+      const modeName = item.mode === 'plugin_ev' ? 'BEV/PHEV/FCV' : 'ガソリン/HV'
+      return [
+        item.addedAt,
+        modeName,
+        item.carName,
+        i.powertrain,
+        i.distance,
+        i.fuel,
+        i.gasPrice,
+        i.electricWhPerKm,
+        i.hydrogenKmPerKg,
+        i.electricityPrice,
+        i.hydrogenPrice,
+        i.phevEvRatio,
+        i.price,
+        i.engine,
+        i.insurance,
+        i.parking,
+        i.inspection,
+        i.ownershipYears,
+        r.total,
+        r.monthly,
+        r.vehicle_annual,
+        r.total_with_vehicle,
+        r.monthly_with_vehicle,
+        r.electricity_cost,
+        r.calc_mode === 'plugin_ev' ? r.gasoline_cost : r.gas_cost,
+        r.hydrogen_cost,
+        r.energy_cost,
+        r.tax,
+        r.inspection_annual,
+        r.insurance,
+        r.parking_annual,
+      ].map(escapeCsvCell)
+    })
+    const csv = '\uFEFF' + headers.join(',') + '\n' + rows.map((row) => row.join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv; charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `維持費シミュレーション結果_XEV_${new Date().toISOString().slice(0, 10)}.csv`
+    a.download = `維持費比較結果_${formatDateForFileName()}.csv`
     a.click()
     URL.revokeObjectURL(url)
-  }, [
-    state.result,
-    state.distance,
-    state.fuel,
-    state.gasPrice,
-    state.price,
-    state.engine,
-    state.insurance,
-    state.parking,
-    state.inspection,
-    state.ownershipYears,
-    state.powertrain,
-    state.electricWhPerKm,
-    state.hydrogenKmPerKg,
-    state.electricityPrice,
-    state.hydrogenPrice,
-    state.phevEvRatio,
-    selectedCarName,
-  ])
+  }, [state.comparisonItems])
 
   const handleEngineBlur = useCallback(() => {
     if (state.engine === '') return
@@ -454,7 +449,10 @@ export function useCarCostSimulator() {
     handleCalculate,
     handleExportCsv,
     handleImportCsv,
-    handleDownloadResult,
+    addCurrentResultToComparison,
+    removeComparisonItem,
+    clearComparisonItems,
+    downloadComparisonCsv,
     handleEngineBlur,
     navigateToInput,
     navigateToFooterSection,

@@ -39,6 +39,21 @@ export function simulatorReducer(state, action) {
         ...base,
       }
     }
+    case 'ADD_COMPARISON_ITEM':
+      return {
+        ...state,
+        comparisonItems: [action.payload, ...state.comparisonItems],
+      }
+    case 'REMOVE_COMPARISON_ITEM':
+      return {
+        ...state,
+        comparisonItems: state.comparisonItems.filter((item) => item.id !== action.payload),
+      }
+    case 'CLEAR_COMPARISON_ITEMS':
+      return {
+        ...state,
+        comparisonItems: [],
+      }
     default:
       return state
   }

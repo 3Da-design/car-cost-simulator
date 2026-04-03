@@ -5,6 +5,7 @@ import SpaLeftNav from './features/app/components/layout/SpaLeftNav.jsx'
 import SimulatorIntro from './features/carCostSimulator/components/intro/SimulatorIntro.jsx'
 import SimulatorInputGasolineHybrid from './features/carCostSimulator/components/input/SimulatorInputGasolineHybrid.jsx'
 import SimulatorInputPluginEv from './features/carCostSimulator/components/input/SimulatorInputPluginEv.jsx'
+import ComparisonPage from './features/carCostSimulator/components/compare/ComparisonPage.jsx'
 import ResultSectionGasolineHybrid from './features/carCostSimulator/components/result/ResultSectionGasolineHybrid.jsx'
 import ResultSectionPluginEv from './features/carCostSimulator/components/result/ResultSectionPluginEv.jsx'
 import { useCarCostSimulator } from './features/carCostSimulator/hooks/useCarCostSimulator.js'
@@ -21,9 +22,11 @@ function App() {
     handleCalculate,
     handleExportCsv,
     handleImportCsv,
-    handleDownloadResult,
+    addCurrentResultToComparison,
+    removeComparisonItem,
+    clearComparisonItems,
+    downloadComparisonCsv,
     handleEngineBlur,
-    navigateToInput,
     navigateToFooterSection,
     selectSimulatorMode,
     setActiveView,
@@ -55,6 +58,7 @@ function App() {
     electricityPrice,
     hydrogenPrice,
     phevEvRatio,
+    comparisonItems,
   } = state
 
   const errorAlert =
@@ -68,6 +72,7 @@ function App() {
     { id: 'intro', label: '概要', icon: 'fa-circle-info' },
     { id: 'input', label: '入力', icon: 'fa-keyboard' },
     { id: 'result', label: '結果', icon: 'fa-chart-pie', disabled: !result },
+    { id: 'compare', label: `比較 (${comparisonItems.length})`, icon: 'fa-code-compare' },
   ]
 
   const renderMainContent = () => {
@@ -156,6 +161,16 @@ function App() {
       )
     }
     if (!result) {
+      if (activeView === 'compare') {
+        return (
+          <ComparisonPage
+            items={comparisonItems}
+            onRemove={removeComparisonItem}
+            onClear={clearComparisonItems}
+            onDownload={downloadComparisonCsv}
+          />
+        )
+      }
       return (
         <main className="main">
           <p className="error" role="alert">
@@ -166,13 +181,23 @@ function App() {
     }
 
     const isPlugin = result.calc_mode === 'plugin_ev'
+    if (activeView === 'compare') {
+      return (
+        <ComparisonPage
+          items={comparisonItems}
+          onRemove={removeComparisonItem}
+          onClear={clearComparisonItems}
+          onDownload={downloadComparisonCsv}
+        />
+      )
+    }
 
     return (
       <main className="main">
         {isPlugin ? (
           <ResultSectionPluginEv
             result={result}
-            onDownloadResult={handleDownloadResult}
+            onAddToComparison={addCurrentResultToComparison}
             assumptions={{
               carName: selectedCarName,
               distance,
@@ -195,7 +220,7 @@ function App() {
         ) : (
           <ResultSectionGasolineHybrid
             result={result}
-            onDownloadResult={handleDownloadResult}
+            onAddToComparison={addCurrentResultToComparison}
             assumptions={{
               carName: selectedCarName,
               distance,

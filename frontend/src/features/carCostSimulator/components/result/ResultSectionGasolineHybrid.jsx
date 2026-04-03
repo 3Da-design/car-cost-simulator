@@ -2,7 +2,7 @@ import { forwardRef, useMemo } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import SpaSectionLead from '../../../../components/SpaSectionLead.jsx'
-import ResultDownloadButton from '../../../../components/ResultDownloadButton.jsx'
+import '../../../../components/ResultDownloadButton.css'
 import './ResultSection.css'
 
 ChartJS.register(ArcElement, Tooltip)
@@ -78,11 +78,11 @@ function formatYenDisplay(n) {
 /**
  * @param {object} props
  * @param {import('../../types/simulator.types.js').CalcResultGasolineHybrid} props.result
- * @param {() => void} props.onDownloadResult
+ * @param {() => void} props.onAddToComparison
  * @param {import('../../types/simulator.types.js').ResultAssumptions} [props.assumptions]
  */
 const ResultSectionGasolineHybrid = forwardRef(function ResultSectionGasolineHybrid(
-  { result, onDownloadResult, assumptions = {} },
+  { result, onAddToComparison, assumptions = {} },
   ref
 ) {
   const {
@@ -183,7 +183,9 @@ const ResultSectionGasolineHybrid = forwardRef(function ResultSectionGasolineHyb
     <section ref={ref} className="result-section" id="simulation-result" aria-label="計算結果">
       <div className="result-section-header">
         <SpaSectionLead eyebrow="Result · ガソリン/HV">結果</SpaSectionLead>
-        <ResultDownloadButton onClick={onDownloadResult} />
+        <button type="button" className="result-download-button" onClick={onAddToComparison}>
+          比較に追加
+        </button>
       </div>
       <div className="result-main">
         <div className="result-assumptions" aria-labelledby="result-assumptions-heading">

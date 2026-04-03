@@ -1,0 +1,63 @@
+.comparison-page {
+  padding: 1.25rem 1.25rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 14px);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.comparison-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.comparison-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.comparison-clear-button,
+.comparison-row-remove {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 8px);
+  cursor: pointer;
+}
+
+.comparison-empty {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md, 10px);
+}
+
+.comparison-table-wrap {
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.55rem 0.5rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.comparison-table th {
+  font-weight: 700;
+}
