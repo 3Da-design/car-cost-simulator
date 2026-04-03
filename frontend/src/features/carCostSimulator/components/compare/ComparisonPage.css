@@ -50,8 +50,8 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
-  table-layout: fixed;
-  min-width: 1080px;
+  table-layout: auto;
+  min-width: 1200px;
 }
 
 .comparison-table-caption {
@@ -71,8 +71,6 @@
   padding: 0.6rem 0.55rem;
   text-align: left;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .comparison-table th {
@@ -94,6 +92,7 @@
 .comparison-table .cell-number {
   text-align: right;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .comparison-table .cell-mode {
@@ -109,7 +108,7 @@
 }
 
 .col-car-name {
-  width: 220px;
+  width: 300px;
 }
 
 .col-pt {
