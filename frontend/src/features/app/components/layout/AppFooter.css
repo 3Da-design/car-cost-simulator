@@ -4,6 +4,9 @@
   --footer-bg: #0a0a0a;
   --footer-text: rgba(255, 255, 255, 0.88);
   --footer-muted: rgba(255, 255, 255, 0.55);
+  /* ダーク背景上でグローバル ::selection が効きにくいのを防ぐ（不透明の #ffd921 は濃すぎるため半透明に） */
+  --footer-selection-bg: rgba(255, 217, 33, 0.32);
+  --footer-selection-fg: #fff;
 
   width: 100%;
   margin-top: auto;
@@ -150,6 +153,16 @@ button.app-footer-back {
   .app-footer-nav-list {
     gap: 0.5rem 1.1rem;
   }
+}
+
+.app-footer ::selection {
+  background: var(--footer-selection-bg);
+  color: var(--footer-selection-fg);
+}
+
+.app-footer ::-moz-selection {
+  background: var(--footer-selection-bg);
+  color: var(--footer-selection-fg);
 }
 
 /* ライト/ダークの OS 設定に依存せず、常に PLAYWORK 風のダークフッターを維持 */

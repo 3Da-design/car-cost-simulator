@@ -92,7 +92,12 @@ export function useCarCostSimulator() {
 
   const handleMakerChange = useCallback(
     (e) => {
-      patch({ selectedMaker: e.target.value, selectedCarId: '' })
+      patch({
+        selectedMaker: e.target.value,
+        selectedCarId: '',
+        gasolinePowertrain: '',
+        powertrain: '',
+      })
     },
     [patch]
   )
@@ -106,6 +111,15 @@ export function useCarCostSimulator() {
   )
 
   const handleCalculate = useCallback(() => {
+    if (state.simulatorMode === 'plugin_ev') {
+      const pt = String(state.powertrain ?? '')
+        .trim()
+        .toLowerCase()
+      if (!['bev', 'phev', 'fcv'].includes(pt)) {
+        patch({ error: '区分を選択してください', result: null })
+        return
+      }
+    }
     patch({ error: null, result: null, loading: true })
     const baseBody = {
       distance: Number(state.distance) || 0,
@@ -236,8 +250,6 @@ export function useCarCostSimulator() {
 
   const addCurrentResultToComparison = useCallback(() => {
     if (!state.result) return
-    const selectedCar = state.cars.find((c) => String(c.id) === state.selectedCarId)
-    const gasolinePt = selectedCar?.gasoline_powertrain
     const item = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       addedAt: new Date().toISOString(),
@@ -256,7 +268,7 @@ export function useCarCostSimulator() {
         powertrain:
           state.result.calc_mode === 'plugin_ev'
             ? normalizeValue(state.powertrain)
-            : normalizeValue(gasolinePt ?? ''),
+            : normalizeValue(state.gasolinePowertrain ?? ''),
         electricWhPerKm: normalizeValue(state.electricWhPerKm),
         hydrogenKmPerKg: normalizeValue(state.hydrogenKmPerKg),
         electricityPrice: normalizeValue(state.electricityPrice),
@@ -284,8 +296,7 @@ export function useCarCostSimulator() {
     state.hydrogenPrice,
     state.phevEvRatio,
     selectedCarName,
-    state.cars,
-    state.selectedCarId,
+    state.gasolinePowertrain,
   ])
 
   const removeComparisonItem = useCallback((id) => {
@@ -407,6 +418,8 @@ export function useCarCostSimulator() {
           result: null,
           selectedCarId: '',
           selectedMaker: '',
+          gasolinePowertrain: '',
+          powertrain: '',
           error: null,
         },
       })

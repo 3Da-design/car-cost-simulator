@@ -64,6 +64,7 @@ export default function ComparisonPage({ items, onRemove, onClear, onDownload })
                 <col className="col-mode" />
                 <col className="col-car-name" />
                 <col className="col-pt" />
+                <col className="col-currency" />
                 <col className="col-distance" />
                 <col className="col-currency" />
                 <col className="col-currency" />
@@ -76,6 +77,7 @@ export default function ComparisonPage({ items, onRemove, onClear, onDownload })
                   <th>モード</th>
                   <th>車種</th>
                   <th>パワートレイン</th>
+                  <th>車両価格</th>
                   <th>年間走行距離</th>
                   <th>年間維持費</th>
                   <th>月間維持費</th>
@@ -96,6 +98,7 @@ export default function ComparisonPage({ items, onRemove, onClear, onDownload })
                         {item.carName || '（未選択）'}
                       </td>
                       <td>{pt ? POWERTRAIN_LABELS[pt] || pt : '—'}</td>
+                      <td className="cell-number">{formatYen(item.inputs?.price)}</td>
                       <td className="cell-number">
                         {Number.isFinite(distance) ? `${distance.toLocaleString('ja-JP')}km` : '—'}
                       </td>

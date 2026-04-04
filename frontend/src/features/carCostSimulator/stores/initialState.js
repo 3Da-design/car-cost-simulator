@@ -18,8 +18,10 @@ export const initialSimulatorState = {
   importMessage: null,
   importLoading: false,
   selectedMaker: '',
-  /** plugin_ev 専用 */
-  powertrain: 'bev',
+  /** gasoline_hybrid 専用（CSVの powertrain: gasoline / hybrid） */
+  gasolinePowertrain: '',
+  /** plugin_ev 専用（bev / phev / fcv、未選択は ''） */
+  powertrain: '',
   electricWhPerKm: '',
   hydrogenKmPerKg: '',
   electricityPrice: 27,

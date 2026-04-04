@@ -9,7 +9,7 @@ export function simulatorReducer(state, action) {
     case 'UPDATE':
       return { ...state, ...action.payload }
     case 'HYDRATE_FROM_CAR': {
-      const car = /** @type {{ segment?: string, fuel?: unknown, engine?: unknown, price?: unknown, inspection?: number, powertrain?: string, electric_wh_per_km?: unknown, hydrogen_km_per_kg?: unknown }} */ (
+      const car = /** @type {{ segment?: string, fuel?: unknown, engine?: unknown, price?: unknown, inspection?: number, powertrain?: string, gasoline_powertrain?: string | null, electric_wh_per_km?: unknown, hydrogen_km_per_kg?: unknown }} */ (
         action.payload
       )
       const base = {
@@ -34,9 +34,14 @@ export function simulatorReducer(state, action) {
               : '',
         }
       }
+      const ghPt =
+        car.gasoline_powertrain != null && car.gasoline_powertrain !== ''
+          ? String(car.gasoline_powertrain)
+          : ''
       return {
         ...state,
         ...base,
+        gasolinePowertrain: ghPt,
       }
     }
     case 'ADD_COMPARISON_ITEM':

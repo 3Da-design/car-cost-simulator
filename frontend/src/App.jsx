@@ -52,6 +52,7 @@ function App() {
     importMessage,
     importLoading,
     selectedMaker,
+    gasolinePowertrain,
     powertrain,
     electricWhPerKm,
     hydrogenKmPerKg,
@@ -129,6 +130,8 @@ function App() {
               engine={engine}
               setEngine={(v) => patch({ engine: v })}
               onEngineBlur={handleEngineBlur}
+              gasolinePowertrain={gasolinePowertrain}
+              setGasolinePowertrain={(v) => patch({ gasolinePowertrain: v })}
             />
           ) : (
             <SimulatorInputPluginEv

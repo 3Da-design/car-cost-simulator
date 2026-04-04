@@ -125,6 +125,7 @@ export default function SimulatorInputPluginEv({
           <label>
             区分
             <select value={powertrain} onChange={(e) => setPowertrain(e.target.value)}>
+              <option value="">選択してください</option>
               <option value="bev">{PT_LABEL.bev}</option>
               <option value="phev">{PT_LABEL.phev}</option>
               <option value="fcv">{PT_LABEL.fcv}</option>
