@@ -6,6 +6,8 @@ const POWERTRAIN_LABELS = {
   bev: 'BEV',
   phev: 'PHEV',
   fcv: 'FCV',
+  gasoline: 'ガソリン',
+  hybrid: 'ハイブリッド',
 }
 
 function formatYen(value) {

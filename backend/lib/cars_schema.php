@@ -42,3 +42,16 @@ function migrate_electric_km_per_kwh_to_wh_per_km(PDO $pdo): void {
     'WHERE electric_wh_per_km IS NOT NULL AND electric_wh_per_km > 0 AND electric_wh_per_km <= 45'
   );
 }
+
+/**
+ * ガソリン/HEV CSV の powertrain 列（gasoline / hybrid 等）用
+ */
+function ensure_gasoline_powertrain_column(PDO $pdo): void {
+  $has = $pdo->query("SHOW COLUMNS FROM cars LIKE 'gasoline_powertrain'")->fetch(PDO::FETCH_ASSOC);
+  if ($has) {
+    return;
+  }
+  $pdo->exec(
+    "ALTER TABLE cars ADD COLUMN gasoline_powertrain VARCHAR(32) NULL COMMENT 'ガソリン/HEVのパワートレイン（CSVのpowertrain列）' AFTER model"
+  );
+}

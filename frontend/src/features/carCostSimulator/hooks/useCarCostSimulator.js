@@ -236,6 +236,8 @@ export function useCarCostSimulator() {
 
   const addCurrentResultToComparison = useCallback(() => {
     if (!state.result) return
+    const selectedCar = state.cars.find((c) => String(c.id) === state.selectedCarId)
+    const gasolinePt = selectedCar?.gasoline_powertrain
     const item = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       addedAt: new Date().toISOString(),
@@ -251,7 +253,10 @@ export function useCarCostSimulator() {
         parking: normalizeValue(state.parking),
         inspection: normalizeValue(state.inspection),
         ownershipYears: normalizeValue(state.ownershipYears),
-        powertrain: state.result.calc_mode === 'plugin_ev' ? normalizeValue(state.powertrain) : '',
+        powertrain:
+          state.result.calc_mode === 'plugin_ev'
+            ? normalizeValue(state.powertrain)
+            : normalizeValue(gasolinePt ?? ''),
         electricWhPerKm: normalizeValue(state.electricWhPerKm),
         hydrogenKmPerKg: normalizeValue(state.hydrogenKmPerKg),
         electricityPrice: normalizeValue(state.electricityPrice),
@@ -279,6 +284,8 @@ export function useCarCostSimulator() {
     state.hydrogenPrice,
     state.phevEvRatio,
     selectedCarName,
+    state.cars,
+    state.selectedCarId,
   ])
 
   const removeComparisonItem = useCallback((id) => {

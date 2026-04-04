@@ -40,12 +40,13 @@ try {
   $pdo = getPdo();
   ensure_cars_extended_columns($pdo);
   migrate_electric_km_per_kwh_to_wh_per_km($pdo);
+  ensure_gasoline_powertrain_column($pdo);
 
   if ($segment === 'gasoline_hybrid') {
     $stmt = $pdo->query(
-      "SELECT maker, model, fuel, engine, price, inspection FROM cars WHERE segment = 'gasoline_hybrid' ORDER BY maker, model"
+      "SELECT maker, model, gasoline_powertrain, fuel, engine, price, inspection FROM cars WHERE segment = 'gasoline_hybrid' ORDER BY maker, model"
     );
-    fputcsv($out, ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'], ',', '"', '');
+    fputcsv($out, ['maker', 'model', 'powertrain', 'fuel', 'engine', 'price', 'inspection'], ',', '"', '');
   } else {
     $stmt = $pdo->query(
       "SELECT maker, model, powertrain, electric_wh_per_km, fuel, hydrogen_km_per_kg, engine, price, inspection FROM cars WHERE segment = 'plugin_ev' ORDER BY maker, model"

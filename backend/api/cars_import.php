@@ -56,8 +56,8 @@ if (isset($header[0]) && substr($header[0], 0, 3) === "\xEF\xBB\xBF") {
 $headerLower = array_map('strtolower', $header);
 
 if ($segment === 'gasoline_hybrid') {
-  $expected = ['maker', 'model', 'fuel', 'engine', 'price', 'inspection'];
-  $expectedMsg = 'maker,model,fuel,engine,price,inspection';
+  $expected = ['maker', 'model', 'powertrain', 'fuel', 'engine', 'price', 'inspection'];
+  $expectedMsg = 'maker,model,powertrain,fuel,engine,price,inspection';
 } else {
   $expected = ['maker', 'model', 'powertrain', 'electric_wh_per_km', 'fuel', 'hydrogen_km_per_kg', 'engine', 'price', 'inspection'];
   $expectedMsg = 'maker,model,powertrain,electric_wh_per_km,fuel,hydrogen_km_per_kg,engine,price,inspection';
@@ -85,6 +85,7 @@ try {
   $pdo = getPdo();
   ensure_cars_extended_columns($pdo);
   migrate_electric_km_per_kwh_to_wh_per_km($pdo);
+  ensure_gasoline_powertrain_column($pdo);
   $pdo->exec("ALTER TABLE cars MODIFY engine DECIMAL(5,3) NOT NULL COMMENT '排気量 L（小数点以下3桁）'");
 
   $pdo->beginTransaction();
@@ -93,7 +94,7 @@ try {
 
   if ($segment === 'gasoline_hybrid') {
     $stmt = $pdo->prepare(
-      'INSERT INTO cars (maker, model, fuel, engine, price, inspection, segment, powertrain, electric_wh_per_km, hydrogen_km_per_kg) VALUES (?, ?, ?, ?, ?, ?, \'gasoline_hybrid\', NULL, NULL, NULL)'
+      'INSERT INTO cars (maker, model, gasoline_powertrain, fuel, engine, price, inspection, segment, powertrain, electric_wh_per_km, hydrogen_km_per_kg) VALUES (?, ?, ?, ?, ?, ?, ?, \'gasoline_hybrid\', NULL, NULL, NULL)'
     );
   } else {
     $stmt = $pdo->prepare(
@@ -141,10 +142,13 @@ try {
     }
 
     if ($segment === 'gasoline_hybrid') {
+      $ptGhRaw = trim($row[$idx['powertrain']] ?? '');
       $fuelRaw = trim($row[$idx['fuel']] ?? '');
       $engineRaw = trim($row[$idx['engine']] ?? '');
       $priceRaw = trim($row[$idx['price']] ?? '');
       $inspectionRaw = isset($row[$idx['inspection']]) ? trim($row[$idx['inspection']]) : '';
+
+      $gasolinePt = $ptGhRaw === '' ? null : substr($ptGhRaw, 0, 32);
 
       if ($fuelRaw === '' || !is_numeric($fuelRaw) || (float) $fuelRaw < 0) {
         $pdo->rollBack();
@@ -176,7 +180,7 @@ try {
         $inspection = null;
       }
 
-      $stmt->execute([$maker, $model, $fuel, $engine, $price, $inspection]);
+      $stmt->execute([$maker, $model, $gasolinePt, $fuel, $engine, $price, $inspection]);
     } else {
       $ptRaw = strtolower(trim($row[$idx['powertrain']] ?? ''));
       $elecRaw = trim($row[$idx['electric_wh_per_km']] ?? '');
