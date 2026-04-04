@@ -67,18 +67,20 @@
 
 .comparison-table th,
 .comparison-table td {
-  border-bottom: 1px solid var(--border);
+  border: 1px solid var(--border);
   padding: 0.6rem 0.55rem;
   text-align: left;
   white-space: nowrap;
 }
 
-.comparison-table th {
+.comparison-table thead th {
   font-weight: 700;
   position: sticky;
   top: 0;
   z-index: 1;
-  background: color-mix(in srgb, var(--surface) 90%, #e8eaee);
+  color: var(--text-h);
+  background: color-mix(in srgb, var(--accent) 24%, var(--surface));
+  box-shadow: inset 0 -1px 0 var(--border);
 }
 
 .comparison-table tbody tr:nth-child(odd) {
@@ -86,7 +88,7 @@
 }
 
 .comparison-table tbody tr:hover {
-  background: color-mix(in srgb, var(--accent-bg) 72%, var(--surface));
+  background: color-mix(in srgb, var(--text-h) 9%, var(--surface));
 }
 
 .comparison-table .cell-number {

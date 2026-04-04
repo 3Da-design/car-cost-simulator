@@ -56,7 +56,7 @@ export default function ComparisonPage({ items, onRemove, onClear, onDownload })
           <div className="comparison-table-wrap">
             <table className="comparison-table">
               <caption className="comparison-table-caption">
-                比較結果一覧（横スクロール可）
+                比較結果一覧
               </caption>
               <colgroup>
                 <col className="col-mode" />
